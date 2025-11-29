@@ -1,8 +1,20 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertUserProfileSchema } from "@shared/schema";
 import { z } from "zod";
+
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+      claims?: any;
+      access_token?: string;
+      refresh_token?: string;
+      expires_at?: number;
+    }
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -39,12 +51,12 @@ export async function registerRoutes(
   app.post("/api/profile/onboarding", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
-      const { interests, learningPace, cognitiveStyle, skillLevel } = req.body;
+      const { interests, learningPace, cognitiveStyle, techTier } = req.body;
       const updated = await storage.updateUserProfile(req.user.id, {
         interests,
         learningPace,
         cognitiveStyle,
-        skillLevel,
+        techTier: techTier || "Beginner",
         onboardingCompleted: true,
       });
       res.json(updated);
