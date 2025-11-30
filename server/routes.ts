@@ -519,32 +519,29 @@ export async function registerRoutes(
     }
   });
 
-  // AI Chat
+  // AI Chat - ALWAYS use advanced AI engine (no external APIs needed)
   app.post("/api/ai/chat", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
       const { message, history, action } = req.body;
       let response: string;
 
-      if (process.env.OPENAI_API_KEY) {
-        const { chatWithCopilot, explainCode, debugCode, generateLearningPath, answerTechQuestion, generateProjectIdea } = await import("./openai");
+      // Always use the self-contained AI engine
+      const { chatWithCopilot, explainCode, debugCode, generateLearningPath, answerTechQuestion, generateProjectIdea } = await import("./openai");
 
-        if (action === "explain_code") {
-          response = await explainCode(message);
-        } else if (action === "debug_code") {
-          const { code, error } = JSON.parse(message);
-          response = await debugCode(code, error);
-        } else if (action === "learning_path") {
-          const { topic, skillLevel } = JSON.parse(message);
-          response = await generateLearningPath(topic, skillLevel);
-        } else if (action === "project_idea") {
-          const { interests, skillLevel } = JSON.parse(message);
-          response = await generateProjectIdea(interests, skillLevel);
-        } else {
-          response = await chatWithCopilot(message, history || []);
-        }
+      if (action === "explain_code") {
+        response = await explainCode(message);
+      } else if (action === "debug_code") {
+        const { code, error } = JSON.parse(message);
+        response = await debugCode(code, error);
+      } else if (action === "learning_path") {
+        const { topic, skillLevel } = JSON.parse(message);
+        response = await generateLearningPath(topic, skillLevel);
+      } else if (action === "project_idea") {
+        const { interests, skillLevel } = JSON.parse(message);
+        response = await generateProjectIdea(interests, skillLevel);
       } else {
-        response = "CodeMentor is initializing. Please try again shortly.";
+        response = await chatWithCopilot(message, history || []);
       }
 
       res.json({ response });
