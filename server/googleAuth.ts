@@ -57,8 +57,8 @@ export async function setupAuth(app: Express) {
     // In production, use the explicitly configured URL
     callbackURL = process.env.GOOGLE_CALLBACK_URL || `https://${process.env.PUBLIC_URL}/api/callback`;
   } else {
-    // In development, use localhost for Google OAuth to work locally
-    callbackURL = `https://localhost:5000/api/callback`;
+    // In development, use HTTP (not HTTPS) for localhost - Google requires this
+    callbackURL = `http://localhost:5000/api/callback`;
   }
 
   console.log(`[Auth] Google OAuth configured with callback URL: ${callbackURL}`);
