@@ -4,7 +4,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function explainCode(code: string): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -22,7 +22,7 @@ export async function explainCode(code: string): Promise<string> {
 
 export async function debugCode(code: string, error: string): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -40,7 +40,7 @@ export async function debugCode(code: string, error: string): Promise<string> {
 
 export async function generateLearningPath(topic: string, skillLevel: string): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -58,7 +58,7 @@ export async function generateLearningPath(topic: string, skillLevel: string): P
 
 export async function answerTechQuestion(question: string, context: string = ""): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -76,7 +76,7 @@ export async function answerTechQuestion(question: string, context: string = "")
 
 export async function generateProjectIdea(interests: string[], skillLevel: string): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -94,7 +94,7 @@ export async function generateProjectIdea(interests: string[], skillLevel: strin
 
 export async function generateQuizQuestion(topic: string, difficulty: string): Promise<{ question: string; options: string[]; correctAnswer: number }> {
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -122,7 +122,7 @@ export async function generateCourseLessons(courseTitle: string, courseDescripti
   try {
     const response = await Promise.race([
       openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         max_tokens: 1500,
         messages: [
           {
@@ -167,7 +167,7 @@ export async function generateRoadmapMilestones(roadmapName: string, roadmapDesc
   try {
     const response = await Promise.race([
       openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         max_tokens: 1200,
         messages: [
           {
@@ -225,7 +225,7 @@ export async function chatWithCopilot(message: string, history: Array<{ role: st
   ];
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages,
     max_completion_tokens: 1024,
   });
