@@ -13,21 +13,47 @@ declare module "http" {
   }
 }
 
-// Enable gzip compression for all responses
+// Enable aggressive gzip compression for all responses
 app.use(compression({
-  level: 6,
-  threshold: 1024,
+  level: 9, // Max compression for 20k+ users
+  threshold: 512, // Compress smaller responses too
+  filter: (req, res) => {
+    if (req.headers["x-no-compression"]) return false;
+    return compression.filter(req, res);
+  },
 }));
 
 app.use(
   express.json({
+    limit: "5mb", // Prevent large payloads from 20k+ users
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, limit: "5mb" }));
+
+// Rate limiting middleware for 20k+ users
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT_MAX = 100; // Max 100 requests per minute per IP
+
+app.use((req, res, next) => {
+  const clientIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0] || req.socket.remoteAddress || "unknown";
+  const now = Date.now();
+  const limit = rateLimitMap.get(clientIp);
+
+  if (limit && now < limit.resetTime) {
+    limit.count++;
+    if (limit.count > RATE_LIMIT_MAX) {
+      return res.status(429).json({ error: "Too many requests. Try again later." });
+    }
+  } else {
+    rateLimitMap.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+  }
+  next();
+});
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -51,9 +77,17 @@ app.use((req, res, next) => {
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
 
-  // Set cache headers for API responses
+  // Set cache headers for API responses - optimized for 20k+ users
   if (path.startsWith("/api")) {
-    res.set("Cache-Control", "public, max-age=300"); // 5 minute cache
+    // Different cache times based on endpoint sensitivity
+    if (path.includes("/leaderboard") || path.includes("/feed") || path.includes("/arenas")) {
+      res.set("Cache-Control", "public, max-age=300, s-maxage=600"); // 5-10 min cache for expensive queries
+    } else if (path.includes("/profile") || path.includes("/challenge") || path.includes("/quest")) {
+      res.set("Cache-Control", "private, max-age=60"); // 1 min cache for user-specific data
+    } else {
+      res.set("Cache-Control", "public, max-age=300"); // Default 5 min cache
+    }
+    res.set("Vary", "Accept-Encoding"); // Vary by compression for CDN efficiency
   }
 
   res.on("finish", () => {
