@@ -1,24 +1,33 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Smart model selection - try GPT-4 first, fallback to GPT-3.5
+// Smart model selection - use best available Groq model
 async function callAI(messages: Array<{ role: string; content: string }>, options: any = {}) {
   try {
-    return await openai.chat.completions.create({
-      model: "gpt-4",
+    // Try Llama 3.1 70B first (most capable)
+    return await groq.chat.completions.create({
+      model: "llama-3.1-70b-versatile",
       messages: messages as any,
+      temperature: 0.7,
+      max_tokens: options.max_tokens || options.max_completion_tokens || 1024,
       ...options,
     });
   } catch (error: any) {
-    if (error?.error?.code === "model_not_found" || error?.message?.includes("does not exist")) {
-      return await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+    console.error("Groq API error:", error.message);
+    // Fallback to Mixtral if Llama unavailable
+    try {
+      return await groq.chat.completions.create({
+        model: "mixtral-8x7b-32768",
         messages: messages as any,
+        temperature: 0.7,
+        max_tokens: options.max_tokens || options.max_completion_tokens || 1024,
         ...options,
       });
+    } catch (fallbackError) {
+      console.error("Groq fallback failed:", fallbackError);
+      throw error;
     }
-    throw error;
   }
 }
 
@@ -107,7 +116,7 @@ export async function generateQuizQuestion(topic: string, difficulty: string): P
       role: "user",
       content: `Generate a ${difficulty} difficulty quiz question about ${topic}. Return only valid JSON.`,
     },
-  ], { response_format: { type: "json_object" } });
+  ]);
 
   try {
     return JSON.parse(response.choices[0].message.content || "{}");
