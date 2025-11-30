@@ -21,11 +21,11 @@ interface Repository {
 export default function GitHub() {
   const [searchQuery, setSearchQuery] = useState("");
   
-  const { data, isLoading } = useQuery({
+  const { data: apiData, isLoading } = useQuery({
     queryKey: ["/api/trending/github"],
   });
 
-  const repositories: Repository[] = data?.trending || [
+  const repositories: Repository[] = (apiData?.trending as Repository[] | undefined) || [
     {
       id: "1",
       name: "NextJS",
