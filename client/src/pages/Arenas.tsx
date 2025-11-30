@@ -72,43 +72,43 @@ function ArenaHeroCard({ arena }: { arena: Arena }) {
 
   return (
     <Link href={`/arenas/${arena.slug}`}>
-      <Card className="group cursor-pointer overflow-hidden hover-elevate">
-        <div className={`relative h-48 bg-gradient-to-br ${colorClass}`} style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+      <Card className="group cursor-pointer overflow-hidden hover-elevate border-primary/20 shadow-lg transition-all duration-300">
+        <div className={`relative h-56 bg-gradient-to-br ${colorClass}`} style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           <div className="absolute top-4 right-4 flex items-center gap-2">
-            <Badge variant="secondary" className="bg-white/20 text-white backdrop-blur-sm">
-              <Users className="mr-1 h-3 w-3" />
+            <Badge variant="secondary" className="bg-white/30 text-white backdrop-blur-md border border-white/20 font-semibold">
+              <Users className="mr-2 h-4 w-4" />
               {(arena.activeUsers || 0).toLocaleString()} active
             </Badge>
           </div>
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-md border border-white/20 shadow-lg">
                 <Icon className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h3 className="font-display text-2xl font-bold text-white">{arena.name}</h3>
-                <p className="mt-1 text-sm text-white/80">{arena.totalMissions} missions available</p>
+                <h3 className="font-display text-2xl font-bold text-white drop-shadow-lg">{arena.name}</h3>
+                <p className="mt-1 text-sm text-white/90 drop-shadow">{arena.totalMissions} missions • {(arena.difficulty || "Beginner").split("-").join(" ")}</p>
               </div>
             </div>
           </div>
         </div>
-        <CardContent className="p-6">
-          <p className="text-muted-foreground">{description}</p>
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Trophy className="h-4 w-4 text-chart-4" />
+        <CardContent className="p-6 bg-gradient-to-b from-transparent to-background/20">
+          <p className="text-muted-foreground leading-relaxed">{description}</p>
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex items-center gap-4 text-sm">
+              <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-chart-4/20 text-chart-4 font-medium">
+                <Trophy className="h-4 w-4" />
                 Leaderboard
               </span>
-              <span className="flex items-center gap-1">
-                <Flame className="h-4 w-4 text-chart-3" />
-                Daily challenges
+              <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-chart-3/20 text-chart-3 font-medium">
+                <Flame className="h-4 w-4" />
+                Daily
               </span>
             </div>
-            <Button variant="ghost" size="sm" className="group-hover:bg-primary group-hover:text-primary-foreground">
+            <Button variant="default" size="sm" className="gap-1 group-hover:gap-2 transition-all shadow-lg">
               Enter Arena
-              <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
         </CardContent>
@@ -119,10 +119,11 @@ function ArenaHeroCard({ arena }: { arena: Arena }) {
 
 function ChallengeRow({ challenge }: { challenge: Challenge }) {
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-border p-4 hover-elevate">
+    <div className="flex items-center gap-4 rounded-xl border border-primary/10 bg-gradient-to-r from-card to-card/50 p-5 hover-elevate shadow-sm transition-all">
       <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <h4 className="font-medium">{challenge.title}</h4>
+        <div className="flex items-center gap-3">
+          <div className="h-2 w-2 rounded-full bg-chart-4" />
+          <h4 className="font-semibold text-foreground">{challenge.title}</h4>
           <Badge variant="outline" className="text-xs">
             {challenge.difficulty}
           </Badge>

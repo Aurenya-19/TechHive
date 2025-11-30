@@ -91,11 +91,11 @@ export default function CodeMentor() {
   const sendMessage = useMutation({
     mutationFn: async (content: string) => {
       try {
-        const response = await apiRequest("POST", "/api/ai/chat", {
+        const response: any = await apiRequest("POST", "/api/ai/chat", {
           message: content,
           history: messages,
         });
-        if (response.error) {
+        if (response?.error) {
           throw new Error(response.error);
         }
         return response;
@@ -150,30 +150,27 @@ export default function CodeMentor() {
   }, [messages]);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
+    <div className="flex h-[calc(100vh-4rem)] flex-col bg-gradient-to-br from-background via-background to-primary/5 p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-primary" />
-            CodeMentor
-          </h1>
-          <p className="mt-1 text-muted-foreground">
-            Your intelligent coding companion
-          </p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-primary/20 backdrop-blur-sm">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-display text-4xl font-bold">CodeMentor</h1>
+              <p className="text-sm text-muted-foreground">Your AI coding companion powered by GPT-4</p>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary">
-            Powered by GPT-4
-          </Badge>
-          {messages.length > 0 && (
-            <Button variant="ghost" size="icon" onClick={clearChat}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
+        {messages.length > 0 && (
+          <Button variant="ghost" size="icon" onClick={clearChat} className="hover-elevate">
+            <Trash2 className="h-5 w-5" />
+          </Button>
+        )}
       </div>
 
-      <Card className="flex flex-1 flex-col overflow-hidden">
+      <Card className="flex flex-1 flex-col overflow-hidden border-primary/20 bg-card/60 backdrop-blur-sm shadow-2xl">
         <CardContent className="flex flex-1 flex-col p-0">
           <ScrollArea className="flex-1 p-6" ref={scrollRef}>
             {messages.length === 0 ? (

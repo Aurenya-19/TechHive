@@ -79,22 +79,22 @@ function StatCard({
   color?: string;
 }) {
   return (
-    <Card>
+    <Card className="border-primary/10 bg-gradient-to-br from-card to-card/50 hover-elevate">
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
-          <div className={`rounded-lg bg-accent p-2 ${color}`}>
-            <Icon className="h-5 w-5" />
+          <div className={`rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 p-3 ${color}`}>
+            <Icon className="h-6 w-6" />
           </div>
           {trend && (
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs bg-chart-5/20 text-chart-5">
               <TrendingUp className="mr-1 h-3 w-3" />
               {trend}
             </Badge>
           )}
         </div>
         <div className="mt-4">
-          <p className="font-display text-3xl font-bold">{value}</p>
-          <p className="text-sm text-muted-foreground">{label}</p>
+          <p className="font-display text-4xl font-bold bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent">{value}</p>
+          <p className="text-sm text-muted-foreground mt-1">{label}</p>
         </div>
       </CardContent>
     </Card>
