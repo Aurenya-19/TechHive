@@ -159,7 +159,7 @@ export default function CodeMentor() {
             </div>
             <div>
               <h1 className="font-display text-4xl font-bold">CodeMentor</h1>
-              <p className="text-sm text-muted-foreground">Your AI coding companion powered by GPT-4</p>
+              <p className="text-sm text-muted-foreground">Your AI coding companion - uses best available model</p>
             </div>
           </div>
         </div>
