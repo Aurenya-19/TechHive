@@ -29,6 +29,9 @@ import {
   Map,
   LogOut,
   Hexagon,
+  Github,
+  Zap,
+  Globe,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -38,6 +41,13 @@ const mainNavItems = [
   { title: "Projects Hub", url: "/projects", icon: FolderGit2 },
   { title: "Tech Clans", url: "/clans", icon: Shield },
   { title: "TechPulse", url: "/feed", icon: Newspaper },
+];
+
+const explorNavItems = [
+  { title: "GitHub Hub", url: "/github", icon: Github },
+  { title: "Tech World", url: "/tech-world", icon: Globe },
+  { title: "Swarm Projects", url: "/swarm", icon: Zap },
+  { title: "Tech Spotlight", url: "/spotlight", icon: Sparkles },
 ];
 
 const learningNavItems = [
@@ -129,12 +139,30 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
+          <SidebarGroupLabel>Explore</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {explorNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location === item.url}>
+                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
           <SidebarGroupLabel>AI Assistant</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={location === "/copilot"}>
-                  <Link href="/copilot" data-testid="nav-ai-copilot">
+                <SidebarMenuButton asChild isActive={location === "/ai-copilot"}>
+                  <Link href="/ai-copilot" data-testid="nav-ai-copilot">
                     <Sparkles className="h-4 w-4" />
                     <span>AI Copilot</span>
                     <Badge variant="secondary" className="ml-auto text-xs">

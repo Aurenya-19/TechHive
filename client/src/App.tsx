@@ -28,6 +28,7 @@ import Profile from "@/pages/Profile";
 import TechWorld from "@/pages/TechWorld";
 import SwarmProjects from "@/pages/SwarmProjects";
 import TechSpotlight from "@/pages/TechSpotlight";
+import GitHub from "@/pages/GitHub";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const style = {
@@ -130,11 +131,23 @@ function Router() {
       <Route path="/roadmaps">
         <ProtectedRoute component={Roadmaps} />
       </Route>
-      <Route path="/copilot">
+      <Route path="/ai-copilot">
         <ProtectedRoute component={AICopilot} />
       </Route>
       <Route path="/profile">
         <ProtectedRoute component={Profile} />
+      </Route>
+      <Route path="/tech-world">
+        <ProtectedRoute component={TechWorld} />
+      </Route>
+      <Route path="/swarm">
+        <ProtectedRoute component={SwarmProjects} />
+      </Route>
+      <Route path="/spotlight">
+        <ProtectedRoute component={TechSpotlight} />
+      </Route>
+      <Route path="/github">
+        <ProtectedRoute component={GitHub} />
       </Route>
       
       <Route component={NotFound} />
