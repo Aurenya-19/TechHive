@@ -50,6 +50,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { Clan, User } from "@shared/schema";
+import devTeamImg from "@assets/generated_images/real_dev_team_collaborating.png";
 
 const createClanSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -87,24 +88,23 @@ function ClanCard({ clan, isMember }: { clan: Clan; isMember: boolean }) {
 
   const xpProgress = ((clan.xp || 0) % 5000) / 50;
   const isProjectClan = clan.type === "project";
+  const bannerImage = clan.bannerImage || devTeamImg;
 
   return (
     <Card className="hover-elevate overflow-hidden">
-      <div className="h-24 bg-gradient-to-br from-primary/20 to-chart-2/20">
-        {clan.bannerImage && (
-          <img
-            src={clan.bannerImage}
-            alt={clan.name}
-            loading="lazy"
-            decoding="async"
-            sizes="(max-width: 768px) 100vw, 100vw"
-            srcSet={`${clan.bannerImage}?w=400 400w, ${clan.bannerImage}?w=800 800w, ${clan.bannerImage}?w=1200 1200w`}
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
-        )}
+      <div className="h-24 bg-gradient-to-br from-primary/20 to-chart-2/20 overflow-hidden">
+        <img
+          src={bannerImage}
+          alt={clan.name}
+          loading="lazy"
+          decoding="async"
+          sizes="(max-width: 768px) 100vw, 100vw"
+          srcSet={`${bannerImage}?w=400 400w, ${bannerImage}?w=800 800w, ${bannerImage}?w=1200 1200w`}
+          className="h-full w-full object-cover hover:scale-105 transition-transform"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
       </div>
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4">

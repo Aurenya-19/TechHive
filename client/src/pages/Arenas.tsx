@@ -21,6 +21,21 @@ import {
   Star,
 } from "lucide-react";
 import type { Arena, Challenge } from "@shared/schema";
+import webDevImg from "@assets/generated_images/web_development_setup.png";
+import mlImg from "@assets/generated_images/ml_development_workspace.png";
+import cyberImg from "@assets/generated_images/cybersecurity_operations.png";
+import blockchainImg from "@assets/generated_images/blockchain_development.png";
+import gameImg from "@assets/generated_images/game_engine_workspace.png";
+import roboticsImg from "@assets/generated_images/robotics_lab.png";
+
+const arenaImages: Record<string, string> = {
+  web: webDevImg,
+  ai: mlImg,
+  cyber: cyberImg,
+  blockchain: blockchainImg,
+  "game-dev": gameImg,
+  robotics: roboticsImg,
+};
 
 const arenaColors: Record<string, string> = {
   ai: "from-purple-500 to-pink-500",
@@ -53,12 +68,13 @@ function ArenaHeroCard({ arena }: { arena: Arena }) {
   const Icon = arenaIcons[arena.slug] || Sparkles;
   const colorClass = arenaColors[arena.slug] || arenaColors.ai;
   const description = arenaDescriptions[arena.slug] || arena.description;
+  const backgroundImage = arenaImages[arena.slug];
 
   return (
     <Link href={`/arenas/${arena.slug}`}>
       <Card className="group cursor-pointer overflow-hidden hover-elevate">
-        <div className={`relative h-48 bg-gradient-to-br ${colorClass}`}>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        <div className={`relative h-48 bg-gradient-to-br ${colorClass}`} style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
           <div className="absolute top-4 right-4 flex items-center gap-2">
             <Badge variant="secondary" className="bg-white/20 text-white backdrop-blur-sm">
               <Users className="mr-1 h-3 w-3" />

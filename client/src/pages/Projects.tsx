@@ -49,6 +49,7 @@ import {
   Filter,
 } from "lucide-react";
 import type { Project, User } from "@shared/schema";
+import openSourceImg from "@assets/generated_images/open_source_collaboration.png";
 
 const createProjectSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -75,7 +76,19 @@ const languages = [
 
 function ProjectCard({ project, user }: { project: Project; user?: User }) {
   return (
-    <Card className="hover-elevate group">
+    <Card className="hover-elevate group overflow-hidden">
+      <div className="h-32 bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
+        <img
+          src={openSourceImg}
+          alt={project.title}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover hover:scale-105 transition-transform"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      </div>
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
