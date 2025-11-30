@@ -181,13 +181,10 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={location === "/ai-copilot"}>
-                  <Link href="/ai-copilot" data-testid="nav-ai-copilot">
+                <SidebarMenuButton asChild isActive={location === "/code-mentor"}>
+                  <Link href="/code-mentor" data-testid="nav-code-mentor">
                     <Sparkles className="h-4 w-4" />
-                    <span>AI Copilot</span>
-                    <Badge variant="secondary" className="ml-auto text-xs">
-                      Beta
-                    </Badge>
+                    <span>CodeMentor</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

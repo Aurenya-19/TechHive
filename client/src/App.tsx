@@ -33,7 +33,7 @@ import Leaderboards from "@/pages/Leaderboards";
 import Messages from "@/pages/Messages";
 import Mentors from "@/pages/Mentors";
 import Roadmaps from "@/pages/Roadmaps";
-import AICopilot from "@/pages/AICopilot";
+import CodeMentor from "@/pages/CodeMentor";
 import Profile from "@/pages/Profile";
 import TechWorld from "@/pages/TechWorld";
 import SwarmProjects from "@/pages/SwarmProjects";
@@ -171,8 +171,8 @@ function Router() {
       <Route path="/roadmaps/:slug">
         <ProtectedRoute component={RoadmapDetail} />
       </Route>
-      <Route path="/ai-copilot">
-        <ProtectedRoute component={AICopilot} />
+      <Route path="/code-mentor">
+        <ProtectedRoute component={CodeMentor} />
       </Route>
       <Route path="/profile">
         <ProtectedRoute component={Profile} />

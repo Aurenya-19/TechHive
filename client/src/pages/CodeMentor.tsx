@@ -81,7 +81,7 @@ function MessageBubble({ message, isUser }: { message: ChatMessage; isUser: bool
   );
 }
 
-export default function AICopilot() {
+export default function CodeMentor() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -90,27 +90,35 @@ export default function AICopilot() {
 
   const sendMessage = useMutation({
     mutationFn: async (content: string) => {
-      const response = await apiRequest("POST", "/api/ai/chat", {
-        message: content,
-        history: messages,
-      });
-      return response;
+      try {
+        const response = await apiRequest("POST", "/api/ai/chat", {
+          message: content,
+          history: messages,
+        });
+        if (response.error) {
+          throw new Error(response.error);
+        }
+        return response;
+      } catch (error: any) {
+        throw new Error(error.message || "Failed to get response from CodeMentor");
+      }
     },
     onMutate: async (content) => {
       setMessages((prev) => [...prev, { role: "user", content }]);
       setInput("");
     },
     onSuccess: (data: any) => {
+      const responseText = data.response || "I'm here to help! What else would you like to learn?";
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.response },
+        { role: "assistant", content: responseText },
       ]);
     },
-    onError: () => {
+    onError: (error: any) => {
       setMessages((prev) => prev.slice(0, -1));
       toast({
-        title: "Error",
-        description: "Failed to get AI response. Please try again.",
+        title: "CodeMentor Error",
+        description: error?.message || "Failed to get response. Please try again.",
         variant: "destructive",
       });
     },
@@ -147,7 +155,7 @@ export default function AICopilot() {
         <div>
           <h1 className="font-display text-3xl font-bold flex items-center gap-2">
             <Sparkles className="h-8 w-8 text-primary" />
-            AI Copilot
+            CodeMentor
           </h1>
           <p className="mt-1 text-muted-foreground">
             Your intelligent coding companion
@@ -155,7 +163,7 @@ export default function AICopilot() {
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary">
-            Powered by GPT-5
+            Powered by GPT-4
           </Badge>
           {messages.length > 0 && (
             <Button variant="ghost" size="icon" onClick={clearChat}>

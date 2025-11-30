@@ -544,7 +544,7 @@ export async function registerRoutes(
           response = await chatWithCopilot(message, history || []);
         }
       } else {
-        response = "AI Copilot is being initialized. Please try again shortly.";
+        response = "CodeMentor is initializing. Please try again shortly.";
       }
 
       res.json({ response });
