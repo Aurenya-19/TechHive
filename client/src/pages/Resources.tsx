@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { ExternalLink, Zap, BookOpen, Code, Award } from "lucide-react";
+import { ExternalLink, Zap, BookOpen, Code, Award, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 interface Resource {
@@ -137,6 +138,12 @@ export default function Resources() {
                       </Button>
                     </div>
                   ))}
+                <Button asChild variant="outline" className="w-full mt-2" data-testid={`button-explore-${key}`}>
+                  <Link href={`/resources/${key}`}>
+                    View Full Details
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
                 </div>
               </CardContent>
             </Card>

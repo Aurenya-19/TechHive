@@ -145,6 +145,8 @@ const arenas = [
   { value: "devops", label: "DevOps & Cloud" },
   { value: "gamedev", label: "Game Development" },
   // Niche/Rare Tech (Few People Specialize)
+  { value: "physics", label: "⚛️ Applied Physics" },
+  { value: "maths", label: "∑ Advanced Mathematics" },
   { value: "quantum", label: "🔬 Quantum Computing" },
   { value: "fpga", label: "⚡ FPGA & Hardware Design" },
   { value: "biotech", label: "🧬 Biotech & Bioinformatics" },

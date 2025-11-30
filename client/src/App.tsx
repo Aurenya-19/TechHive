@@ -179,7 +179,12 @@ function Router() {
       <Route path="/github">
         <ProtectedRoute component={GitHub} />
       </Route>
-      
+      <Route path="/resources">
+        <ProtectedRoute component={Resources} />
+      </Route>
+      <Route path="/resources/:resourceId">
+        <ProtectedRoute component={ResourceDetail} />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

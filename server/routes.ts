@@ -343,6 +343,17 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/tech-resources/:resourceId", async (req, res) => {
+    try {
+      const { getTechResourceDetail } = await import("./resources");
+      const detail = await getTechResourceDetail(req.params.resourceId);
+      if (!detail) return res.status(404).json({ error: "Resource not found" });
+      res.json(detail);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   // Roadmaps
   app.get("/api/roadmaps", async (req, res) => {
     const roadmaps = await storage.getRoadmaps();
