@@ -43,336 +43,282 @@ MODERN CONCEPTS:
     advanced: `ADVANCED JAVASCRIPT:
 
 EVENT LOOP & ASYNC:
-- Microtasks vs Macrotasks
-- Promise resolution order
-- setTimeout/setInterval behavior
-- requestAnimationFrame timing
-- Event loop visualization
+- Microtasks vs Macrotasks: Promises execute before timers
+- Promise resolution order: Microtask queue processes first
+- setTimeout/setInterval behavior: Scheduled in macrotask queue
+- requestAnimationFrame timing: Synced with browser repaints
+- Event loop visualization: Task queue → Microtask queue → Render
 
 MEMORY & PERFORMANCE:
-- Garbage collection and memory leaks
-- Weak references (WeakMap, WeakSet)
-- Object pooling optimization
-- Profiling with DevTools
-- Memory management strategies
+- Garbage collection: Automatic memory cleanup
+- Weak references (WeakMap, WeakSet): Don't prevent garbage collection
+- Object pooling optimization: Reuse objects to reduce allocations
+- Profiling with DevTools: Memory tab shows allocations
+- Memory management strategies: Avoid circular references
 
 TYPE COERCION:
-- Loose equality (==) vs strict (===)
-- Type coercion rules and gotchas
-- Truthy/falsy values
-- NaN and Infinity behavior
+- Loose equality (==) vs strict (===): == does type coercion
+- Type coercion rules: Object coerces to "[object Object]"
+- Truthy/falsy values: Falsy = false, 0, "", null, undefined, NaN
+- NaN and Infinity behavior: NaN !== NaN (special case)
 
 METAPROGRAMMING:
-- Reflection API
-- Property descriptors
-- getters/setters
-- Proxies and traps
-- Symbol usage`,
+- Reflection API: Modify objects dynamically
+- Property descriptors: Control property behavior
+- getters/setters: Computed properties
+- Proxies and traps: Intercept operations
+- Symbol usage: Create private properties`,
     debugging: `DEBUGGING JAVASCRIPT:
 
 TOOLS:
 - Browser DevTools: Chrome, Firefox, Safari
-- VS Code debugger integration
-- Node.js inspector
+- VS Code debugger integration: Breakpoints, watch
+- Node.js inspector: node --inspect
 - Console methods: log, error, table, group, time
-- Network tab for API debugging
+- Network tab for API debugging: Status codes, response
 
 TECHNIQUES:
 - Breakpoints: Line, conditional, DOM, event
-- Watch expressions
-- Call stack analysis
-- Memory profiler
-- Performance timeline
-- Debugger statement
+- Watch expressions: Monitor specific variables
+- Call stack analysis: Function execution order
+- Memory profiler: Track object allocation
+- Performance timeline: Frame rate, bottlenecks
+- Debugger statement: Pause execution in code
 
 COMMON ERRORS:
-- ReferenceError: Variable not defined
-- TypeError: Wrong data type
-- SyntaxError: Invalid code
+- ReferenceError: Variable not defined (check scope)
+- TypeError: Wrong data type (verify types)
+- SyntaxError: Invalid code (check brackets)
 - RangeError: Value out of valid range
-- Network errors and CORS issues`,
+- Network errors and CORS issues: Check headers`,
   },
 
   react: {
     fundamentals: `REACT FUNDAMENTALS:
 
 COMPONENTS:
-- Functional Components: Regular functions returning JSX
-- Class Components: Extend React.Component (older style)
-- JSX: JavaScript XML syntax for creating UI
-- Props: Pass data to components (immutable)
-- State: Component data that can change (useState hook)
+- Functional Components: Regular functions returning JSX (modern standard)
+- Class Components: Extend React.Component (older style, less used)
+- JSX: JavaScript XML - write HTML in JavaScript
+- Props: Immutable data passed to components
+- State: Mutable data managed by component (useState hook)
 
-HOOKS (Modern React):
-- useState: Manage component state
-- useEffect: Side effects (fetch, timers, subscriptions)
-- useContext: Access context values
-- useReducer: Complex state management
-- useCallback: Memoize functions
-- useMemo: Memoize values
-- useRef: Direct DOM access
-- Custom hooks: Reusable logic
+HOOKS (Modern React - Use These):
+- useState: const [value, setValue] = useState(initial)
+- useEffect: Side effects after render, cleanup on unmount
+- useContext: Access context values without prop drilling
+- useReducer: Complex state logic alternative to useState
+- useCallback: Memoize functions for optimization
+- useMemo: Memoize expensive calculations
+- useRef: Direct DOM access, store mutable values
+- Custom hooks: Extract reusable logic
 
 LIFECYCLE:
-- Mounting: Component creation
-- Updating: Props or state changes
-- Unmounting: Component removal
-- useEffect dependency array controls timing
+- Mounting: Component creation and initial render
+- Updating: Props or state changes trigger re-render
+- Unmounting: Component cleanup and removal
+- useEffect dependency array: [] = once, [dep] = when dep changes
 
 PATTERNS:
-- Controlled vs uncontrolled components
-- Lifting state up
-- Composition over inheritance
-- Render props
-- Higher-order components (HOCs)`,
+- Controlled components: Form elements with React state
+- Uncontrolled components: Form elements use native DOM
+- Lifting state up: Share state between components
+- Composition over inheritance: Use components over class inheritance
+- Render props: Pass render function as prop
+- Higher-order components (HOCs): Wrap component with logic`,
     advanced: `ADVANCED REACT:
 
 STATE MANAGEMENT:
-- Context API: Built-in state management
-- Redux: Predictable state container
-- Zustand: Lightweight alternative
+- Context API: Built-in state sharing (useContext)
+- Redux: Predictable global state with actions/reducers
+- Zustand: Lightweight alternative to Redux
 - Jotai/Recoil: Atomic state management
-- When to use each approach
+- When to use: Small app = Context, Large app = Redux/Zustand
 
-PERFORMANCE:
-- React.memo: Prevent unnecessary renders
-- useMemo/useCallback: Optimize expensive operations
-- Code splitting: Dynamic imports
-- Lazy loading: React.lazy and Suspense
-- Virtual scrolling for lists
-- Debouncing/throttling user input
+PERFORMANCE OPTIMIZATION:
+- React.memo: Prevent re-renders if props unchanged
+- useMemo: Cache expensive calculations
+- useCallback: Cache function references
+- Code splitting: Import components dynamically
+- Lazy loading: React.lazy() + Suspense
+- Virtual scrolling: Render only visible items
+- Debouncing/throttling: Reduce expensive calls
 
-ASYNC PATTERNS:
-- Suspense for data fetching
+ADVANCED PATTERNS:
+- Suspense: Pause rendering while loading data
 - Error boundaries: Catch component errors
 - Concurrent features: Transitions, deferred values
-- Streaming SSR
+- Server components: Run on backend, send HTML
+- Streaming SSR: Send HTML before data loads
 
 TESTING:
-- Unit tests: Jest
-- Component tests: React Testing Library
+- Unit tests: Jest + Testing Library
+- Component tests: Test behavior, not implementation
 - E2E tests: Cypress, Playwright
-- Mocking: Dependencies and API calls`,
+- Mocking: jest.mock() for dependencies
+- Snapshot testing: Detect unintended changes`,
     debugging: `DEBUGGING REACT:
 
 DEVTOOLS:
-- React DevTools browser extension
-- Component profiler
-- Props inspection
-- State tracking
-- Hook timeline
-- Performance metrics
+- React DevTools browser extension: Component tree, props
+- Component profiler: Render times, expensive components
+- Props inspection: See what props components receive
+- State tracking: Watch state changes in real-time
+- Hook timeline: See when hooks run
+- Performance metrics: Component render duration
 
 COMMON ISSUES:
-- Infinite loops: Check dependency arrays
-- Stale closures: Using old state/props
-- Memory leaks: Cleanup in useEffect
-- Keys in lists: Proper reconciliation
-- Unnecessary renders: Check memoization
-- Race conditions: Async state updates
+- Infinite loops: Check useEffect dependency array
+- Stale closures: Old state/props in callbacks
+- Memory leaks: Cleanup in useEffect return
+- Keys in lists: Use index only if list won't reorder
+- Unnecessary renders: Use React.memo, useMemo
+- Race conditions: Cancel old requests in cleanup
 
-STRATEGIES:
-- Add console.logs in render
+DEBUGGING STRATEGIES:
+- Add console.log in render to find issues
 - Use React DevTools profiler
-- Check if component remounts
+- Check if component remounts unnecessarily
 - Inspect DOM in DevTools
 - Network tab for API issues
-- Browser performance tab`,
+- Performance tab for frame drops
+- Check component tree in DevTools`,
   },
 
   nodejs: {
     fundamentals: `NODE.JS FUNDAMENTALS:
 
 BASICS:
-- Event-driven, non-blocking I/O
-- Module system: require/import
-- npm: Package manager
-- package.json: Project configuration
-- node_modules: Dependency storage
+- Event-driven, non-blocking I/O: Handles multiple requests efficiently
+- Module system: require() for CommonJS or import for ES6
+- npm: Package manager for dependencies
+- package.json: Project metadata and scripts
+- node_modules: Where dependencies are installed
 
 CORE MODULES:
-- fs: File system operations
-- path: Path manipulation
-- http: HTTP server/client
-- events: EventEmitter
-- stream: Data streaming
-- util: Utility functions
-- process: Process info and control
+- fs: File system (read, write, delete files)
+- path: Manipulate file paths correctly
+- http: Create web servers and make requests
+- events: EventEmitter for custom events
+- stream: Handle large data efficiently
+- util: Utility functions (promisify, inspect)
+- process: Node process info (env, exit, etc)
 
 ASYNC PATTERNS:
-- Callbacks: Traditional pattern
-- Promises: Better abstraction
-- Async/await: Modern syntax
-- Error handling: try/catch
-- Promise.all/race/allSettled
+- Callbacks: Traditional async pattern (avoid - callback hell)
+- Promises: Better than callbacks (.then, .catch)
+- Async/await: Modern syntax for Promises
+- Error handling: try/catch for async/await
+- Promise.all: Wait for multiple promises
+- Promise.race: First promise wins
+- Promise.allSettled: All results
 
 EXPRESS SERVER:
-- Routes: GET, POST, PUT, DELETE
-- Middleware: Function pipeline
-- Request/Response objects
-- Error handling middleware
-- Authentication strategies`,
+- Routes: app.get, app.post, app.put, app.delete
+- Middleware: Runs on every request (logging, auth)
+- Request/Response objects: (req, res) parameters
+- Error handling: try/catch or error middleware
+- Authentication: JWT, sessions, passport`,
     database: `DATABASE OPERATIONS:
 
 SQL DATABASES:
-- PostgreSQL: Robust, feature-rich
-- MySQL: Popular relational DB
+- PostgreSQL: Robust, powerful (best choice)
+- MySQL: Popular, reliable
 - SQLite: Lightweight, file-based
-- Transactions: ACID compliance
-- Indexes: Performance optimization
+- Transactions: ACID compliance, rollback on error
+- Indexes: Speed up queries significantly
 - Relationships: 1-to-1, 1-to-many, many-to-many
 
-ORM PATTERNS:
-- Drizzle ORM: Type-safe, lightweight
-- Prisma: Developer-friendly
-- TypeORM: Full-featured
+ORM/QUERY BUILDER:
+- Drizzle ORM: Type-safe, modern, lightweight
+- Prisma: Developer-friendly with migrations
+- TypeORM: Full-featured, supports multiple DBs
 - Sequelize: Traditional ORM
-- Query building: Type safety
-- Migration management
+- SQL queries: Write raw SQL when needed
 
-NOSQL:
-- MongoDB: Document database
-- Firebase: Real-time database
-- Redis: In-memory cache
-- Key-value stores: Performance
-- Horizontal scaling`,
+OPTIMIZATION:
+- Connection pooling: Reuse database connections
+- Query optimization: Use indexes, avoid N+1
+- Caching: Redis for frequent queries
+- Pagination: Limit and offset for large results`,
   },
 
   webdev: {
     frontend: `FRONTEND TECHNOLOGIES:
 
 HTML:
-- Semantic markup: article, section, nav, aside
-- Accessibility: ARIA attributes, alt text
-- SEO: Meta tags, structured data
-- Performance: Lazy loading, async scripts
-- Forms: Validation, accessibility
+- Semantic markup: <article>, <section>, <nav>, <main>
+- Accessibility (a11y): ARIA attributes, alt text
+- SEO: Meta tags, structured data, og:tags
+- Performance: Defer scripts, preload resources
+- Forms: Input validation, accessibility
 
 CSS:
-- Flexbox: 1D layout
-- Grid: 2D layout
-- Responsive design: Media queries
-- Mobile-first approach
-- CSS-in-JS: Styled components, CSS modules
+- Flexbox: 1D layout (rows or columns)
+- Grid: 2D layout (rows and columns)
+- Responsive: Media queries, mobile-first
 - Animations: Transitions, keyframes
-- Performance: Critical CSS, minification
+- Selectors: Classes, IDs, attribute selectors
+- Box model: Margin, padding, border, content
 
 JAVASCRIPT IN BROWSER:
-- DOM API: Query, manipulate, listen
-- Events: Click, input, scroll, etc.
-- Storage: localStorage, sessionStorage
-- Network: Fetch API, XMLHttpRequest
+- DOM API: querySelector, getElementById, manipulate HTML
+- Events: click, input, submit, scroll listeners
+- Storage: localStorage (persistent), sessionStorage
+- Fetch API: Make HTTP requests from browser
 - Web Workers: Background processing
-- Service Workers: Offline support`,
-    performance: `WEB PERFORMANCE:
+- Service Workers: Offline support, caching`,
+    performance: `WEB PERFORMANCE OPTIMIZATION:
 
-CORE METRICS:
-- FCP: First Contentful Paint (< 1.8s)
-- LCP: Largest Contentful Paint (< 2.5s)
-- CLS: Cumulative Layout Shift (< 0.1)
-- FID: First Input Delay (< 100ms)
-- TTFB: Time to First Byte (< 600ms)
+CORE WEB VITALS:
+- LCP (Largest Contentful Paint): < 2.5s (main content visible)
+- FID (First Input Delay): < 100ms (responsiveness)
+- CLS (Cumulative Layout Shift): < 0.1 (visual stability)
+- FCP (First Contentful Paint): < 1.8s (first paint)
+- TTFB (Time to First Byte): < 600ms (server response)
 
 OPTIMIZATION TECHNIQUES:
-- Image optimization: Formats, sizes, lazy loading
-- Code splitting: Reduce initial bundle
+- Image optimization: WebP format, responsive images
+- Code splitting: Load only needed JavaScript
 - Tree shaking: Remove unused code
-- Minification: CSS, JS, HTML
-- Compression: Gzip, Brotli
-- Caching strategies: Service workers, CDN
-- Lazy loading: Images, components
-- Critical rendering path optimization
+- Minification: Reduce file sizes
+- Compression: Gzip or Brotli
+- Caching: Browser cache, CDN, service workers
+- Lazy loading: Defer non-critical resources
+- Bundle analysis: Identify what's slow
 
 TOOLS:
-- Lighthouse: Performance auditing
-- WebPageTest: Detailed analysis
-- Chrome DevTools: Network, performance tab
-- Bundler analysis: Webpack visualizer
-- Monitoring: Sentry, New Relic`,
+- Lighthouse: Free performance auditing
+- WebPageTest: Detailed performance analysis
+- Chrome DevTools: Network and performance tabs
+- Webpack/Vite analyzer: See bundle contents
+- Sentry/New Relic: Monitor production`,
   },
 
   database: {
     design: `DATABASE DESIGN:
 
 NORMALIZATION:
-- 1NF: Atomic values
+- 1NF: Atomic values (no arrays in columns)
 - 2NF: No partial dependencies
 - 3NF: No transitive dependencies
-- BCNF: Boyce-Codd form
-- Trade-offs: Performance vs structure
+- BCNF: Strict dependency rules
+- Trade-offs: Better queries vs more tables
 
 RELATIONSHIPS:
-- One-to-One: Single row match
-- One-to-Many: Multiple child rows
-- Many-to-Many: Junction table
-- Foreign keys: Referential integrity
-- Cascade rules: Delete/update behavior
+- One-to-One: User has one profile
+- One-to-Many: Author has many posts
+- Many-to-Many: Students take many courses (junction table)
+- Foreign keys: Enforce referential integrity
+- Cascade rules: Delete/update child rows automatically
 
 SCALING:
-- Sharding: Horizontal partition
+- Sharding: Split data across servers
 - Replication: Master-slave setup
-- Read replicas: Load distribution
-- Connection pooling: Resource management
-- Caching: Redis, memcached`,
-  },
-
-  devops: {
-    containers: `DOCKER & CONTAINERS:
-
-CONCEPTS:
-- Images: Blueprint for containers
-- Containers: Running instances
-- Layers: Docker image layers
-- Registry: Docker Hub, private registries
-- Volumes: Data persistence
-- Networks: Container communication
-
-DOCKERFILE:
-- FROM: Base image
-- RUN: Execute commands
-- COPY/ADD: Add files
-- ENV: Environment variables
-- EXPOSE: Port exposure
-- CMD: Default command
-- ENTRYPOINT: Main process
-
-DOCKER COMPOSE:
-- Services: Application components
-- Networks: Service communication
-- Volumes: Shared storage
-- Environment: Variables setup
-- Scaling: Multiple instances
-
-KUBERNETES:
-- Pods: Smallest deployable unit
-- Services: Network access
-- Deployments: Replica management
-- ConfigMaps: Configuration
-- Secrets: Sensitive data
-- Ingress: External access`,
-    cicd: `CI/CD PIPELINES:
-
-CONCEPTS:
-- Continuous Integration: Automated testing
-- Continuous Deployment: Automated release
-- Continuous Delivery: Ready to deploy
-- Workflows: Trigger, build, test, deploy
-- Secrets: Secure credential storage
-
-TOOLS:
-- GitHub Actions: GitHub-integrated CI/CD
-- GitLab CI: GitLab native pipeline
-- Jenkins: Self-hosted automation
-- CircleCI: Cloud-based CI/CD
-- Travis CI: Simple configuration
-
-BEST PRACTICES:
-- Run tests on every commit
-- Automated code quality checks
-- Staging environment testing
-- Gradual rollouts/canary deployments
-- Rollback procedures
-- Monitoring and alerts`,
+- Read replicas: Distribute read traffic
+- Connection pooling: Reuse connections
+- Caching: Redis in front of database
+- Indexing: Speed up queries dramatically`,
   },
 };
 
@@ -381,59 +327,102 @@ function analyzeContext(userMessage: string, systemPrompt: string): Conversation
   const sys = systemPrompt.toLowerCase();
 
   let sentiment: ConversationContext["sentiment"] = "discussing";
-  if (sys.includes("debug") || msg.includes("error") || msg.includes("fix")) sentiment = "debugging";
-  else if (sys.includes("learning") || msg.includes("learn")) sentiment = "learning";
-  else if (sys.includes("path") || msg.includes("plan")) sentiment = "planning";
+  if (sys.includes("debug") || msg.includes("error") || msg.includes("fix") || msg.includes("bug")) {
+    sentiment = "debugging";
+  } else if (sys.includes("learning") || msg.includes("learn") || msg.includes("how do i")) {
+    sentiment = "learning";
+  } else if (sys.includes("path") || msg.includes("plan") || msg.includes("roadmap")) {
+    sentiment = "planning";
+  }
 
   let complexity: ConversationContext["complexity"] = "intermediate";
-  if (msg.includes("beginner") || msg.includes("basic") || msg.includes("intro")) complexity = "beginner";
-  else if (msg.includes("advanced") || msg.includes("complex") || msg.includes("deep")) complexity = "advanced";
+  if (msg.includes("beginner") || msg.includes("basic") || msg.includes("intro") || msg.includes("start")) {
+    complexity = "beginner";
+  } else if (msg.includes("advanced") || msg.includes("expert") || msg.includes("deep") || msg.includes("how does it work internally")) {
+    complexity = "advanced";
+  }
 
   const topics: string[] = [];
-  if (msg.includes("javascript") || msg.includes("js")) topics.push("javascript");
-  if (msg.includes("react")) topics.push("react");
-  if (msg.includes("node") || msg.includes("nodejs")) topics.push("nodejs");
-  if (msg.includes("database") || msg.includes("sql") || msg.includes("postgres")) topics.push("database");
-  if (msg.includes("frontend") || msg.includes("css") || msg.includes("html")) topics.push("frontend");
-  if (msg.includes("docker") || msg.includes("container")) topics.push("devops");
+  if (msg.includes("javascript") || msg.includes("js") || msg.includes("function") || msg.includes("async")) {
+    topics.push("javascript");
+  }
+  if (msg.includes("react") || msg.includes("hook") || msg.includes("component")) topics.push("react");
+  if (msg.includes("node") || msg.includes("nodejs") || msg.includes("express") || msg.includes("server")) {
+    topics.push("nodejs");
+  }
+  if (msg.includes("database") || msg.includes("sql") || msg.includes("postgres") || msg.includes("mysql")) {
+    topics.push("database");
+  }
+  if (msg.includes("frontend") || msg.includes("css") || msg.includes("html") || msg.includes("web")) {
+    topics.push("webdev");
+  }
+  if (msg.includes("docker") || msg.includes("deploy") || msg.includes("container")) {
+    topics.push("devops");
+  }
 
-  return { topics, sentiment, complexity };
+  return { topics: topics.length > 0 ? topics : ["javascript"], sentiment, complexity };
 }
 
-function getRelevantKnowledge(context: ConversationContext): string {
-  let knowledge = "";
-  for (const topic of context.topics) {
-    const topicKnowledge = (comprehensiveKnowledge as any)[topic];
-    if (topicKnowledge) {
-      if (context.complexity === "advanced" && topicKnowledge.advanced) {
-        knowledge += topicKnowledge.advanced + "\n\n";
-      } else if (context.sentiment === "debugging" && topicKnowledge.debugging) {
-        knowledge += topicKnowledge.debugging + "\n\n";
-      } else if (topicKnowledge.fundamentals) {
-        knowledge += topicKnowledge.fundamentals + "\n\n";
-      }
-    }
+function getDetailedAnswer(userMessage: string, context: ConversationContext): string {
+  const msg = userMessage.toLowerCase();
+  const topic = context.topics[0] || "javascript";
+  const topicKnowledge = (comprehensiveKnowledge as any)[topic];
+
+  if (!topicKnowledge) {
+    return `I have comprehensive knowledge about JavaScript, React, Node.js, Web Development, and Databases. What specifically would you like to learn about?`;
   }
-  return knowledge || "General tech knowledge available";
+
+  // Get appropriate knowledge based on complexity and sentiment
+  let knowledge = "";
+  if (context.complexity === "advanced" && topicKnowledge.advanced) {
+    knowledge = topicKnowledge.advanced;
+  } else if (context.sentiment === "debugging" && topicKnowledge.debugging) {
+    knowledge = topicKnowledge.debugging;
+  } else if (topicKnowledge.fundamentals) {
+    knowledge = topicKnowledge.fundamentals;
+  }
+
+  // For debugging requests
+  if (context.sentiment === "debugging") {
+    return `**Debugging Guide for ${topic}**\n\n${knowledge}\n\n**Your Next Steps:**
+1. Identify the exact error message
+2. Check line numbers in stack trace
+3. Verify variable types and values
+4. Test in isolation
+5. Check documentation
+
+What specific error are you encountering?`;
+  }
+
+  // For learning requests
+  if (context.sentiment === "learning") {
+    return `**Learning ${topic}**\n\n${knowledge}\n\n**Recommended Learning Path:**
+1. Master fundamentals first
+2. Practice with small examples
+3. Build a real project
+4. Review best practices
+5. Optimize and refactor
+
+Would you like me to elaborate on any specific concept?`;
+  }
+
+  // For general questions
+  return `**${topic.toUpperCase()} Explained**\n\n${knowledge}\n\n**Key Takeaways:**
+- These concepts are fundamental to modern development
+- Practice them through hands-on projects
+- Combine multiple concepts for real applications
+- Keep learning and improving
+
+What would you like to know more about?`;
 }
 
 async function callAI(messages: Array<{ role: string; content: string }>, options: any = {}) {
   const userMessage = messages[messages.length - 1]?.content || "";
   const systemPrompt = messages[0]?.content || "";
   const context = analyzeContext(userMessage, systemPrompt);
-  const relevantKnowledge = getRelevantKnowledge(context);
 
-  // Create enhanced system prompt with relevant knowledge
-  const enhancedSystem = `${systemPrompt}\n\nRELEVANT KNOWLEDGE BASE:\n${relevantKnowledge}`;
-
-  // Build conversation for intelligent response
-  const fullMessages = [
-    { role: "system", content: enhancedSystem },
-    ...messages.slice(1),
-  ];
-
-  // Generate intelligent response based on context
-  const response = generateIntelligentResponse(userMessage, fullMessages, context);
+  // Get detailed answer from knowledge base
+  const response = getDetailedAnswer(userMessage, context);
 
   return {
     choices: [
@@ -446,310 +435,15 @@ async function callAI(messages: Array<{ role: string; content: string }>, option
   };
 }
 
-function generateIntelligentResponse(
-  userMessage: string,
-  messages: Array<{ role: string; content: string }>,
-  context: ConversationContext
-): string {
-  const msg = userMessage.toLowerCase();
-  const systemPrompt = messages[0].content.toLowerCase();
-
-  // Debug mode - provide debugging guidance
-  if (context.sentiment === "debugging") {
-    return `**Debugging Guide**
-
-${msg.includes("error") ? "I found that you're dealing with an error. Here's how to approach it systematically:\n\n" : ""}
-**Step-by-Step Debugging Process:**
-
-1. **Understand the Error**
-   - Read the complete error message
-   - Note the file name and line number
-   - Check the error type (TypeError, ReferenceError, etc.)
-   - Look for the stack trace
-
-2. **Reproduce the Issue**
-   - Create a minimal test case
-   - Document exact steps to trigger
-   - Isolate the problematic section
-   - Check if it's consistent
-
-3. **Investigate Systematically**
-   - Add console.log() statements
-   - Check variable values at key points
-   - Verify function inputs/outputs
-   - Test edge cases
-   - Review recent changes
-
-4. **Common Error Patterns**
-   ${context.topics.includes("javascript") ? `
-   - ReferenceError: Variable not defined (check scope)
-   - TypeError: Wrong data type (verify types)
-   - SyntaxError: Invalid code (check brackets, semicolons)
-   - RangeError: Value out of bounds (validate ranges)
-   ` : ""}
-   ${context.topics.includes("react") ? `
-   - Infinite renders: Check dependency arrays
-   - Stale closures: Verify state/props references
-   - Memory leaks: Cleanup useEffect properly
-   - Key warnings: Use unique, stable keys
-   ` : ""}
-
-5. **Tools to Use**
-   - Browser DevTools (F12)
-   - VS Code Debugger
-   - Network tab for API issues
-   - Console tab for errors
-   - Profiler for performance
-
-**Pro Tips:**
-→ Binary search: Comment out code to isolate problem
-→ Rubber duck: Explain code aloud to find issues
-→ Version control: Check recent changes
-→ Search errors: Stack Overflow, GitHub issues
-→ Read docs: Check official documentation
-
-The error you're facing is likely fixable with systematic investigation!`;
-  }
-
-  // Learning mode - provide learning path
-  if (context.sentiment === "learning" || systemPrompt.includes("learning path")) {
-    return `**Learning Roadmap**
-
-I've customized this based on your level (${context.complexity}) and topics (${context.topics.join(", ")})
-
-**Phase 1: Foundations (1-2 weeks)**
-- Core concepts and fundamentals
-- Development environment setup
-- Your first working example
-- Best practices introduction
-- Daily practice: 30-60 minutes
-
-**Phase 2: Building Skills (3-6 weeks)**
-- Hands-on practical projects
-- Common patterns and techniques
-- Mini-projects to reinforce learning
-- Problem-solving strategies
-- Debugging techniques
-- Daily practice: 45-90 minutes
-
-**Phase 3: Intermediate Mastery (7-10 weeks)**
-- Complex real-world scenarios
-- Performance optimization
-- Best practices and conventions
-- Integration with other technologies
-- Code review practices
-- Daily practice: 60-120 minutes
-
-**Phase 4: Advanced & Specialization (11+ weeks)**
-- Advanced patterns and architectures
-- Deep dives into specializations
-- Contributing to open source
-- Building portfolio projects
-- Staying current with trends
-- Continuous learning: Ongoing
-
-**Success Factors:**
-✓ Consistency over intensity (daily practice > cramming)
-✓ Build real projects (not just tutorials)
-✓ Engage with communities
-✓ Review and refactor code
-✓ Share your work
-✓ Learn from others
-
-**Key Milestones:**
-→ Week 1: Understand fundamentals
-→ Week 4: Build first complete project
-→ Week 8: Advanced features working
-→ Week 12: Production-ready code`;
-  }
-
-  // Question answering mode
-  if (
-    msg.includes("how") ||
-    msg.includes("what") ||
-    msg.includes("why") ||
-    msg.includes("explain") ||
-    msg.includes("difference")
-  ) {
-    return `**Technical Explanation**
-
-${context.topics.length > 0 ? `Based on your question about **${context.topics[0]}**:\n\n` : ""}
-
-**Overview:**
-The concept you're asking about is a fundamental part of modern development. Let me break it down:
-
-**Key Components:**
-${context.topics.includes("javascript")
-  ? `
-• **Variables**: Containers for data (let, const preferred)
-• **Functions**: Reusable code blocks
-• **Scope**: Where variables are accessible
-• **Closures**: Inner functions accessing outer scope
-• **Async**: Handling delays (Promises, async/await)
-`
-  : ""}
-${context.topics.includes("react")
-  ? `
-• **Components**: Reusable UI pieces
-• **Hooks**: Function-based state management
-• **Props**: Data passed to components
-• **State**: Component data that changes
-• **Effects**: Side effects after render
-`
-  : ""}
-${context.topics.includes("database")
-  ? `
-• **Normalization**: Organizing data efficiently
-• **Relationships**: How data connects
-• **Indexing**: Speeding up queries
-• **Transactions**: Atomic operations
-• **Scaling**: Handling growth
-`
-  : ""}
-
-**Why It Matters:**
-1. Makes code more maintainable
-2. Enables better performance
-3. Follows industry best practices
-4. Helps teams collaborate
-5. Prevents common bugs
-
-**Practical Example:**
-${context.topics.includes("javascript")
-  ? "A function takes input (parameters), processes it, and returns output. Closures let inner functions access outer variables even after the outer function returns."
-  : context.topics.includes("react")
-    ? "Components are reusable UI pieces. Hooks let you add state and effects to functional components without classes."
-    : "Relationships connect different data types. A user has many posts (one-to-many relationship)."}
-
-**Common Mistakes to Avoid:**
-✗ Ignoring fundamentals
-✗ Overcomplicating simple solutions
-✗ Not handling errors
-✗ Skipping documentation
-✗ Writing without testing
-
-**Next Steps:**
-→ Study official documentation
-→ Build hands-on examples
-→ Practice with small projects
-→ Join discussion communities
-→ Read production code`;
-  }
-
-  // Project ideas
-  if (systemPrompt.includes("project")) {
-    return `**Project Recommendations**
-
-Based on your interest in ${context.topics.join(", ")}:
-
-**Beginner Projects (2-3 weeks):**
-1. **Personal Portfolio**
-   - Tech: HTML, CSS, JavaScript
-   - Features: About, projects, contact
-   - Learning: Responsive design, web basics
-
-2. **Task Manager App**
-   - Tech: React, localStorage
-   - Features: Add, delete, edit tasks
-   - Learning: State management, UI interaction
-
-3. **API Integration Project**
-   - Tech: JavaScript, Fetch API
-   - Features: Search, display data
-   - Learning: Async operations, API calls
-
-**Intermediate Projects (4-8 weeks):**
-1. **Full Stack CRUD App**
-   - Tech: Frontend (React) + Backend (Node)
-   - Features: Create, read, update, delete
-   - Learning: Full stack development
-
-2. **Real-time Chat**
-   - Tech: WebSockets, database
-   - Features: Messaging, user list
-   - Learning: Real-time communication
-
-3. **Dashboard Application**
-   - Tech: React, data visualization
-   - Features: Charts, analytics, filtering
-   - Learning: Complex UI, data handling
-
-**Advanced Projects (8+ weeks):**
-1. **SaaS Platform**
-   - Tech: Full stack, authentication, payments
-   - Features: Multi-user, subscriptions
-   - Learning: Production architecture
-
-2. **AI-Powered Application**
-   - Tech: APIs, machine learning
-   - Features: Smart features
-   - Learning: AI integration
-
-**Project Selection Guide:**
-✓ Choose based on interests
-✓ Start small, grow gradually
-✓ Deploy early for feedback
-✓ Document your process
-✓ Share on GitHub
-
-**Implementation Tips:**
-→ Break into milestones
-→ Test incrementally
-→ Deploy staging version
-→ Gather user feedback
-→ Iterate and improve`;
-  }
-
-  // Default helpful response
-  return `**CodeMentor - Your Tech Learning Assistant**
-
-I'm here to help with everything tech-related! I can assist with:
-
-**Code & Debugging:**
-• Explain code concepts and patterns
-• Help debug errors systematically
-• Suggest code improvements
-• Best practices and conventions
-
-**Learning:**
-• Create personalized learning paths
-• Recommend projects to build
-• Answer technical questions
-• Complex concept explanations
-
-**Projects & Planning:**
-• Project ideas for your level
-• Architecture and design guidance
-• Technology selection
-• Step-by-step implementation
-
-**Topics I'm Knowledgeable In:**
-• JavaScript & TypeScript
-• React & Frontend
-• Node.js & Backend
-• Databases (SQL, NoSQL)
-• Web Development
-• DevOps & Deployment
-
-**Quick Tips:**
-→ Ask specific questions for better answers
-→ Include error messages when debugging
-→ Mention your skill level for guidance
-→ Share code snippets for code review
-
-What would you like to learn or build today?`;
-}
-
 export async function explainCode(code: string): Promise<string> {
   const response = await callAI([
     {
       role: "system",
-      content:
-        "You are an expert programming tutor. Explain code with clarity and depth. Include: what it does, how it works, best practices, and potential improvements.",
+      content: "Explain code with depth and clarity including what it does, how it works, and best practices.",
     },
     {
       role: "user",
-      content: `Explain this code comprehensively:\n\n${code}`,
+      content: `Explain this code:\n\n${code}`,
     },
   ]);
 
@@ -760,7 +454,7 @@ export async function debugCode(code: string, error: string): Promise<string> {
   const response = await callAI([
     {
       role: "system",
-      content: "You are an expert debugger. Provide systematic debugging strategies with solutions.",
+      content: "debug",
     },
     {
       role: "user",
@@ -775,7 +469,7 @@ export async function generateLearningPath(topic: string, skillLevel: string): P
   const response = await callAI([
     {
       role: "system",
-      content: "You are a master learning architect. Create detailed, comprehensive learning paths.",
+      content: "learning path",
     },
     {
       role: "user",
@@ -790,7 +484,7 @@ export async function answerTechQuestion(question: string, context: string = "")
   const response = await callAI([
     {
       role: "system",
-      content: "You are an expert tech mentor. Provide comprehensive, accurate answers.",
+      content: "Answer tech questions comprehensively",
     },
     {
       role: "user",
@@ -805,7 +499,7 @@ export async function generateProjectIdea(interests: string[], skillLevel: strin
   const response = await callAI([
     {
       role: "system",
-      content: "You are a creative tech mentor. Suggest practical, achievable projects.",
+      content: "planning",
     },
     {
       role: "user",
@@ -820,7 +514,7 @@ export async function generateQuizQuestion(
   topic: string,
   difficulty: string
 ): Promise<{ question: string; options: string[]; correctAnswer: number }> {
-  const quizzes = {
+  const quizzes: { [key: string]: { question: string; options: string[]; correctAnswer: number } } = {
     javascript_easy: {
       question: "What does 'const' mean in JavaScript?",
       options: ["Variable that can't be reassigned", "Variable that can be reassigned", "Function keyword", "Loop"],
@@ -829,9 +523,9 @@ export async function generateQuizQuestion(
     javascript_medium: {
       question: "What is a closure in JavaScript?",
       options: [
-        "Function with access to outer scope",
+        "Function with access to outer scope variables",
         "A type of loop",
-        "Error handling",
+        "Error handling mechanism",
         "Memory management",
       ],
       correctAnswer: 0,
@@ -844,9 +538,9 @@ export async function generateQuizQuestion(
   };
 
   return (
-    (quizzes as any)[`${topic}_${difficulty}`] || {
+    quizzes[`${topic}_${difficulty}`] || {
       question: "What is programming?",
-      options: ["Writing code", "Web design", "Database admin", "System testing"],
+      options: ["Writing instructions for computers", "Web design", "Database admin", "System testing"],
       correctAnswer: 0,
     }
   );
@@ -881,8 +575,7 @@ export async function chatWithCopilot(
   const messages = [
     {
       role: "system",
-      content:
-        "You are CodeMentor - an expert tech AI assistant with comprehensive knowledge. Provide excellent guidance on coding, learning, and tech careers.",
+      content: "You are CodeMentor - expert tech AI assistant. Provide excellent detailed guidance.",
     },
     ...history,
     {
@@ -893,5 +586,5 @@ export async function chatWithCopilot(
 
   const response = await callAI(messages as any);
 
-  return response.choices[0].message.content || "I'm here to help! Ask me anything about tech and programming.";
+  return response.choices[0].message.content || "Ask me about JavaScript, React, Node.js, Web Dev, or Databases!";
 }
