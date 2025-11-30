@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
-import heroBannerImg from "@assets/generated_images/tech_learning_platform_hero_banner.png";
+import learningEventImg from "@assets/generated_images/real_tech_learning_event.png";
 import {
   Flame,
   Target,
