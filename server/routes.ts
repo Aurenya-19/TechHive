@@ -1043,5 +1043,163 @@ export async function registerRoutes(
     }
   });
 
+  // TECH WORLD - Interactive Metaverse
+  app.post("/api/world/create", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { createTechWorld } = await import("./techWorld");
+      const world = await createTechWorld(req.user.id);
+      res.json(world);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/world/:worldId/move", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { movePlayerInWorld } = await import("./techWorld");
+      res.json(await movePlayerInWorld(req.user.id, req.params.worldId, req.body.position));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/world/:worldId/leaderboard", async (req, res) => {
+    try {
+      const { getWorldLeaderboard } = await import("./techWorld");
+      res.json(await getWorldLeaderboard(req.params.worldId));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/world/:worldId/zone/:zoneId", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { completeWorldZone } = await import("./techWorld");
+      const result = await completeWorldZone(req.user.id, req.params.zoneId);
+      await storage.addXp(req.user.id, result.xpEarned);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // TECH SPOTLIGHT - Real-time Trending
+  app.get("/api/spotlight", async (_req, res) => {
+    try {
+      const { getTechSpotlight } = await import("./techSpotlight");
+      res.json(await getTechSpotlight());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/trending/github", async (_req, res) => {
+    try {
+      const { getGithubTrending } = await import("./techSpotlight");
+      res.json(await getGithubTrending());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/research/papers", async (_req, res) => {
+    try {
+      const { getResearchPapers } = await import("./techSpotlight");
+      res.json(await getResearchPapers());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/startup/intelligence", async (_req, res) => {
+    try {
+      const { getStartupIntelligence } = await import("./techSpotlight");
+      res.json(await getStartupIntelligence());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/ai-tools/latest", async (_req, res) => {
+    try {
+      const { getLatestAITools } = await import("./techSpotlight");
+      res.json(await getLatestAITools());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/tech/releases", async (_req, res) => {
+    try {
+      const { getNewTechReleases } = await import("./techSpotlight");
+      res.json(await getNewTechReleases());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // SWARM PROJECTS - Global Collaboration
+  app.post("/api/swarm/create", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { createSwarmProject } = await import("./swarmProjects");
+      res.json(await createSwarmProject(req.user.id, req.body.title, req.body.description));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/swarm/:projectId/join", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { joinSwarmProject } = await import("./swarmProjects");
+      res.json(await joinSwarmProject(req.user.id, req.params.projectId, req.body.skillArea));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/swarm/:projectId/tasks", async (req, res) => {
+    try {
+      const { getSwarmProjectTasks } = await import("./swarmProjects");
+      res.json(await getSwarmProjectTasks(req.params.projectId));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/swarm/:projectId/merge", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { mergeSwarmContributions } = await import("./swarmProjects");
+      const result = await mergeSwarmContributions(req.params.projectId);
+      await storage.addXp(req.user.id, 500);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/swarm/leaderboard", async (_req, res) => {
+    try {
+      const { getSwarmProjectLeaderboard } = await import("./swarmProjects");
+      res.json(await getSwarmProjectLeaderboard());
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/swarm/:projectId/analysis", async (req, res) => {
+    try {
+      const { getSwarmAIAnalysis } = await import("./swarmProjects");
+      res.json(await getSwarmAIAnalysis(req.params.projectId));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
   return httpServer;
 }

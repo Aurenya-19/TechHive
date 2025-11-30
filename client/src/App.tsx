@@ -25,6 +25,9 @@ import Mentors from "@/pages/Mentors";
 import Roadmaps from "@/pages/Roadmaps";
 import AICopilot from "@/pages/AICopilot";
 import Profile from "@/pages/Profile";
+import TechWorld from "@/pages/TechWorld";
+import SwarmProjects from "@/pages/SwarmProjects";
+import TechSpotlight from "@/pages/TechSpotlight";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const style = {
