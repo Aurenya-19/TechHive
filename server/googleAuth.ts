@@ -64,20 +64,29 @@ export async function setupAuth(app: Express) {
   console.log(`[Auth] Google OAuth configured with callback URL: ${callbackURL}`);
 
   // Ensure we have credentials
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error('[Auth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables');
+  const clientID = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  
+  console.log(`[Auth] GOOGLE_CLIENT_ID loaded: ${clientID ? 'YES (' + clientID.substring(0, 20) + '...)' : 'NO'}`);
+  console.log(`[Auth] GOOGLE_CLIENT_SECRET loaded: ${clientSecret ? 'YES' : 'NO'}`);
+  
+  if (!clientID || !clientSecret) {
+    console.error('[Auth] ERROR: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
+    throw new Error('Google OAuth credentials not found in environment');
   }
 
   // Google OAuth Strategy
   passport.use(
     new GoogleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID || '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+        clientID,
+        clientSecret,
         callbackURL,
+        passReqToCallback: false,
       },
       async (accessToken: string, refreshToken: string, profile: any, done: any) => {
         try {
+          console.log(`[Auth] Google user logged in: ${profile.email}`);
           await upsertUser(profile);
           return done(null, {
             id: profile.id,
@@ -85,7 +94,8 @@ export async function setupAuth(app: Express) {
             name: profile.displayName,
             profile,
           });
-        } catch (error) {
+        } catch (error: any) {
+          console.error(`[Auth] Error in Google OAuth callback:`, error);
           return done(error);
         }
       }
