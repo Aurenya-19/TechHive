@@ -84,12 +84,18 @@ export async function setupAuth(app: Express) {
   const ensureStrategy = (domain: string, protocol: string = "https") => {
     const strategyName = `replitauth:${domain}`;
     if (!registeredStrategies.has(strategyName)) {
+      // Use explicit PUBLIC_URL for production, fallback to dynamic for dev
+      const publicUrl = process.env.PUBLIC_URL || `${protocol}://${domain}`;
+      const callbackURL = `${publicUrl}/api/callback`;
+      
+      console.log(`[Auth] Registering strategy for ${domain} with callback: ${callbackURL}`);
+      
       const strategy = new Strategy(
         {
           name: strategyName,
           config,
           scope: "openid email profile offline_access",
-          callbackURL: `${protocol}://${domain}/api/callback`,
+          callbackURL,
         },
         verify
       );
@@ -119,10 +125,11 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/logout", (req, res) => {
     req.logout(() => {
+      const publicUrl = process.env.PUBLIC_URL || `${req.protocol}://${req.hostname}`;
       res.redirect(
         client.buildEndSessionUrl(config, {
           client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+          post_logout_redirect_uri: publicUrl,
         }).href
       );
     });
