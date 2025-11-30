@@ -46,6 +46,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, and, or, like, sql, inArray } from "drizzle-orm";
+import { queryCache, queryBatcher } from "./queryOptimization";
 
 export interface IStorage {
   // User operations (required for Replit Auth)
