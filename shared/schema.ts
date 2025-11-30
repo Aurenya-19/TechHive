@@ -297,6 +297,52 @@ export const aiChats = pgTable("ai_chats", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Competitions & Hackathons
+export const competitions = pgTable("competitions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  type: varchar("type").notNull(), // 'hackathon', 'competition', 'code-race'
+  arenaId: varchar("arena_id").references(() => arenas.id),
+  status: varchar("status").default("upcoming"), // upcoming, active, completed
+  prizePool: integer("prize_pool").default(0),
+  maxParticipants: integer("max_participants"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  difficulty: varchar("difficulty").default("intermediate"),
+  rules: text("rules"),
+  prizes: jsonb("prizes"), // {first: "prize", second: "prize", ...}
+  participantCount: integer("participant_count").default(0),
+  tags: text("tags").array().default(sql`'{}'::text[]`),
+  createdBy: varchar("created_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Competition Participants
+export const competitionParticipants = pgTable("competition_participants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  competitionId: varchar("competition_id").notNull().references(() => competitions.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  teamName: varchar("team_name"),
+  score: integer("score").default(0),
+  rank: integer("rank"),
+  submissionUrl: varchar("submission_url"),
+  submittedAt: timestamp("submitted_at"),
+  joinedAt: timestamp("joined_at").defaultNow(),
+});
+
+// Competition Leaderboard (cached for performance)
+export const competitionLeaderboard = pgTable("competition_leaderboard", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  competitionId: varchar("competition_id").notNull().references(() => competitions.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  score: integer("score").default(0),
+  rank: integer("rank"),
+  xpEarned: integer("xp_earned").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertUserProfileSchema = createInsertSchema(userProfiles).omit({ id: true, createdAt: true, updatedAt: true });
@@ -315,6 +361,9 @@ export const insertFeedItemSchema = createInsertSchema(feedItems).omit({ id: tru
 export const insertRoadmapSchema = createInsertSchema(roadmaps).omit({ id: true, createdAt: true });
 export const insertUserRoadmapSchema = createInsertSchema(userRoadmaps).omit({ id: true, startedAt: true });
 export const insertAiChatSchema = createInsertSchema(aiChats).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCompetitionSchema = createInsertSchema(competitions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCompetitionParticipantSchema = createInsertSchema(competitionParticipants).omit({ id: true, joinedAt: true });
+export const insertCompetitionLeaderboardSchema = createInsertSchema(competitionLeaderboard).omit({ id: true, updatedAt: true });
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
@@ -341,6 +390,10 @@ export type FeedItem = typeof feedItems.$inferSelect;
 export type Roadmap = typeof roadmaps.$inferSelect;
 export type UserRoadmap = typeof userRoadmaps.$inferSelect;
 export type AiChat = typeof aiChats.$inferSelect;
+export type Competition = typeof competitions.$inferSelect;
+export type InsertCompetition = z.infer<typeof insertCompetitionSchema>;
+export type CompetitionParticipant = typeof competitionParticipants.$inferSelect;
+export type CompetitionLeaderboard = typeof competitionLeaderboard.$inferSelect;
 
 // Interest options for onboarding
 export const TECH_INTERESTS = [
