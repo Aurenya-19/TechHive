@@ -495,7 +495,9 @@ export async function seedDatabase() {
       });
     }
 
-    await db.insert(feedItems).values(feedList).onConflictDoNothing();
+    // Import feedItems table separately to avoid naming conflict
+    const { feedItems: feedItemsTable } = await import("@shared/schema");
+    await db.insert(feedItemsTable).values(feedList).onConflictDoNothing();
 
     // Seed 10+ roadmaps
     await db.insert(roadmaps).values([

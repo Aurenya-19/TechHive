@@ -50,7 +50,7 @@ class QueryCache {
    */
   invalidatePattern(pattern: string | RegExp): void {
     const regex = typeof pattern === "string" ? new RegExp(pattern) : pattern;
-    for (const key of this.cache.keys()) {
+    for (const key of Array.from(this.cache.keys())) {
       if (regex.test(key)) {
         this.invalidate(key);
       }
@@ -77,7 +77,7 @@ class QueryCache {
    */
   private estimateMemory(): number {
     let total = 0;
-    for (const entry of this.cache.values()) {
+    for (const entry of Array.from(this.cache.values())) {
       total += JSON.stringify(entry.data).length;
     }
     return total;

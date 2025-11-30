@@ -42,7 +42,7 @@ const RATE_LIMIT_MAX = 100; // Max 100 requests per minute per IP
 // Memory cleanup: Remove expired rate limit entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [key, limit] of rateLimitMap.entries()) {
+  for (const [key, limit] of Array.from(rateLimitMap.entries())) {
     if (now >= limit.resetTime) {
       rateLimitMap.delete(key);
     }
@@ -69,21 +69,21 @@ app.use((req, res, next) => {
 // Request deduplication for 20k+ users - prevent duplicate concurrent requests
 const requestDedup = new Map<string, Promise<any>>();
 
-app.use((req, res, next) => {
+app.use((req: any, res: any, next: NextFunction) => {
   // Only deduplicate GET requests
   if (req.method !== "GET") return next();
   
   const dedupKey = `${req.method}:${req.path}:${JSON.stringify(req.query)}`;
   
   // Store dedup info in request object
-  (req as any).dedupKey = dedupKey;
-  (req as any).requestDedup = requestDedup;
+  req.dedupKey = dedupKey;
+  req.requestDedup = requestDedup;
   
   next();
 });
 
 // Connection timeout - prevent hanging connections
-app.use((req, res, next) => {
+app.use((req: any, res: any, next: NextFunction) => {
   req.setTimeout(30000); // 30 second timeout
   res.setTimeout(30000);
   next();
