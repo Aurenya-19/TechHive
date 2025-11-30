@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { ExternalLink, Zap, BookOpen, Code, Award, ChevronRight } from "lucide-react";
+import { ExternalLink, Zap, BookOpen, Code, Award, ChevronRight, Info } from "lucide-react";
 import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Resource {
   title: string;
@@ -85,6 +86,13 @@ export default function Resources() {
           Learning paths for rare technologies - only {filtered.length} people specialize in these
         </p>
       </div>
+
+      <Alert className="bg-blue-500/10 border-blue-500/20">
+        <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        <AlertDescription className="text-sm text-blue-900 dark:text-blue-200">
+          CodeVerse curates links to publicly available learning resources hosted by original creators. We do not host or redistribute any copyrighted content.
+        </AlertDescription>
+      </Alert>
 
       <div className="relative">
         <Input
