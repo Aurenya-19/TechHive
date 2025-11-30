@@ -67,7 +67,7 @@ app.use((req, res, next) => {
     console.log("Seed skipped or error:", err);
   }
 
-  const { setupAuth } = await import("./replitAuth");
+  const { setupAuth } = await import("./googleAuth");
   await setupAuth(app);
   await registerRoutes(httpServer, app);
 
