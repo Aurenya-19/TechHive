@@ -95,7 +95,12 @@ function ClanCard({ clan, isMember }: { clan: Clan; isMember: boolean }) {
           <img
             src={clan.bannerImage}
             alt={clan.name}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         )}
       </div>

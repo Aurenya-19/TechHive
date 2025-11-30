@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
@@ -11,6 +12,12 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+// Enable gzip compression for all responses
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+}));
 
 app.use(
   express.json({
@@ -43,6 +50,11 @@ app.use((req, res, next) => {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
+
+  // Set cache headers for API responses
+  if (path.startsWith("/api")) {
+    res.set("Cache-Control", "public, max-age=300"); // 5 minute cache
+  }
 
   res.on("finish", () => {
     const duration = Date.now() - start;

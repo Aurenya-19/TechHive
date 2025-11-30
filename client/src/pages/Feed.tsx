@@ -59,11 +59,16 @@ function FeedCard({ item }: { item: FeedItem }) {
   return (
     <Card className="hover-elevate overflow-hidden">
       {item.imageUrl && (
-        <div className="aspect-video overflow-hidden">
+        <div className="aspect-video overflow-hidden bg-muted">
           <img
             src={item.imageUrl}
             alt={item.title}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
           />
         </div>
       )}
