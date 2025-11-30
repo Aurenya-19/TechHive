@@ -156,7 +156,13 @@ export default function ProjectDetail() {
             <CardContent>
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={project.creatorImage} className="object-cover" />
+                  <AvatarImage 
+                    src={project.creatorImage ? `${project.creatorImage}?w=64&h=64&fit=crop` : undefined}
+                    srcSet={project.creatorImage ? `${project.creatorImage}?w=64&h=64&fit=crop 1x, ${project.creatorImage}?w=128&h=128&fit=crop 2x` : undefined}
+                    className="object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <AvatarFallback>{project.creatorName?.[0] || "U"}</AvatarFallback>
                 </Avatar>
                 <div>

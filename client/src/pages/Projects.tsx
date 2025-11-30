@@ -122,7 +122,13 @@ function ProjectCard({ project, user }: { project: Project; user?: User }) {
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
-              <AvatarImage src={user?.profileImageUrl || undefined} className="object-cover" />
+              <AvatarImage 
+                src={user?.profileImageUrl ? `${user.profileImageUrl}?w=40&h=40&fit=crop` : undefined}
+                srcSet={user?.profileImageUrl ? `${user.profileImageUrl}?w=40&h=40&fit=crop 1x, ${user.profileImageUrl}?w=80&h=80&fit=crop 2x` : undefined}
+                className="object-cover" 
+                loading="lazy"
+                decoding="async"
+              />
               <AvatarFallback className="text-xs">
                 {user?.firstName?.[0] || "U"}
               </AvatarFallback>

@@ -97,6 +97,8 @@ function ClanCard({ clan, isMember }: { clan: Clan; isMember: boolean }) {
             alt={clan.name}
             loading="lazy"
             decoding="async"
+            sizes="(max-width: 768px) 100vw, 100vw"
+            srcSet={`${clan.bannerImage}?w=400 400w, ${clan.bannerImage}?w=800 800w, ${clan.bannerImage}?w=1200 1200w`}
             className="h-full w-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";

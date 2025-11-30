@@ -59,13 +59,16 @@ function FeedCard({ item }: { item: FeedItem }) {
   return (
     <Card className="hover-elevate overflow-hidden">
       {item.imageUrl && (
-        <div className="aspect-video overflow-hidden bg-muted">
+        <div className="aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/50">
           <img
             src={item.imageUrl}
             alt={item.title}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition-transform hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            srcSet={`${item.imageUrl}?w=400 400w, ${item.imageUrl}?w=800 800w, ${item.imageUrl}?w=1200 1200w`}
+            className="h-full w-full object-cover transition-transform hover:scale-105 bg-cover"
+            style={{ backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"><rect fill="%23e5e7eb" width="16" height="9"/></svg>')` }}
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}
