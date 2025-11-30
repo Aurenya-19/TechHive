@@ -10,6 +10,7 @@ export async function seedDatabase() {
     console.log("Seeding database with 17 arenas + massive content...");
 
     // Seed ALL 17 arenas (mainstream + rare technologies)
+    // Use onConflictDoNothing() to skip duplicates on restart
     await db.insert(arenas).values([
       // MAINSTREAM ARENAS (8)
       {
@@ -217,7 +218,7 @@ export async function seedDatabase() {
         activeUsers: 289,
         totalMissions: 44,
       },
-    ]);
+    ]).onConflictDoNothing();
 
     // Seed MASSIVE challenges (80+ total)
     const challengeList = [];
