@@ -106,7 +106,7 @@ export async function setupAuth(app: Express) {
   passport.deserializeUser((user: any, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
-    console.log(`[Auth] Login request from: ${req.hostname}:${req.port} - Callback will be: ${callbackURL}`);
+    console.log(`[Auth] Login request from: ${req.hostname} - Callback will be: ${callbackURL}`);
     passport.authenticate("google", {
       scope: ["profile", "email"],
     })(req, res, next);
@@ -125,7 +125,7 @@ export async function setupAuth(app: Express) {
       failureRedirect: "/?auth=failed",
     }),
     (req, res) => {
-      console.log(`[Auth] Successful Google login for user: ${req.user?.email}`);
+      console.log(`[Auth] Successful Google login for user: ${(req.user as any)?.email}`);
       res.redirect("/");
     }
   );
