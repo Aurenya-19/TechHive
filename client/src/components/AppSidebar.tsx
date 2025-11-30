@@ -73,9 +73,9 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-3">
-          <img src={techHiveLogo} alt="TechHive Logo" className="h-10 w-10" />
+          <img src={techHiveLogo} alt="CodeVerse Logo" className="h-10 w-10" />
           <div className="flex flex-col">
-            <span className="font-display text-xl font-bold">TechHive</span>
+            <span className="font-display text-xl font-bold">CodeVerse</span>
             <span className="text-xs text-muted-foreground">Learn. Build. Grow.</span>
           </div>
         </Link>

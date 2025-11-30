@@ -73,8 +73,8 @@ export default function Landing() {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-3">
-            <img src={techHiveLogo} alt="TechHive Logo" className="h-10 w-10" />
-            <span className="font-display text-xl font-bold">TechHive</span>
+            <img src={techHiveLogo} alt="CodeVerse Logo" className="h-10 w-10" />
+            <span className="font-display text-xl font-bold">CodeVerse</span>
           </div>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
@@ -146,7 +146,7 @@ export default function Landing() {
                 Everything You Need to Excel
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-                From personalized AI assistance to global competitions, TechHive provides all the 
+                From personalized AI assistance to global competitions, CodeVerse provides all the 
                 tools you need to become a top-tier developer.
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function Landing() {
               ))}
             </div>
             <blockquote className="mx-auto mt-6 max-w-3xl font-display text-2xl font-medium">
-              "TechHive transformed how I learn programming. The gamified challenges and clan 
+              "CodeVerse transformed how I learn programming. The gamified challenges and clan 
               competitions keep me motivated every day."
             </blockquote>
             <div className="mt-6">
@@ -195,7 +195,7 @@ export default function Landing() {
                   <span className="font-medium text-white/80">Ready to Start?</span>
                 </div>
                 <h2 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">
-                  Join the TechHive Community
+                  Join the CodeVerse Community
                 </h2>
                 <p className="mt-4 max-w-xl text-white/80">
                   Create your free account and start your journey to becoming a top developer. 
@@ -223,11 +223,11 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-3">
-              <img src={techHiveLogo} alt="TechHive Logo" className="h-8 w-8" />
-              <span className="font-display font-bold">TechHive</span>
+              <img src={techHiveLogo} alt="CodeVerse Logo" className="h-8 w-8" />
+              <span className="font-display font-bold">CodeVerse</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} TechHive. All rights reserved.
+              &copy; {new Date().getFullYear()} CodeVerse. All rights reserved.
             </p>
           </div>
         </div>

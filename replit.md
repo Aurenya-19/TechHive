@@ -1,8 +1,8 @@
-# TechHive - Gamified Tech Learning Platform
+# CodeVerse - Gamified Tech Learning Platform
 
 ## Overview
 
-TechHive is a gamified learning platform that transforms tech education into an immersive gaming experience. It combines elements from Discord (community structure), Duolingo (gamification), Linear (modern design), GitHub (project collaboration), and gaming platforms like Steam. The platform enables users to level up through skill arenas, complete daily quests, join tech clans, collaborate on projects, and compete on global leaderboards while receiving personalized AI assistance.
+CodeVerse is a gamified learning platform that transforms tech education into an immersive gaming experience. It combines elements from Discord (community structure), Duolingo (gamification), Linear (modern design), GitHub (project collaboration), and gaming platforms like Steam. The platform enables users to level up through skill arenas, complete daily quests, join tech clans, collaborate on projects, and compete on global leaderboards while receiving personalized AI assistance.
 
 ## User Preferences
 
@@ -230,7 +230,7 @@ Current auth uses: Google OAuth with dynamic callback URL detection for both loc
 ## Latest Updates (Session Nov 30, 2025)
 
 ✅ **OAuth Callback URL Fixed** - Dynamic URL detection for localhost and production
-✅ **TechHive Logo Integrated** - Logo displays in header, sidebar, and footer
+✅ **CodeVerse Logo Integrated** - Logo displays in header, sidebar, and footer
 ✅ **Privacy & Terms Pages** - Available at `/privacy` and `/terms` for OAuth compliance
 ✅ **Internationalization System** - Full i18n implementation with 5 languages
 ✅ **Language Switcher** - Users can select language from landing page header
@@ -241,7 +241,7 @@ Current auth uses: Google OAuth with dynamic callback URL detection for both loc
 
 ## Ready for Production ✅
 
-TechHive is fully implemented and production-ready. All core features are working:
+CodeVerse is fully implemented and production-ready. All core features are working:
 - User authentication with Google OAuth
 - Multi-language support (5 languages)
 - Skill arenas with challenges

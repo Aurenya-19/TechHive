@@ -10,7 +10,7 @@ export default function Privacy() {
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">1. Introduction</h2>
           <p className="text-secondary">
-            TechHive ("we", "our", or "us") operates the TechHive platform. This Privacy Policy explains our practices regarding the collection, use, and disclosure of your personal information.
+            CodeVerse ("we", "our", or "us") operates the CodeVerse platform. This Privacy Policy explains our practices regarding the collection, use, and disclosure of your personal information.
           </p>
         </section>
 
@@ -30,7 +30,7 @@ export default function Privacy() {
           <h2 className="text-2xl font-semibold">3. How We Use Your Information</h2>
           <p className="text-secondary">We use collected information to:</p>
           <ul className="list-inside list-disc space-y-2 text-secondary">
-            <li>Provide and improve the TechHive learning platform</li>
+            <li>Provide and improve the CodeVerse learning platform</li>
             <li>Personalize your learning experience</li>
             <li>Enable collaboration with other users</li>
             <li>Track your progress and provide recommendations</li>
@@ -70,7 +70,7 @@ export default function Privacy() {
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">8. Contact Us</h2>
           <p className="text-secondary">
-            If you have questions about this Privacy Policy, please contact us through the TechHive platform or email us at privacy@techhive.com
+            If you have questions about this Privacy Policy, please contact us through the CodeVerse platform or email us at privacy@codeverse.com
           </p>
         </section>
       </div>
