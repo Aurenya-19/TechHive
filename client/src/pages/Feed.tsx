@@ -147,9 +147,27 @@ const categories = [
 ];
 
 export default function Feed() {
-  const { data: feedItems, isLoading } = useQuery<FeedItem[]>({
+  const { data: feedItems, isLoading, isError, error: errorMsg } = useQuery<FeedItem[]>({
     queryKey: ["/api/feed"],
   });
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] p-6">
+        <Card className="w-full max-w-md border-destructive">
+          <CardHeader>
+            <CardTitle className="text-destructive">Failed to load feed</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {errorMsg instanceof Error ? errorMsg.message : "Unable to load tech feed"}
+            </p>
+            <Button onClick={() => window.location.reload()} className="w-full">Retry</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

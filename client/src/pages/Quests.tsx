@@ -178,7 +178,7 @@ export default function Quests() {
     },
   });
 
-  const { data: quests, isLoading: questsLoading } = useQuery<Quest[]>({
+  const { data: quests, isLoading: questsLoading, isError: questsError, error: questsErrorMsg } = useQuery<Quest[]>({
     queryKey: ["/api/quests"],
   });
 
@@ -218,6 +218,24 @@ export default function Quests() {
 
   const completedToday = userQuests?.filter((uq) => uq.isCompleted && uq.quest.type === "daily").length || 0;
   const totalDaily = dailyQuests.length;
+
+  if (questsError) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] p-6">
+        <Card className="w-full max-w-md border-destructive">
+          <CardHeader>
+            <CardTitle className="text-destructive">Failed to load quests</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {questsErrorMsg instanceof Error ? questsErrorMsg.message : "Unable to load quests"}
+            </p>
+            <Button onClick={() => window.location.reload()} className="w-full">Retry</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (questsLoading) {
     return (
