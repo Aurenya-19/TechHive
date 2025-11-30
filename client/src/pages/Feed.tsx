@@ -27,6 +27,11 @@ const categoryIcons: Record<string, typeof Brain> = {
   web: Code,
   cybersecurity: Shield,
   robotics: Cpu,
+  blockchain: Code,
+  gamedev: Sparkles,
+  mobile: Rocket,
+  cloud: Cpu,
+  quantum: Sparkles,
   startups: Rocket,
   research: Sparkles,
   tutorials: BookOpen,
@@ -38,9 +43,14 @@ const categoryColors: Record<string, string> = {
   web: "bg-blue-500/10 text-blue-500",
   cybersecurity: "bg-green-500/10 text-green-500",
   robotics: "bg-red-500/10 text-red-500",
-  startups: "bg-orange-500/10 text-orange-500",
-  research: "bg-pink-500/10 text-pink-500",
-  tutorials: "bg-cyan-500/10 text-cyan-500",
+  blockchain: "bg-orange-500/10 text-orange-500",
+  gamedev: "bg-indigo-500/10 text-indigo-500",
+  mobile: "bg-cyan-500/10 text-cyan-500",
+  cloud: "bg-pink-500/10 text-pink-500",
+  quantum: "bg-violet-500/10 text-violet-500",
+  startups: "bg-amber-500/10 text-amber-500",
+  research: "bg-rose-500/10 text-rose-500",
+  tutorials: "bg-teal-500/10 text-teal-500",
   trends: "bg-yellow-500/10 text-yellow-500",
 };
 
@@ -138,12 +148,19 @@ function FeedCard({ item }: { item: FeedItem }) {
 
 const categories = [
   { value: "all", label: "All" },
-  { value: "ai", label: "AI" },
+  { value: "ai", label: "AI/ML" },
   { value: "web", label: "Web Dev" },
   { value: "cybersecurity", label: "Security" },
   { value: "robotics", label: "Robotics" },
+  { value: "blockchain", label: "Blockchain" },
+  { value: "gamedev", label: "Game Dev" },
+  { value: "mobile", label: "Mobile" },
+  { value: "cloud", label: "Cloud" },
+  { value: "quantum", label: "Quantum" },
   { value: "startups", label: "Startups" },
+  { value: "research", label: "Research" },
   { value: "tutorials", label: "Tutorials" },
+  { value: "trends", label: "Trends" },
 ];
 
 export default function Feed() {

@@ -462,27 +462,42 @@ export async function seedDatabase() {
 
     await db.insert(courses).values(courseList).onConflictDoNothing();
 
-    // Seed 25+ feed items
+    // Seed 30+ feed items across ALL tech categories
     const feedList = [];
     const feedItems = [
-      { title: "GPT-4o Released", cat: "AI", desc: "New capabilities in vision and reasoning" },
-      { title: "Quantum Breakthrough", cat: "Quantum", desc: "Google achieves quantum advantage" },
-      { title: "React 19 Launched", cat: "Web", desc: "New compiler and Server Components" },
-      { title: "NVIDIA H200", cat: "Hardware", desc: "Next-gen GPU for AI" },
-      { title: "Kubernetes 1.31", cat: "DevOps", desc: "Container orchestration updates" },
-      { title: "Rust Safety", cat: "Systems", desc: "Memory safety without GC" },
-      { title: "WebAssembly 2.0", cat: "Web", desc: "Multi-memory and component model" },
-      { title: "Physics Engine", cat: "Physics", desc: "New CFD solver released" },
-      { title: "Formal Methods", cat: "Verification", desc: "TLA+ in industry" },
-      { title: "Bioinformatics", cat: "Biotech", desc: "AlphaFold 3 released" },
-      { title: "XR Standards", cat: "XR", desc: "OpenXR 1.1 available" },
-      { title: "Security Alert", cat: "Security", desc: "Critical vulnerability patches" },
-      { title: "DeFi Protocol", cat: "Blockchain", desc: "New L2 scaling solution" },
-      { title: "Mobile Innovation", cat: "Mobile", desc: "New framework capabilities" },
-      { title: "Game Engine", cat: "Games", desc: "Unreal Engine 5.4 released" },
+      { title: "GPT-4o Release", cat: "ai", desc: "New AI model with vision and reasoning capabilities" },
+      { title: "Claude 3.5 Deployed", cat: "ai", desc: "Latest Claude model with enhanced performance" },
+      { title: "Quantum Breakthrough", cat: "quantum", desc: "Google achieves quantum advantage milestone" },
+      { title: "Quantum Gates Innovation", cat: "quantum", desc: "New quantum gate designs improve stability" },
+      { title: "React 19 Launched", cat: "web", desc: "New compiler and Server Components framework" },
+      { title: "Next.js 15 Released", cat: "web", desc: "Enhanced performance and new features" },
+      { title: "NVIDIA H200 GPU", cat: "cloud", desc: "Next-gen GPU for AI and cloud computing" },
+      { title: "Cloud Security Update", cat: "cloud", desc: "Enhanced cloud infrastructure protection" },
+      { title: "Kubernetes 1.31", cat: "cloud", desc: "Container orchestration improvements" },
+      { title: "Rust Memory Safety", cat: "cybersecurity", desc: "Memory safety without garbage collection" },
+      { title: "Zero Trust Security", cat: "cybersecurity", desc: "New security model implementation guide" },
+      { title: "WebAssembly 2.0", cat: "web", desc: "Multi-memory and component model support" },
+      { title: "WASM Games", cat: "gamedev", desc: "Game development with WebAssembly" },
+      { title: "Unreal Engine 5.4", cat: "gamedev", desc: "New game engine features and tools" },
+      { title: "Unity Game Dev", cat: "gamedev", desc: "Advanced game development techniques" },
+      { title: "Solidity Security", cat: "blockchain", desc: "Smart contract security best practices" },
+      { title: "DeFi Protocol", cat: "blockchain", desc: "New L2 scaling solution for blockchain" },
+      { title: "Ethereum Update", cat: "blockchain", desc: "Latest Ethereum network improvements" },
+      { title: "iOS Development", cat: "mobile", desc: "SwiftUI and new mobile app development" },
+      { title: "Android 15 Features", cat: "mobile", desc: "Latest Android features for developers" },
+      { title: "React Native Upgrade", cat: "mobile", desc: "Cross-platform mobile development" },
+      { title: "Robot Automation", cat: "robotics", desc: "Advanced robotics and automation systems" },
+      { title: "ROS 2 Framework", cat: "robotics", desc: "Robot Operating System updates" },
+      { title: "Robotics AI", cat: "robotics", desc: "AI-powered robot intelligence" },
+      { title: "ML Model Training", cat: "ai", desc: "Advanced machine learning techniques" },
+      { title: "Deep Learning Frameworks", cat: "ai", desc: "PyTorch and TensorFlow comparison" },
+      { title: "Open Source Trends", cat: "trends", desc: "Top open source projects of the year" },
+      { title: "Tech Conference 2025", cat: "startups", desc: "Major tech conference announcements" },
+      { title: "Web Dev Tutorial", cat: "tutorials", desc: "Building modern web applications" },
+      { title: "Security Research", cat: "cybersecurity", desc: "Latest security research findings" },
     ];
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < feedItems.length; i++) {
       const item = feedItems[i];
       feedList.push({
         id: `feed_${i}`,

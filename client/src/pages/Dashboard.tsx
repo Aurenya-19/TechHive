@@ -9,6 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import learningEventImg from "@assets/generated_images/real_tech_learning_event.png";
+import mlWorkspaceImg from "@assets/generated_images/ml_development_workspace.png";
+import webDevImg from "@assets/generated_images/web_development_setup.png";
+import devTeamImg from "@assets/generated_images/real_dev_team_collaborating.png";
 import {
   Flame,
   Target,
@@ -177,15 +180,15 @@ function ChallengeCard({ challenge }: { challenge: Challenge }) {
   );
 }
 
-function ArenaCard({ arena }: { arena: Arena }) {
+function ArenaCard({ arena, image }: { arena: Arena; image?: string }) {
   const Icon = arenaIcons[arena.slug] || Brain;
   const colorClass = arenaColors[arena.slug] || arenaColors.ai;
   
   return (
     <Link href={`/arenas/${arena.slug}`}>
       <Card className="group overflow-hidden hover-elevate cursor-pointer">
-        <div className={`relative h-32 bg-gradient-to-br ${colorClass}`}>
-          <div className="absolute inset-0 bg-black/20" />
+        <div className={`relative h-32 bg-gradient-to-br ${colorClass}`} style={{ backgroundImage: image ? `url(${image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className="absolute inset-0 bg-black/40" />
           <div className="absolute bottom-4 left-4 flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
               <Icon className="h-6 w-6 text-white" />
