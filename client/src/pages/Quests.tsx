@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
@@ -17,8 +26,19 @@ import {
   Calendar,
   Trophy,
   Sparkles,
+  Plus,
 } from "lucide-react";
 import type { Quest, UserQuest } from "@shared/schema";
+
+const createQuestSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  type: z.enum(["daily", "weekly", "monthly"]),
+  xpReward: z.number().min(10, "XP must be at least 10"),
+  difficulty: z.string().optional(),
+});
+
+type CreateQuestForm = z.infer<typeof createQuestSchema>;
 
 function QuestCard({
   quest,
@@ -145,12 +165,47 @@ function QuestCard({
 }
 
 export default function Quests() {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const form = useForm<CreateQuestForm>({
+    resolver: zodResolver(createQuestSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      type: "daily",
+      xpReward: 100,
+    },
+  });
+
   const { data: quests, isLoading: questsLoading } = useQuery<Quest[]>({
     queryKey: ["/api/quests"],
   });
 
   const { data: userQuests } = useQuery<(UserQuest & { quest: Quest })[]>({
     queryKey: ["/api/user/quests"],
+  });
+
+  const createQuest = useMutation({
+    mutationFn: async (data: CreateQuestForm) => {
+      return apiRequest("POST", `/api/quests`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/quests"] });
+      toast({
+        title: "Quest created!",
+        description: "New quest is now available",
+      });
+      form.reset();
+      setOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create quest",
+        variant: "destructive",
+      });
+    },
   });
 
   const userQuestMap = new Map(
@@ -180,11 +235,97 @@ export default function Quests() {
 
   return (
     <div className="space-y-6 p-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Daily Quests</h1>
-        <p className="mt-1 text-muted-foreground">
-          Complete quests to earn XP and climb the leaderboard
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Daily Quests</h1>
+          <p className="mt-1 text-muted-foreground">
+            Complete quests to earn XP and climb the leaderboard
+          </p>
+        </div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Quest
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Create New Quest</DialogTitle>
+              <DialogDescription>Add a new quest for the community</DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => createQuest.mutate(data))} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Quest title..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Quest description..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="daily">Daily</SelectItem>
+                            <SelectItem value="weekly">Weekly</SelectItem>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="xpReward"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>XP Reward</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="100" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={createQuest.isPending}>
+                  {createQuest.isPending ? "Creating..." : "Create Quest"}
+                </Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card className="bg-gradient-to-r from-primary/10 to-chart-2/10">

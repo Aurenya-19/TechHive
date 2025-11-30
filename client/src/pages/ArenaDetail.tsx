@@ -1,13 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, Flame, Zap, Clock, Trophy, Users, Brain, Shield, Code, Cpu, Gamepad2, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ChevronLeft, Flame, Zap, Clock, Trophy, Users, Brain, Shield, Code, Cpu, Gamepad2, Sparkles, Plus } from "lucide-react";
 import { Link } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { Arena, Challenge } from "@shared/schema";
+
+const createChallengeSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  difficulty: z.enum(["easy", "medium", "hard"]),
+  xpReward: z.number().min(10, "XP must be at least 10"),
+  timeLimit: z.number().optional(),
+});
+
+type CreateChallengeForm = z.infer<typeof createChallengeSchema>;
 
 const arenaColors: Record<string, string> = {
   ai: "from-purple-500 to-pink-500",
@@ -80,7 +101,19 @@ function ChallengeCard({ challenge }: { challenge: Challenge }) {
 
 export default function ArenaDetail() {
   const [location] = useLocation();
+  const [open, setOpen] = useState(false);
   const slug = location.split("/").pop();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const form = useForm<CreateChallengeForm>({
+    resolver: zodResolver(createChallengeSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      difficulty: "medium",
+      xpReward: 100,
+    },
+  });
 
   const { data: arena, isLoading: arenaLoading } = useQuery<Arena>({
     queryKey: [`/api/arenas/${slug}`],
@@ -89,6 +122,31 @@ export default function ArenaDetail() {
   const { data: challenges, isLoading: challengesLoading } = useQuery<Challenge[]>({
     queryKey: [`/api/challenges?arenaId=${arena?.id || slug}`],
     enabled: !!arena?.id,
+  });
+
+  const createChallenge = useMutation({
+    mutationFn: async (data: CreateChallengeForm) => {
+      return apiRequest("POST", `/api/challenges`, {
+        ...data,
+        arenaId: arena?.id,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/challenges?arenaId=${arena?.id || slug}`] });
+      toast({
+        title: "Challenge created!",
+        description: "New challenge added to arena",
+      });
+      form.reset();
+      setOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create challenge",
+        variant: "destructive",
+      });
+    },
   });
 
   if (arenaLoading) {
@@ -195,9 +253,108 @@ export default function ArenaDetail() {
 
       {/* Challenges Section */}
       <div>
-        <div className="mb-6">
-          <h2 className="font-display text-2xl font-bold">Available Challenges</h2>
-          <p className="mt-1 text-muted-foreground">Complete challenges to earn XP and climb the leaderboard</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-bold">Available Challenges</h2>
+            <p className="mt-1 text-muted-foreground">Complete challenges to earn XP and climb the leaderboard</p>
+          </div>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Challenge
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create New Challenge</DialogTitle>
+                <DialogDescription>Add a new challenge to {arena?.name}</DialogDescription>
+              </DialogHeader>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit((data) => createChallenge.mutate(data))} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Challenge title..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Challenge description..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="difficulty"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Difficulty</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="easy">Easy</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="hard">Hard</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="xpReward"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>XP Reward</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="100" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="timeLimit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Time Limit (minutes, optional)</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="30" {...field} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full" disabled={createChallenge.isPending}>
+                    {createChallenge.isPending ? "Creating..." : "Create Challenge"}
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {challengesLoading ? (
