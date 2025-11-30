@@ -55,14 +55,15 @@ function getCallbackURL(req?: any): string {
     if (process.env.PUBLIC_URL) {
       return `https://${process.env.PUBLIC_URL}/api/callback`;
     }
-    // Fallback: use request host if available
+    // Try to get from request host (Render sends this)
     if (req && req.get) {
       const host = req.get('host');
-      const protocol = req.protocol || 'https';
-      return `${protocol}://${host}/api/callback`;
+      if (host && !host.includes('localhost')) {
+        return `https://${host}/api/callback`;
+      }
     }
-    // Last resort
-    return 'https://techhive-hju8.onrender.com/api/callback';
+    // Fallback for Render deployment
+    return 'https://codeverse-4za9.onrender.com/api/callback';
   } else {
     // Development
     return `http://localhost:5000/api/callback`;

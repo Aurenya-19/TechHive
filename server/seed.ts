@@ -385,7 +385,7 @@ export async function seedDatabase() {
       });
     }
 
-    await db.insert(challenges).values(challengeList);
+    await db.insert(challenges).values(challengeList).onConflictDoNothing();
 
     // Seed 50+ quests
     const questList = [];
@@ -411,7 +411,7 @@ export async function seedDatabase() {
       });
     }
 
-    await db.insert(quests).values(questList);
+    await db.insert(quests).values(questList).onConflictDoNothing();
 
     // Seed 40+ courses
     const courseList = [];
@@ -460,7 +460,7 @@ export async function seedDatabase() {
       });
     }
 
-    await db.insert(courses).values(courseList);
+    await db.insert(courses).values(courseList).onConflictDoNothing();
 
     // Seed 25+ feed items
     const feedList = [];
@@ -495,7 +495,7 @@ export async function seedDatabase() {
       });
     }
 
-    await db.insert(feedItems).values(feedList);
+    await db.insert(feedItems).values(feedList).onConflictDoNothing();
 
     // Seed 10+ roadmaps
     await db.insert(roadmaps).values([
@@ -549,7 +549,7 @@ export async function seedDatabase() {
         difficulty: "advanced",
         icon: "Shield",
       },
-    ]);
+    ]).onConflictDoNothing();
 
     console.log("Database seeded successfully with 17 arenas + 80+ challenges + 30+ quests + 20+ courses!");
   } catch (error) {
