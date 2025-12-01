@@ -107,6 +107,7 @@ export default function CodeMentor() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const [isLoadingResponse, setIsLoadingResponse] = useState(false);
 
   const sendMessage = useMutation({
     mutationFn: async (content: string) => {
@@ -146,6 +147,7 @@ export default function CodeMentor() {
     onMutate: async (content) => {
       setMessages((prev) => [...prev, { role: "user", content }]);
       setInput("");
+      setIsLoadingResponse(true);
     },
     onSuccess: (data: any) => {
       const responseText = data.response || data.message || "No response";
@@ -153,9 +155,11 @@ export default function CodeMentor() {
         ...prev,
         { role: "assistant", content: responseText },
       ]);
+      setIsLoadingResponse(false);
     },
     onError: (error: any) => {
       setMessages((prev) => prev.slice(0, -1));
+      setIsLoadingResponse(false);
       toast({
         title: "CodeMentor Error",
         description: error?.message || "Failed to get response. Please try again.",
@@ -210,18 +214,18 @@ export default function CodeMentor() {
         )}
       </div>
 
-      <Card className="flex flex-1 flex-col overflow-hidden border-primary/20 bg-card/60 backdrop-blur-sm shadow-2xl">
-        <CardContent className="flex flex-1 flex-col p-0">
-          <ScrollArea className="flex-1 p-6" ref={scrollRef}>
+      <Card className="flex flex-1 flex-col overflow-hidden border-primary/20 bg-card/60 backdrop-blur-sm shadow-2xl max-h-[calc(100vh-10rem)]">
+        <CardContent className="flex flex-1 flex-col p-0 overflow-hidden">
+          <ScrollArea className="flex-1 p-3 sm:p-6" ref={scrollRef}>
             {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                  <Sparkles className="h-10 w-10 text-primary" />
+              <div className="flex h-full flex-col items-center justify-center text-center px-4">
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-primary/10">
+                  <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
                 </div>
-                <h2 className="mt-6 font-display text-2xl font-bold">
+                <h2 className="mt-4 sm:mt-6 font-display text-lg sm:text-2xl font-bold">
                   How can I help you today?
                 </h2>
-                <p className="mt-2 max-w-md text-muted-foreground">
+                <p className="mt-2 max-w-md text-xs sm:text-sm text-muted-foreground">
                   I can explain code, help debug issues, generate ideas, create learning
                   roadmaps, and teach you new concepts.
                 </p>

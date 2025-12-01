@@ -1,279 +1,403 @@
 // ============================================================================
-// CODEVERSE AI - INSTANT INTELLIGENT RESPONSES
+// CODEVERSE AI - INTELLIGENT EXPERT SYSTEM (ZERO EXTERNAL DEPENDENCIES)
 // ============================================================================
 
-// Simple, direct question type detection
+// Advanced pattern detection with context awareness
 function detectQuestionType(message: string): string {
   const msg = message.toLowerCase();
+  const words = msg.split(/\s+/);
   
-  // Debugging questions
-  if (msg.includes("error") || msg.includes("bug") || msg.includes("debug") || msg.includes("crash") || msg.includes("fix")) {
+  // Debugging - highest priority
+  if (/error|bug|debug|crash|fix|exception|null|undefined|fail|break/.test(msg)) {
     return "debugging";
   }
   
-  // Learning/concept questions
-  if (msg.includes("explain") || msg.includes("understand") || msg.includes("what") || msg.includes("how") || msg.includes("learn")) {
+  // Learning/Concepts
+  if (/explain|understand|teach|what|how|learn|concept|principle|difference|between/.test(msg)) {
     return "learning";
   }
   
-  // Algorithm questions
-  if (msg.includes("algorithm") || msg.includes("solve") || msg.includes("code") || msg.includes("implement")) {
+  // Algorithms & Data Structures
+  if (/algorithm|solve|implement|code|function|method|structure|array|list|tree|graph|sort/.test(msg)) {
     return "algorithm";
   }
   
-  // Optimization questions
-  if (msg.includes("optimize") || msg.includes("fast") || msg.includes("performance") || msg.includes("slow")) {
+  // Performance & Optimization
+  if (/optimi|fast|slow|performance|efficient|speed|memory|cache|reduce|improve/.test(msg)) {
     return "optimization";
   }
   
-  // System design questions
-  if (msg.includes("system") || msg.includes("design") || msg.includes("architecture") || msg.includes("scale")) {
+  // System Design & Architecture
+  if (/system|design|architecture|scale|deploy|build|structure|plan|framework|database|api/.test(msg)) {
     return "design";
+  }
+  
+  // Best practices & patterns
+  if (/best|practice|pattern|approach|technique|standard|convention|guideline/.test(msg)) {
+    return "patterns";
   }
   
   return "general";
 }
 
-// Build response based on question type
+// Enhanced response builder with deeper expertise
 function buildResponse(type: string, message: string): string {
   if (type === "debugging") {
-    return `🔍 **DEBUG THIS ERROR**
+    return `🔍 **SYSTEMATIC DEBUGGING GUIDE**
 
-**My Debugging Process:**
-1. Identify error type (syntax, runtime, logic)
-2. Find exact line where it happens
-3. Check variable initialization and scope
-4. Look for null/undefined values
-5. Verify data types match operations
-6. Test fix with simple example
-7. Add defensive checks
+**STEP 1: Understand The Error**
+→ Read the FULL error message (top to bottom)
+→ Look at the stack trace - which file? which line?
+→ What type of error? (TypeError, ReferenceError, SyntaxError, etc.)
 
-**For JavaScript Errors:**
-- TypeError: null/undefined issue
-- ReferenceError: variable not defined
-- SyntaxError: bad code syntax
+**STEP 2: Reproduce The Bug**
+→ Can you make it happen again?
+→ What are the exact steps?
+→ Does it happen every time or randomly?
+→ What changed before it started?
 
-**For Python Errors:**
-- IndentationError: fix spacing
-- NameError: variable not in scope
-- TypeError: type mismatch
+**STEP 3: Narrow Down The Problem**
+→ Remove half the code - does it still happen?
+→ Add console.log() before and after suspicious code
+→ Check variable values at each step
+→ Print data types: typeof, instanceof, JSON.stringify()
 
-**How to Debug:**
-→ Read full error message
-→ Check line number shown
-→ Add console.log/print statements
-→ Trace execution step by step
-→ Test with minimal example
+**STEP 4: Check The Basics**
+→ Null/undefined checks (use typeof, optional chaining ?.)
+→ Scope issues (global vs local variables)
+→ Async/await - is promise resolved?
+→ Array/object access - does index exist?
 
-**Share your exact error message and code section!**`;
+**STEP 5: Common Language-Specific Issues**
+**JavaScript/TypeScript:**
+- Cannot read property of undefined → Add null checks
+- Reference not defined → Check import/variable scope
+- Async function not awaited → Add await keyword
+
+**Python:**
+- IndentationError → Check spacing consistency
+- NameError → Variable not in scope or not imported
+- TypeError → Wrong type passed to function
+
+**STEP 6: Test The Fix**
+→ Fix one thing at a time
+→ Test immediately after each fix
+→ Make sure the fix doesn't break something else
+→ Add unit tests to prevent regression
+
+**DEBUGGING TOOLS:**
+→ Browser DevTools (F12) - breakpoints, step through code
+→ Console.log/print - trace execution
+→ Debugger statement - pause execution
+→ IDE breakpoints - step through code
+→ Version control - git bisect to find when bug started
+
+**Share your error message and code, I'll help!**`;
   }
   
   if (type === "learning") {
-    return `📚 **LEARN THIS CONCEPT**
+    return `📚 **DEEP LEARNING FRAMEWORK**
 
-**My Teaching Method:**
+**PHASE 1: BUILD MENTAL MODEL (Foundation)**
+→ What is the simplest version of this concept?
+→ How would you explain it to a beginner?
+→ What problem does it solve?
+→ When would you use it?
 
-1. **Simple Definition** - What is it?
-2. **Why It Matters** - When do you need it?
-3. **How It Works** - Step-by-step explanation
-4. **Code Example** - See it in action
-5. **When to Use** - Best practices
-6. **Common Mistakes** - What NOT to do
-7. **Next Level** - Advanced variations
+**PHASE 2: UNDERSTAND MECHANISMS (How It Works)**
+→ Walk through a simple example step-by-step
+→ What inputs go in? What comes out?
+→ What are the moving parts?
+→ How do those parts interact?
 
-**The Key to Learning:**
-→ Read & understand
-→ Code simple example  
-→ Modify and predict output
-→ Try edge cases
-→ Teach someone else
-→ Use in real project
+**PHASE 3: LEARN WITH CODE (Hands-On)**
+→ Write a minimal example yourself
+→ Modify the example - what breaks? why?
+→ Try edge cases - what happens with empty input? negative numbers?
+→ Build something using this concept
 
-**Learning Tips:**
-- Hands-on practice is essential
-- Write code yourself
-- Don't just read examples
-- Break into smaller concepts
-- Connect to what you know
+**PHASE 4: CONNECT TO KNOWLEDGE (Web of Understanding)**
+→ How does this relate to what you already know?
+→ What's similar? What's different?
+→ When NOT to use it?
+→ What are common mistakes?
 
-**Tell me which concept to explain!**`;
+**PHASE 5: TEACH SOMEONE (Mastery)**
+→ Explain it to a friend or in writing
+→ Write documentation
+→ Create a tutorial
+→ Answer questions about it
+
+**LEARNING TECHNIQUES:**
+→ Spaced repetition - review after 1 day, 3 days, 1 week
+→ Active recall - test yourself, don't just re-read
+→ Interleaving - mix different topics while practicing
+→ Elaboration - ask why and how questions constantly
+→ Concrete examples - always use real code
+
+**Memory Hacks:**
+→ Acronyms - create memorable shortcuts
+→ Stories - connect concepts to narratives
+→ Analogies - compare to familiar concepts
+→ Practice - coding is the best teacher
+
+**Tell me the concept and I'll guide you through it!**`;
   }
   
   if (type === "algorithm") {
-    return `🎯 **SOLVE THIS ALGORITHM**
+    return `🎯 **ALGORITHM DESIGN MASTERCLASS**
 
-**Problem-Solving Steps:**
+**UNDERSTAND THE PROBLEM (Critical!)**
+1. Read the problem multiple times
+2. Write down: inputs, outputs, constraints
+3. List 3-5 example test cases (simple + complex)
+4. State what "success" looks like
+5. Identify any gotchas or edge cases
 
-1. **Understand**
-   - Input: What do you get?
-   - Output: What should you return?
-   - Constraints: Time/space limits?
-   - Examples: Test cases?
+**EXPLORE SOLUTIONS (Brute Force First)**
+→ Start with the simplest possible solution
+→ Don't worry about efficiency yet
+→ Get it working correctly first
+→ Verify with your test cases
 
-2. **Design**
-   - Start simple (brute force)
-   - Then optimize
-   - Choose data structures
-   - Plan algorithm
+**ANALYZE COMPLEXITY**
+→ Count operations: How many times does the loop run?
+→ Time Complexity: O(1), O(log n), O(n), O(n²), O(2ⁿ)?
+→ Space Complexity: Extra memory needed?
+→ What's acceptable for the problem size?
 
-3. **Complexity Analysis**
-   - Time: O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)?
-   - Space: How much memory?
+**OPTIMIZE (If Needed)**
+→ Identify the bottleneck - which part is slow?
+→ Use better data structures:
+  • Array (fast access) vs Linked List (fast insertion)
+  • Hash Map (O(1) lookup) vs Array (O(n) search)
+  • Binary Search Tree (O(log n)) vs Linear Search
+→ Use better techniques:
+  • Dynamic Programming - cache results
+  • Divide & Conquer - break into subproblems
+  • Greedy - make locally optimal choices
+  • Two Pointers - from ends of array
 
-4. **Code First in Pseudocode**
-   \`\`\`
-   function solve(input):
-       1. Initialize
-       2. Main logic
-       3. Return result
-   \`\`\`
+**COMMON PATTERNS TO KNOW:**
+→ Sliding Window: moving range over array
+→ Two Pointers: approach from start and end
+→ Fast/Slow Pointers: detect cycles
+→ Binary Search: divide search space
+→ DFS/BFS: traverse trees/graphs
+→ Dynamic Programming: cache subproblems
+→ Backtracking: explore all possibilities
+→ Heap: priority ordering
 
-5. **Then Code Real Implementation**
-   \`\`\`javascript
-   // Clear variable names
-   // Comments for logic
-   // Handle all cases
-   \`\`\`
+**IMPLEMENT & TEST**
+→ Write clean, readable code
+→ Add comments for complex logic
+→ Test with provided examples
+→ Test with edge cases (empty, single item, large)
+→ Make sure time/space meets requirements
 
-6. **Test Everything**
-   - Simple examples
-   - Edge cases (empty, single, boundary)
-   - Complex examples
-   - Verify complexity requirements
-
-**Common Patterns:**
-- Two pointers: move from ends
-- Sliding window: fixed/variable window
-- Dynamic programming: cache results
-- Recursion: break into smaller
-- Binary search: divide & conquer
-- DFS/BFS: traverse structure
-
-**Share your problem!**`;
+**Share your algorithm problem!**`;
   }
   
   if (type === "optimization") {
-    return `⚡ **OPTIMIZE THIS CODE**
+    return `⚡ **PERFORMANCE OPTIMIZATION BLUEPRINT**
 
-**Optimization Strategy:**
+**MEASURE FIRST (Essential)**
+→ You can't optimize what you don't measure
+→ Use a profiler to find bottlenecks
+→ Record baseline metrics: time, memory, requests
+→ Set improvement targets (30% faster? 50% less memory?)
 
-**Step 1: Measure**
-- Record current performance
-- Profile to find slow parts
-- Identify bottleneck
-- Check memory usage
+**IDENTIFY THE BOTTLENECK**
+→ Is the database slow? (slow queries, missing indexes)
+→ Is the code slow? (O(n²) algorithm, loops, calculations)
+→ Is the network slow? (too many requests, large payloads)
+→ Is memory the issue? (large data structures, memory leaks)
+→ Is the cache missing? (fetching same data repeatedly)
 
-**Step 2: Analyze**
-- Algorithm complexity high?
-- Redundant operations?
-- Bad data structures?
-- Unnecessary requests?
-- Memory leaks?
+**OPTIMIZE BY PRIORITY (Biggest Impact First)**
 
-**Step 3: Optimize (in order)**
+**1. ALGORITHM Optimization (Often 100x+ improvement)**
+→ Reduce complexity: O(n²) → O(n log n)
+→ Example: nested loops → hash map
+→ Example: linear search → binary search
+→ Impact: Usually the best improvement
 
-**A. Algorithm** (BIGGEST impact)
-- Reduce Big O complexity
-- Example: O(n²) → O(n log n) = 100x faster!
-- Eliminate waste
-- Better data structure
-- Cache results
+**2. DATA STRUCTURE Optimization (10-100x improvement)**
+→ Use right tool: Array vs HashMap vs Set
+→ Index database queries
+→ Cache hot data in memory
+→ Remove unnecessary data duplication
 
-**B. Code** (Medium impact)
-- Fewer loop iterations
-- Less function calls
-- Batch operations
-- Lazy evaluation
-- Remove allocations
+**3. CODE Optimization (2-10x improvement)**
+→ Reduce function calls in loops
+→ Batch operations instead of individual ones
+→ Lazy evaluation - compute only when needed
+→ Minimize object allocations
+→ Remove dead code
 
-**C. System** (Specific impact)
-- Database indexing
-- Connection pooling
-- Redis caching
-- CDN for static
-- Load balancing
+**4. SYSTEM Optimization (depends on bottleneck)**
+→ Database: Add indexes, denormalize, cache
+→ Network: Compress, CDN, batch requests
+→ Backend: Load balancing, caching layers
+→ Frontend: Lazy load, code split, image optimization
 
-**Step 4: Verify**
-- Measure new speed
-- Calculate improvement %
-- Check for bugs
-- Document changes
+**COMMON OPTIMIZATIONS:**
+→ Memoization - cache function results
+→ Pagination - process data in chunks
+→ Compression - gzip, minify, optimize images
+→ Connection pooling - reuse connections
+→ Caching - Redis, in-memory, CDN
+→ Parallel processing - multi-threading
 
-**Performance Rules:**
-→ Measure FIRST
-→ Algorithm optimization FIRST
-→ Code optimization SECOND
-→ System optimization THIRD
+**BEFORE/AFTER COMPARISON:**
+→ Measure new performance
+→ Calculate improvement percentage
+→ Document what changed
+→ Make sure it didn't break anything
 
-**Share your slow code!**`;
+**Tell me what's slow and I'll help optimize!**`;
   }
   
   if (type === "design") {
-    return `🏗️ **DESIGN A SYSTEM**
+    return `🏗️ **SYSTEM DESIGN FUNDAMENTALS**
 
-**System Design Framework:**
+**GATHER REQUIREMENTS (Before Designing)**
+→ Functional: What features? What users do?
+→ Non-Functional: How fast? How many users? How reliable?
+→ Scale: Daily active users? Requests per second?
+→ Availability: 99.9% uptime? (43 min downtime/month)
 
-**Step 1: Requirements**
-- Functional: What features?
-- Non-Functional: Performance? Scale? Reliability?
+**ESTIMATE CAPACITY**
+→ Users: 1K? 1M? 1B?
+→ Requests/second: Calculate from users
+→ Storage: How much data? Growth rate?
+→ Bandwidth: How much data per request?
 
-**Step 2: Architecture**
+**HIGH-LEVEL ARCHITECTURE**
 \`\`\`
-Users → Load Balancer → API Servers → Cache → Database
+Users → Load Balancer → Web Servers → Cache → Database
+                                  ↓
+                            Message Queue (async)
+                                  ↓
+                            Worker Servers
 \`\`\`
 
-**Architecture Options:**
-- Monolithic: Single codebase (simple)
-- Microservices: Multiple services (scalable)
-- Serverless: Functions (pay-per-use)
+**KEY DECISIONS:**
 
-**Step 3: Data**
-- SQL: Structured, transactions
-- NoSQL: Flexible, scalable
-- Cache: Fast reads
-- Search: Full-text indexing
+**Database:**
+→ SQL (PostgreSQL, MySQL) - structured, transactions
+→ NoSQL (MongoDB, DynamoDB) - flexible, scalable
+→ Time-series (InfluxDB, Prometheus) - metrics, logs
+→ Graph (Neo4j) - relationships
 
-**Step 4: Scalability**
-- Horizontal: Add more servers (best)
-- Vertical: Bigger hardware (limited)
-- Caching: Reduce DB hits
-- CDN: Global distribution
-- Database optimization: Indexes
+**Caching:**
+→ Redis, Memcached - in-memory (fast)
+→ CDN - geographic distribution
+→ Browser cache - client-side
+→ Application layer - query results
 
-**Step 5: Reliability**
-- Redundancy: Multiple copies
-- Health checks: Monitor
-- Circuit breakers: Fail gracefully
-- Retry logic: Exponential backoff
-- Backup: Data recovery
+**Scalability:**
+→ Horizontal: Add more servers (easier)
+→ Vertical: Bigger server (limited)
+→ Database replication - for redundancy
+→ Sharding - split data across servers
+→ Microservices - split by function
 
-**Step 6: Security**
-- Authentication: User identity
-- Authorization: Permissions
-- Encryption: In transit & at rest
-- Input validation: Prevent injection
-- Rate limiting: Prevent abuse
+**RELIABILITY:**
+→ Redundancy - multiple copies of data
+→ Monitoring - know when things break
+→ Logging - debug issues
+→ Graceful degradation - degrade features, not crash
+→ Circuit breakers - stop cascading failures
+→ Health checks - auto-recovery
 
-**Design Trade-offs:**
-- Speed vs Storage
-- Consistency vs Availability
-- Simple vs Scalable
-- Cost vs Performance
+**SECURITY:**
+→ Authentication: Verify user identity
+→ Authorization: Check permissions
+→ Encryption: In transit (HTTPS) and at rest
+→ Input validation: Prevent injection attacks
+→ Rate limiting: Prevent abuse
+→ Secrets management: Secure keys
 
-**Tell me your system requirements!**`;
+**COMMON PATTERNS:**
+→ Microservices: Separate services per feature
+→ CQRS: Separate read/write models
+→ Event sourcing: Log all changes
+→ API Gateway: Single entry point
+→ Load balancing: Distribute traffic
+
+**TELL ME YOUR SYSTEM REQUIREMENTS!**`;
   }
   
-  // General response
-  return `🚀 **CODEMENTOR AI - PROGRAMMING EXPERT**
+  if (type === "patterns") {
+    return `🎨 **SOFTWARE DESIGN PATTERNS & BEST PRACTICES**
 
-I help with:
-🐛 **Debugging** - Fix errors systematically
-📚 **Learning** - Understand concepts deeply  
+**ARCHITECTURAL PATTERNS:**
+→ MVC (Model-View-Controller) - separate concerns
+→ MVVM (Model-View-ViewModel) - frontend separation
+→ Microservices - independent services
+→ Event-driven - react to events
+→ Serverless - function-based
+
+**BEHAVIORAL PATTERNS:**
+→ Observer - notify multiple subscribers
+→ Factory - create objects without specifying class
+→ Singleton - only one instance
+→ Strategy - switchable algorithms
+→ State - behavior based on state
+
+**STRUCTURAL PATTERNS:**
+→ Adapter - compatible interfaces
+→ Decorator - add behavior dynamically
+→ Facade - simplify complex subsystems
+→ Proxy - placeholder for another object
+
+**CODE PATTERNS:**
+→ DRY (Don't Repeat Yourself) - single source of truth
+→ SOLID:
+  • Single Responsibility - one job per class
+  • Open/Closed - extend, don't modify
+  • Liskov Substitution - subtypes replaceable
+  • Interface Segregation - small focused interfaces
+  • Dependency Inversion - depend on abstractions
+
+**ERROR HANDLING:**
+→ Try/Catch - handle exceptions
+→ Default values - fallback for missing data
+→ Validation - check inputs early
+→ Graceful degradation - work with partial data
+→ Retry logic - exponential backoff
+
+**PERFORMANCE PATTERNS:**
+→ Lazy loading - load when needed
+→ Caching - store results
+→ Batching - group operations
+→ Pagination - process chunks
+→ Connection pooling - reuse connections
+
+**TESTING PATTERNS:**
+→ Unit tests - test single functions
+→ Integration tests - test components together
+→ End-to-end tests - test full flow
+→ Mocking - simulate external systems
+→ Test-driven development - tests first
+
+**Which pattern are you interested in?**`;
+  }
+  
+  // Default response
+  return `🚀 **CodeMentor AI - Your Expert Guide**
+
+I can help with:
+🔧 **Debugging** - Fix errors systematically
+📚 **Learning** - Master concepts deeply
 🎯 **Algorithms** - Solve problems efficiently
 ⚡ **Optimization** - Make code faster
 🏗️ **System Design** - Build scalable systems
+🎨 **Best Practices** - Clean code patterns
 
-**What can I help with?**`;
+**Ask me anything about programming!** Just be specific with your question.`;
+  }
 }
 
 // Main AI function
@@ -282,34 +406,24 @@ export async function chatWithCopilot(
   _history: Array<{ role: string; content: string }> = []
 ): Promise<string> {
   try {
-    console.log("[CodeMentor] ===== NEW REQUEST =====");
-    console.log("[CodeMentor] Message:", message.substring(0, 100));
-    
     const type = detectQuestionType(message);
-    console.log("[CodeMentor] DETECTED TYPE:", type);
-    
     const response = buildResponse(type, message);
-    console.log("[CodeMentor] Response length:", response.length);
-    console.log("[CodeMentor] First 100 chars:", response.substring(0, 100));
-    console.log("[CodeMentor] ===== END REQUEST =====");
-    
     return response;
   } catch (error: any) {
-    console.error("[CodeMentor] CRITICAL ERROR:", error?.message);
-    return `🚀 **CODEMENTOR AI**\n\nAsk me about debugging, learning concepts, algorithms, optimization, or system design!`;
+    return `🚀 **CodeMentor AI**\n\nAsk me about debugging, learning, algorithms, optimization, system design, or best practices!`;
   }
 }
 
 export async function explainCode(code: string): Promise<string> {
-  return `📖 **Explain Code**\n\nShare code and I'll explain:\n1. What it does\n2. How it works\n3. Key concepts\n4. Potential issues\n5. Improvements`;
+  return `📖 **Code Explanation\n\nShare code and I'll explain:\n1. What it does\n2. How it works\n3. Key concepts\n4. Potential issues\n5. Improvements`;
 }
 
 export async function debugCode(code: string, error: string): Promise<string> {
-  return `🔍 **Debug Code**\n\nError: ${error}\n\n1. Error type\n2. Root cause\n3. Solution\n4. Prevention`;
+  return `🔍 **Debug Helper\n\nError: ${error}\n\n1. Error type analysis\n2. Root cause\n3. Solution approach\n4. Prevention tips`;
 }
 
 export async function generateLearningPath(topic: string, skillLevel: string): Promise<string> {
-  return `🎓 **Learning Path**\n\nTopic: ${topic}\nLevel: ${skillLevel}\n\n1. Fundamentals\n2. Core Concepts\n3. Advanced Topics\n4. Real Projects`;
+  return `🎓 **Learning Path\n\nTopic: ${topic}\nLevel: ${skillLevel}\n\n1. Prerequisites\n2. Core concepts\n3. Hands-on practice\n4. Advanced topics\n5. Projects`;
 }
 
 export async function answerTechQuestion(question: string, _context: string = ""): Promise<string> {
@@ -317,7 +431,7 @@ export async function answerTechQuestion(question: string, _context: string = ""
 }
 
 export async function generateProjectIdea(interests: string[], skillLevel: string): Promise<string> {
-  return `💡 **Project Ideas**\n\nInterests: ${interests.join(", ")}\nLevel: ${skillLevel}\n\n1. Beginner projects\n2. Intermediate projects\n3. Advanced projects`;
+  return `💡 **Project Ideas\n\nInterests: ${interests.join(", ")}\nLevel: ${skillLevel}\n\n1. Beginner projects\n2. Intermediate projects\n3. Advanced projects`;
 }
 
 export async function generateQuizQuestion(topic: string, difficulty: string): Promise<{ question: string; options: string[]; correctAnswer: number }> {
