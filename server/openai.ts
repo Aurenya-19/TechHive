@@ -221,7 +221,7 @@ interface ProblemAnalysis {
   relevantConcepts: string[];
 }
 
-function analyzeProblemiAdvanced(message: string): ProblemAnalysis {
+function analyzeProblemAdvanced(message: string): ProblemAnalysis {
   const msg = message.toLowerCase();
   const steps: ThinkingStep[] = [];
 
@@ -778,7 +778,7 @@ async function callAdvancedAI(messages: Array<{ role: string; content: string }>
   const progLang = detectProgrammingLanguageAdvanced(userMessage);
   
   // Analyze problem with multi-step thinking
-  const analysis = analyzeProblemiAdvanced(userMessage);
+  const analysis = analyzeProblemAdvanced(userMessage);
   
   // Generate expert response
   const response = generateExpertResponse(userMessage, analysis);
