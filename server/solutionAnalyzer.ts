@@ -13,7 +13,7 @@ export function analyzeSolution(code: string, testCases: any[], userCode: string
   const hasMainLogic = /function|const|let|class|=>/.test(userCode);
   const hasOutput = /console\.log|return|print|output/.test(userCode);
   const hasLoops = /for|while|forEach|map/.test(userCode);
-  const hasConditionals = /if|else|switch|ternary|?:/.test(userCode);
+  const hasConditionals = /if|else|switch|ternary|\?\:/.test(userCode);
   
   let score = 0;
   let feedback = "";
