@@ -44,6 +44,7 @@ import ResourceDetail from "@/pages/ResourceDetail";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Metaverse from "@/pages/Metaverse";
+import CodeFusion from "@/pages/CodeFusion";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const style = {

@@ -437,3 +437,24 @@ export const TECH_TIERS = ["Beginner", "Explorer", "Builder", "Expert", "Master"
 export const LEARNING_PACES = ["slow", "moderate", "fast", "intensive"] as const;
 
 export const COGNITIVE_STYLES = ["visual", "logical", "examples", "fast_track"] as const;
+
+// CodeFusion - Code Blending & Mixing Feature
+export const codeFusions = pgTable("code_fusions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  sourceCode: text("source_code").array().default(sql`'{}'::text[]`),
+  blendedCode: text("blended_code"),
+  language: varchar("language").default("javascript"),
+  tags: text("tags").array().default(sql`'{}'::text[]`),
+  isPublic: boolean("is_public").default(false),
+  likes: integer("likes").default(0),
+  downloads: integer("downloads").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type CodeFusion = typeof codeFusions.$inferSelect;
+const insertCodeFusionSchema = createInsertSchema(codeFusions).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCodeFusion = z.infer<typeof insertCodeFusionSchema>;
