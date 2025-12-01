@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { Link } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -214,6 +215,7 @@ function ArenaCard({ arena, image }: { arena: Arena; image?: string }) {
 }
 
 export default function Dashboard() {
+  const { handleErrorSilently } = useErrorHandler();
   const { user } = useAuth();
   const { t } = useTranslation();
   
