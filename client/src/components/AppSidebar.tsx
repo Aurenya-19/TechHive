@@ -1,233 +1,103 @@
-import { Link, useLocation } from "wouter";
+import { LogOut, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import {
   LayoutDashboard,
   Swords,
-  Users,
   FolderGit2,
   Shield,
   Newspaper,
-  GraduationCap,
-  Trophy,
-  MessageSquare,
-  Sparkles,
-  Target,
-  Map,
-  LogOut,
   Github,
-  Zap,
   Globe,
-  Wand2,
+  Zap,
+  Sparkles,
+  Map,
+  GraduationCap,
+  Target,
+  Trophy,
+  Users,
+  MessageSquare,
+  User,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-const mainNavItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Skill Arenas", url: "/arenas", icon: Swords },
-  { title: "Projects Hub", url: "/projects", icon: FolderGit2 },
-  { title: "Tech Clans", url: "/clans", icon: Shield },
-  { title: "TechPulse", url: "/feed", icon: Newspaper },
-];
-
-const explorNavItems = [
-  { title: "GitHub Hub", url: "/github", icon: Github },
-  { title: "Tech World", url: "/tech-world", icon: Globe },
-  { title: "Swarm Projects", url: "/swarm", icon: Zap },
-  { title: "Tech Spotlight", url: "/spotlight", icon: Sparkles },
-];
-
-const learningNavItems = [
-  { title: "Roadmaps", url: "/roadmaps", icon: Map },
-  { title: "Mini-Courses", url: "/courses", icon: GraduationCap },
-  { title: "Daily Quests", url: "/quests", icon: Target },
-];
-
-const socialNavItems = [
-  { title: "Leaderboards", url: "/leaderboards", icon: Trophy },
-  { title: "MentorVerse", url: "/mentors", icon: Users },
-  { title: "Messages", url: "/messages", icon: MessageSquare },
-];
-
-const devToolsNavItems = [
-  { title: "Metaverse Hub", url: "/metaverse", icon: Wand2 },
-  { title: "CodeFusion", url: "/codefusion", icon: Zap },
-];
-
 export function AppSidebar() {
-  const [location] = useLocation();
-  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const { data: profile } = useQuery({ queryKey: ["/api/user/profile"] });
 
-  const xpProgress = 65;
-  const currentLevel = 12;
+  const menuItems = [
+    { title: t("navigation.dashboard"), url: "/", icon: LayoutDashboard },
+    { title: t("navigation.arenas"), url: "/arenas", icon: Swords },
+    { title: t("navigation.projects"), url: "/projects", icon: FolderGit2 },
+    { title: t("navigation.clans"), url: "/clans", icon: Shield },
+    { title: t("navigation.feed"), url: "/feed", icon: Newspaper },
+    { title: t("navigation.github"), url: "/github", icon: Github },
+    { title: t("navigation.techworld"), url: "/tech-world", icon: Globe },
+    { title: t("navigation.swarm"), url: "/swarm", icon: Zap },
+    { title: t("navigation.spotlight"), url: "/spotlight", icon: Sparkles },
+    { title: t("navigation.roadmaps"), url: "/roadmaps", icon: Map },
+    { title: t("navigation.courses"), url: "/courses", icon: GraduationCap },
+    { title: t("navigation.quests"), url: "/quests", icon: Target },
+    { title: t("navigation.leaderboard"), url: "/leaderboards", icon: Trophy },
+    { title: t("navigation.mentors"), url: "/mentors", icon: Users },
+    { title: t("navigation.messages"), url: "/messages", icon: MessageSquare },
+  ];
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
-        <Link href="/" className="flex items-center gap-3">
-          <img src="/codeverse-logo.png" alt="CodeVerse Logo" className="h-10 w-10" />
-          <div className="flex flex-col">
-            <span className="font-display text-xl font-bold">CodeVerse</span>
-            <span className="text-xs text-muted-foreground">Learn. Build. Grow.</span>
-          </div>
-        </Link>
-      </SidebarHeader>
-
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Learning</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {learningNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Social</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {socialNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Explore</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {explorNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Dev Tools & Metaverse</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {devToolsNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>AI Assistant</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={location === "/code-mentor"}>
-                  <Link href="/code-mentor" data-testid="nav-code-mentor">
-                    <Sparkles className="h-4 w-4" />
-                    <span>CodeMentor</span>
+          <SidebarGroupLabel>CodeVerse</SidebarGroupLabel>
+          <SidebarMenu>
+            {menuItems.map((item) => (
+              <SidebarMenuItem key={item.url}>
+                <SidebarMenuButton asChild>
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/profile">
+                  <User />
+                  <span>{t("navigation.profile")}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2"
+                onClick={logout}
+                data-testid="button-logout"
+              >
+                <LogOut className="h-4 w-4" />
+                {t("navigation.logout")}
+              </Button>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-
-      <SidebarFooter className="p-4">
-        <div className="rounded-lg border border-border bg-card/50 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-medium">Level {currentLevel}</span>
-            <span className="text-xs text-muted-foreground">{xpProgress}%</span>
-          </div>
-          <Progress value={xpProgress} className="h-2" />
-          <p className="mt-1 text-xs text-muted-foreground">350 XP to next level</p>
-        </div>
-
-        {user && (
-          <div className="mt-4 flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={user.profileImageUrl || undefined} className="object-cover" />
-              <AvatarFallback>
-                {user.firstName?.[0] || user.email?.[0]?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium">
-                {user.firstName || user.email?.split("@")[0] || "User"}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">Explorer Tier</p>
-            </div>
-            <a
-              href="/api/logout"
-              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-              data-testid="button-logout"
-            >
-              <LogOut className="h-4 w-4" />
-            </a>
-          </div>
-        )}
-      </SidebarFooter>
     </Sidebar>
   );
 }

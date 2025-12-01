@@ -22,16 +22,16 @@
     "metaverse": "Metaverse"
   },
   "common": {
-    "welcome": "CodeVerse mein aapka swagat hai",
-    "loading": "Load ho raha hai...",
-    "error": "Kuch gadbad ho gayi",
+    "welcome": "Welcome to CodeVerse",
+    "loading": "Loading...",
+    "error": "Something went wrong",
     "success": "Success!",
-    "cancel": "Cancel karo",
-    "save": "Save karo",
-    "delete": "Delete karo",
-    "edit": "Edit karo",
-    "create": "Create karo",
-    "submit": "Submit karo",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
     "level": "Level",
     "xp": "XP",
     "score": "Score",
@@ -69,19 +69,19 @@
     },
     "communities": {
       "title": "Communities",
-      "create": "Community create karo",
+      "create": "Create Community",
       "private": "Private Community",
       "members": "Members",
-      "join": "Join karo",
+      "join": "Join",
       "messages": "Messages"
     }
   },
   "buttons": {
-    "startChallenge": "Challenge start karo",
-    "viewDetails": "Details dekho",
-    "submitSolution": "Solution submit karo",
-    "joinClan": "Clan mein join karo",
-    "explore": "Explore karo",
-    "learnMore": "Aur sikhiye"
+    "startChallenge": "Start Challenge",
+    "viewDetails": "View Details",
+    "submitSolution": "Submit Solution",
+    "joinClan": "Join Clan",
+    "explore": "Explore",
+    "learnMore": "Learn More"
   }
 }
