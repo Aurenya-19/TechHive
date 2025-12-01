@@ -484,11 +484,10 @@ export async function registerRoutes(
   app.get("/api/mentors", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
-      const profiles = await storage.getUserProfile(req.user.id);
-      const allUsers = await storage.getLeaderboard("xp", "all_time", 100);
-      const mentors = allUsers.filter((entry: any) => entry.user.id !== req.user!.id).map((entry: any, idx: number) => ({
-        id: entry.user.id,
-        name: entry.user.firstName || entry.user.email,
+      const allUsers = await storage.getLeaderboard(100);
+      const mentors = allUsers.filter((entry: any) => entry.userId !== req.user!.id).map((entry: any, idx: number) => ({
+        id: entry.userId || `mentor_${idx}`,
+        name: `Mentor ${idx + 1}`,
         expertise: ["Web Dev", "AI", "DevOps"],
         rating: Math.floor(Math.random() * 5) + 3,
         students: idx + 1,
@@ -519,10 +518,10 @@ export async function registerRoutes(
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
       const userProfile = await storage.getUserProfile(req.user.id);
-      const allUsers = await storage.getLeaderboard("xp", "all_time", 100);
-      const mentors = allUsers.filter((entry: any) => entry.user.id !== req.user!.id).slice(0, 5).map((entry: any) => ({
-        id: entry.user.id,
-        name: entry.user.firstName || entry.user.email,
+      const allUsers = await storage.getLeaderboard(100);
+      const mentors = allUsers.filter((entry: any) => entry.userId !== req.user!.id).slice(0, 5).map((entry: any, idx: number) => ({
+        id: entry.userId || `mentor_${idx}`,
+        name: `Expert Mentor ${idx + 1}`,
         expertise: (userProfile?.interests || ["Web Dev", "AI", "DevOps"]),
         rating: Math.floor(Math.random() * 5) + 3,
       }));
