@@ -583,3 +583,55 @@ export type AdvancedChallenge = typeof advancedChallenges.$inferSelect;
 export type CommunityBadge = typeof communityBadges.$inferSelect;
 export type UserBadge = typeof userBadges.$inferSelect;
 export type AiRecommendation = typeof aiCommunityRecommendations.$inferSelect;
+
+// ===== COMPETITIONS FEATURE =====
+export const competitions = pgTable("competitions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  type: varchar("type").notNull(),
+  difficulty: varchar("difficulty").default("hard"),
+  arenaId: varchar("arena_id"),
+  status: varchar("status").default("upcoming"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  maxParticipants: integer("max_participants").default(1000),
+  prizePool: integer("prize_pool").default(10000),
+  rules: text("rules"),
+  judgesCriteria: text("judges_criteria").array().default(sql`'{}'::text[]`),
+  resources: text("resources").array().default(sql`'{}'::text[]`),
+  minLevel: integer("min_level").default(1),
+  creatorId: varchar("creator_id").notNull(),
+  imageUrl: varchar("image_url"),
+  tags: text("tags").array().default(sql`'{}'::text[]`),
+  participantCount: integer("participant_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userCompetitions = pgTable("user_competitions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  competitionId: varchar("competition_id").notNull().references(() => competitions.id),
+  status: varchar("status").default("joined"),
+  rank: integer("rank"),
+  score: integer("score").default(0),
+  submissions: integer("submissions").default(0),
+  joinedAt: timestamp("joined_at").defaultNow(),
+});
+
+export const competitionSubmissions = pgTable("competition_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  competitionId: varchar("competition_id").notNull().references(() => competitions.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  code: text("code"),
+  description: text("description"),
+  approach: text("approach"),
+  score: integer("score").default(0),
+  feedback: text("feedback"),
+  status: varchar("status").default("pending"),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+});
+
+export type Competition = typeof competitions.$inferSelect;
+export type UserCompetition = typeof userCompetitions.$inferSelect;
+export type CompetitionSubmission = typeof competitionSubmissions.$inferSelect;

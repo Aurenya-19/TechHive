@@ -1,258 +1,144 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import {
-  Trophy,
-  Swords,
-  Clock,
-  Users,
-  Zap,
-  Rocket,
-  Target,
-} from "lucide-react";
-import type { Competition } from "@shared/schema";
+import { useLocation } from "wouter";
+import { Trophy, Users, Calendar, Zap, Filter } from "lucide-react";
 
-function CompetitionCard({ competition }: { competition: Competition }) {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const joinCompetition = useMutation({
-    mutationFn: async () => {
-      return apiRequest("POST", `/api/competitions/${competition.id}/join`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/competitions"] });
-      toast({
-        title: "Competition joined!",
-        description: `You've joined "${competition.name}"!`,
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to join competition",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const getStatusColor = (status: string | null | undefined) => {
-    switch (status) {
-      case "upcoming":
-        return "bg-yellow-500/10 text-yellow-600";
-      case "active":
-        return "bg-green-500/10 text-green-600";
-      case "completed":
-        return "bg-blue-500/10 text-blue-600";
-      default:
-        return "bg-primary/10 text-primary";
-    }
-  };
-
-  const getDifficultyIcon = (difficulty: string | null | undefined) => {
-    switch (difficulty) {
-      case "beginner":
-        return "⭐";
-      case "intermediate":
-        return "⭐⭐";
-      case "advanced":
-        return "⭐⭐⭐";
-      default:
-        return "⭐⭐";
-    }
-  };
-
-  const startDate = competition.startDate ? new Date(competition.startDate) : null;
-  const endDate = competition.endDate ? new Date(competition.endDate) : null;
-
-  return (
-    <Card className="hover-elevate">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              {competition.type === "hackathon" ? (
-                <Rocket className="h-5 w-5 text-chart-1" />
-              ) : competition.type === "code-race" ? (
-                <Swords className="h-5 w-5 text-chart-2" />
-              ) : (
-                <Trophy className="h-5 w-5 text-chart-3" />
-              )}
-              <h3 className="font-display text-lg font-semibold">{competition.name}</h3>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground">{competition.description}</p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap gap-2">
-          <Badge className={getStatusColor(competition.status)}>
-            {competition.status}
-          </Badge>
-          <Badge variant="outline">
-            {getDifficultyIcon(competition.difficulty)} {competition.difficulty}
-          </Badge>
-          {competition.type && (
-            <Badge variant="secondary" className="capitalize">
-              {competition.type}
-            </Badge>
-          )}
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <div className="space-y-1">
-            <span className="text-muted-foreground">Participants</span>
-            <div className="flex items-center gap-1 font-semibold">
-              <Users className="h-4 w-4" />
-              {competition.participantCount || 0}
-            </div>
-          </div>
-          <div className="space-y-1">
-            <span className="text-muted-foreground">Prize Pool</span>
-            <div className="flex items-center gap-1 font-semibold">
-              <Zap className="h-4 w-4" />
-              ${competition.prizePool || 0}
-            </div>
-          </div>
-          <div className="space-y-1">
-            <span className="text-muted-foreground">Deadline</span>
-            <div className="text-xs font-semibold">
-              {endDate ? endDate.toLocaleDateString() : "TBA"}
-            </div>
-          </div>
-        </div>
-
-        {competition.rules && (
-          <div className="space-y-2 border-t pt-4">
-            <p className="text-sm font-medium">Rules</p>
-            <p className="text-xs text-muted-foreground line-clamp-3">{competition.rules}</p>
-          </div>
-        )}
-
-        <Button
-          onClick={() => joinCompetition.mutate()}
-          disabled={joinCompetition.isPending || competition.status === "completed"}
-          className="w-full"
-          data-testid={`button-join-competition-${competition.id}`}
-        >
-          {joinCompetition.isPending ? "Joining..." : "Join Competition"}
-        </Button>
-      </CardContent>
-    </Card>
-  );
+interface Competition {
+  id: string;
+  title: string;
+  description?: string;
+  type: string;
+  difficulty: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  participantCount: number;
+  prizePool: number;
+  tags?: string[];
+  imageUrl?: string;
 }
 
 export default function Competitions() {
-  const { data: competitions, isLoading, isError, error: errorMsg } = useQuery<Competition[]>({
+  const [, navigate] = useLocation();
+  const { data: competitions, isLoading } = useQuery<Competition[]>({
     queryKey: ["/api/competitions"],
   });
 
-  if (isError) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh] p-6">
-        <Card className="w-full max-w-md border-destructive">
-          <CardHeader>
-            <CardTitle className="text-destructive">Failed to load competitions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              {errorMsg instanceof Error ? errorMsg.message : "Unable to load competitions"}
-            </p>
-            <Button onClick={() => window.location.reload()} className="w-full">Retry</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const upcoming = competitions?.filter(c => c.status === "upcoming") || [];
+  const active = competitions?.filter(c => c.status === "active") || [];
+  const ended = competitions?.filter(c => c.status === "ended") || [];
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6 p-6">
-        <Skeleton className="h-12 w-64" />
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-48" />
-          ))}
+  const difficultyColor = {
+    medium: "bg-blue-500/10 text-blue-500",
+    hard: "bg-orange-500/10 text-orange-500",
+    extreme: "bg-red-500/10 text-red-500",
+  };
+
+  const CompetitionCard = ({ comp }: { comp: Competition }) => (
+    <Card className="hover-elevate cursor-pointer" onClick={() => navigate(`/competitions/${comp.id}`)}>
+      {comp.imageUrl && (
+        <div className="h-32 overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+          <img src={comp.imageUrl} alt={comp.title} className="h-full w-full object-cover" />
         </div>
-      </div>
-    );
-  }
-
-  const upcomingCompetitions = competitions?.filter((c) => c.status === "upcoming") || [];
-  const activeCompetitions = competitions?.filter((c) => c.status === "active") || [];
-  const completedCompetitions = competitions?.filter((c) => c.status === "completed") || [];
+      )}
+      <CardContent className="pt-4">
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold line-clamp-2">{comp.title}</h3>
+            <Trophy className="h-4 w-4 text-yellow-500 shrink-0" />
+          </div>
+          <p className="text-sm text-muted-foreground line-clamp-2">{comp.description}</p>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="secondary" className={`text-xs ${difficultyColor[comp.difficulty as keyof typeof difficultyColor]}`}>
+              {comp.difficulty}
+            </Badge>
+            <Badge variant="outline" className="text-xs capitalize">{comp.type}</Badge>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Users className="h-4 w-4" />
+              {comp.participantCount} joined
+            </div>
+            <div className="font-semibold text-yellow-600">{comp.prizePool} XP</div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="space-y-6 p-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Competitions & Hackathons</h1>
-        <p className="mt-1 text-muted-foreground">
-          Compete with developers worldwide and earn prizes in specialized skill arenas
-        </p>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Competitions</h1>
+        <p className="text-muted-foreground">Join competitions, solve challenges, and win amazing prizes</p>
       </div>
 
-      <Tabs defaultValue="active">
-        <TabsList>
-          <TabsTrigger value="active" data-testid="tab-competitions-active">
-            <Swords className="mr-2 h-4 w-4" />
-            Active ({activeCompetitions.length})
-          </TabsTrigger>
-          <TabsTrigger value="upcoming" data-testid="tab-competitions-upcoming">
-            <Clock className="mr-2 h-4 w-4" />
-            Upcoming ({upcomingCompetitions.length})
-          </TabsTrigger>
-          <TabsTrigger value="completed" data-testid="tab-competitions-completed">
-            <Trophy className="mr-2 h-4 w-4" />
-            Completed ({completedCompetitions.length})
-          </TabsTrigger>
+      <Tabs defaultValue="active" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="active">Active ({active.length})</TabsTrigger>
+          <TabsTrigger value="upcoming">Upcoming ({upcoming.length})</TabsTrigger>
+          <TabsTrigger value="ended">Ended ({ended.length})</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="active" className="mt-6 space-y-4">
-          {activeCompetitions.length > 0 ? (
-            activeCompetitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} />
-            ))
+        <TabsContent value="active" className="space-y-4">
+          {isLoading ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array(3).fill(0).map((_, i) => (
+                <Skeleton key={i} className="h-72" />
+              ))}
+            </div>
+          ) : active.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {active.map(comp => <CompetitionCard key={comp.id} comp={comp} />)}
+            </div>
           ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Swords className="h-12 w-12 text-muted-foreground/50" />
-                <p className="mt-4 text-muted-foreground">No active competitions</p>
+              <CardContent className="pt-6">
+                <p className="text-center text-muted-foreground">No active competitions right now</p>
               </CardContent>
             </Card>
           )}
         </TabsContent>
 
-        <TabsContent value="upcoming" className="mt-6 space-y-4">
-          {upcomingCompetitions.length > 0 ? (
-            upcomingCompetitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} />
-            ))
+        <TabsContent value="upcoming" className="space-y-4">
+          {isLoading ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array(3).fill(0).map((_, i) => (
+                <Skeleton key={i} className="h-72" />
+              ))}
+            </div>
+          ) : upcoming.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {upcoming.map(comp => <CompetitionCard key={comp.id} comp={comp} />)}
+            </div>
           ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Clock className="h-12 w-12 text-muted-foreground/50" />
-                <p className="mt-4 text-muted-foreground">No upcoming competitions</p>
+              <CardContent className="pt-6">
+                <p className="text-center text-muted-foreground">No upcoming competitions</p>
               </CardContent>
             </Card>
           )}
         </TabsContent>
 
-        <TabsContent value="completed" className="mt-6 space-y-4">
-          {completedCompetitions.length > 0 ? (
-            completedCompetitions.map((comp) => (
-              <CompetitionCard key={comp.id} competition={comp} />
-            ))
+        <TabsContent value="ended" className="space-y-4">
+          {isLoading ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array(3).fill(0).map((_, i) => (
+                <Skeleton key={i} className="h-72" />
+              ))}
+            </div>
+          ) : ended.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {ended.map(comp => <CompetitionCard key={comp.id} comp={comp} />)}
+            </div>
           ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <Trophy className="h-12 w-12 text-muted-foreground/50" />
-                <p className="mt-4 text-muted-foreground">No completed competitions yet</p>
+              <CardContent className="pt-6">
+                <p className="text-center text-muted-foreground">No ended competitions</p>
               </CardContent>
             </Card>
           )}

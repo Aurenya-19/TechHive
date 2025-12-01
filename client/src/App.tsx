@@ -45,6 +45,9 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import Metaverse from "@/pages/Metaverse";
 import CodeFusion from "@/pages/CodeFusion";
+import Competitions from "@/pages/Competitions";
+import CompetitionDetail from "@/pages/CompetitionDetail";
+import CompetitionLeaderboard from "@/pages/CompetitionLeaderboard";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const style = {
