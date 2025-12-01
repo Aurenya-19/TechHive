@@ -1,4 +1,4 @@
-import express, { type Request, Response, NextFunction } from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -17,7 +17,7 @@ declare module "http" {
 app.use(compression({
   level: 9, // Max compression for 20k+ users
   threshold: 512, // Compress smaller responses too
-  filter: (req, res) => {
+  filter: (req: Request, res: Response) => {
     if (req.headers["x-no-compression"]) return false;
     return compression.filter(req, res);
   },
@@ -100,15 +100,15 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
+  const originalResJson = res.json.bind(res);
+  res.json = function (bodyJson: any, ...args: any[]) {
     capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+    return originalResJson(bodyJson, ...args);
   };
 
   // Set cache headers for API responses - optimized for 20k+ users

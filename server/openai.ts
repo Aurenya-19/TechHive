@@ -2,42 +2,57 @@
 // CODEVERSE AI - INTELLIGENT EXPERT SYSTEM (ZERO EXTERNAL DEPENDENCIES)
 // ============================================================================
 
-// Advanced pattern detection with context awareness
+// Advanced pattern detection with context awareness and weighted scoring
 function detectQuestionType(message: string): string {
   const msg = message.toLowerCase();
   const words = msg.split(/\s+/);
-  
+  let scores: Record<string, number> = {
+    debugging: 0,
+    learning: 0,
+    algorithm: 0,
+    optimization: 0,
+    design: 0,
+    patterns: 0,
+    general: 0,
+  };
+
+  // Weighted scoring system for better accuracy
   // Debugging - highest priority
-  if (/error|bug|debug|crash|fix|exception|null|undefined|fail|break/.test(msg)) {
-    return "debugging";
+  if (/error|bug|debug|crash|fix|exception|null|undefined|fail|break|why is|not working|error says/.test(msg)) {
+    scores.debugging += 5;
   }
-  
+
   // Learning/Concepts
-  if (/explain|understand|teach|what|how|learn|concept|principle|difference|between/.test(msg)) {
-    return "learning";
+  if (/explain|understand|teach|what|how|learn|concept|principle|difference|between|meaning of/.test(msg)) {
+    scores.learning += 4;
   }
-  
+
   // Algorithms & Data Structures
-  if (/algorithm|solve|implement|code|function|method|structure|array|list|tree|graph|sort/.test(msg)) {
-    return "algorithm";
+  if (/algorithm|solve|implement|code|function|method|structure|array|list|tree|graph|sort|write code/.test(msg)) {
+    scores.algorithm += 4;
   }
-  
+
   // Performance & Optimization
-  if (/optimi|fast|slow|performance|efficient|speed|memory|cache|reduce|improve/.test(msg)) {
-    return "optimization";
+  if (/optimi|fast|slow|performance|efficient|speed|memory|cache|reduce|improve|bottleneck|profil/.test(msg)) {
+    scores.optimization += 4;
   }
-  
+
   // System Design & Architecture
-  if (/system|design|architecture|scale|deploy|build|structure|plan|framework|database|api/.test(msg)) {
-    return "design";
+  if (/system|design|architecture|scale|deploy|build|structure|plan|framework|database|api|infrastructure/.test(msg)) {
+    scores.design += 3;
   }
-  
+
   // Best practices & patterns
-  if (/best|practice|pattern|approach|technique|standard|convention|guideline/.test(msg)) {
-    return "patterns";
+  if (/best|practice|pattern|approach|technique|standard|convention|guideline|should i/.test(msg)) {
+    scores.patterns += 3;
   }
-  
-  return "general";
+
+  // Find the type with highest score
+  const maxScore = Math.max(...Object.values(scores));
+  const topType = Object.entries(scores)
+    .find(([_, score]) => score === maxScore)?.[0] || "general";
+
+  return maxScore > 0 ? topType : "general";
 }
 
 // Enhanced response builder with deeper expertise

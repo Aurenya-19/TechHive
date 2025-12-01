@@ -1,5 +1,6 @@
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import type { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as GoogleOAuthStrategy } from "passport-google-oauth20";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
@@ -108,7 +109,7 @@ export async function setupAuth(app: Express) {
 
   // Google OAuth Strategy - use dynamic callback URL
   passport.use(
-    new GoogleStrategy(
+    new GoogleOAuthStrategy(
       {
         clientID,
         clientSecret,
