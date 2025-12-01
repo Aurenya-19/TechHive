@@ -35,8 +35,22 @@ async function upsertUser(profile: any) {
   const lastName = profile.name?.familyName || '';
   const profileImageUrl = profile.photos?.[0]?.value;
 
+  // Check if user already exists by email to prevent duplicate key violations
+  let existingUser = null;
+  if (email) {
+    try {
+      const result = await storage.getUserByEmail(email);
+      existingUser = result;
+    } catch (err) {
+      // User doesn't exist, continue
+    }
+  }
+
+  // Use existing user ID if found, otherwise use Google ID
+  const userId = existingUser?.id || googleId;
+
   await storage.upsertUser({
-    id: googleId,
+    id: userId,
     email,
     firstName,
     lastName,
