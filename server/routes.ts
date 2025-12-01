@@ -521,10 +521,11 @@ export async function registerRoutes(
 
   // AI Chat - ALWAYS use advanced AI engine (no external APIs needed)
   app.post("/api/ai/chat", async (req, res) => {
-    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
       const { message, history, action } = req.body;
       let response: string;
+
+      console.log("[CodeMentor] Chat request:", message.substring(0, 50));
 
       // Always use the self-contained AI engine
       const { chatWithCopilot, explainCode, debugCode, generateLearningPath, answerTechQuestion, generateProjectIdea } = await import("./openai");
@@ -541,11 +542,14 @@ export async function registerRoutes(
         const { interests, skillLevel } = JSON.parse(message);
         response = await generateProjectIdea(interests, skillLevel);
       } else {
+        console.log("[CodeMentor] Using chatWithCopilot for message");
         response = await chatWithCopilot(message, history || []);
+        console.log("[CodeMentor] Response length:", response.length, "First 100:", response.substring(0, 100));
       }
 
       res.json({ response });
     } catch (error: any) {
+      console.error("[CodeMentor] Error:", error.message);
       res.status(400).json({ error: error.message });
     }
   });
