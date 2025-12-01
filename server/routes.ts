@@ -551,13 +551,18 @@ export async function registerRoutes(
     }
   });
 
-  // SIMPLE TEST - Just AI, nothing else
+  // SIMPLE TEST - Just AI, nothing else - NO CACHING
   app.get("/api/test-ai/:question", async (req, res) => {
     try {
+      // Disable all caching for this endpoint
+      res.set("Cache-Control", "no-cache, no-store, must-revalidate, private");
+      res.set("Pragma", "no-cache");
+      res.set("Expires", "0");
+      
       const question = decodeURIComponent(req.params.question);
       const { chatWithCopilot } = await import("./openai");
       const response = await chatWithCopilot(question, []);
-      res.json({ question, response });
+      res.json({ question, response, timestamp: Date.now() });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

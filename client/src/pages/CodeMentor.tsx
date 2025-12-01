@@ -113,16 +113,26 @@ export default function CodeMentor() {
       try {
         console.log("[CodeMentor] Sending message:", content.substring(0, 50));
         
-        // Use the test endpoint - simpler, no auth needed
+        // Add timestamp to prevent caching
+        const timestamp = Date.now();
         const encodedQuestion = encodeURIComponent(content);
-        const response = await fetch(`/api/test-ai/${encodedQuestion}`);
+        const url = `/api/test-ai/${encodedQuestion}?t=${timestamp}`;
+        
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+          }
+        });
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
         
         const data = await response.json();
-        console.log("[CodeMentor] Got response:", data);
+        console.log("[CodeMentor] Got response:", data.response?.substring(0, 100));
         
         if (data?.error) {
           throw new Error(data.error);
@@ -138,16 +148,13 @@ export default function CodeMentor() {
       setInput("");
     },
     onSuccess: (data: any) => {
-      console.log("[CodeMentor] Success - data:", data);
       const responseText = data.response || data.message || "No response";
-      console.log("[CodeMentor] Displaying response:", responseText.substring(0, 100));
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: responseText },
       ]);
     },
     onError: (error: any) => {
-      console.error("[CodeMentor] Mutation error:", error);
       setMessages((prev) => prev.slice(0, -1));
       toast({
         title: "CodeMentor Error",
