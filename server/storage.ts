@@ -140,6 +140,13 @@ export interface IStorage {
   createAvatar(avatar: InsertAvatar): Promise<UserAvatar>;
   updateAvatar(userId: string, updates: Partial<InsertAvatar>): Promise<UserAvatar | undefined>;
   getMetaverseLeaderboard(): Promise<(UserAvatar & { user: User; profile: UserProfile })[]>;
+
+  // CodeFusion operations
+  getUserCodeFusions(userId: string): Promise<any[]>;
+  createCodeFusion(fusion: any): Promise<any>;
+  updateCodeFusion(id: string, fusion: Partial<any>): Promise<any>;
+  deleteCodeFusion(id: string): Promise<void>;
+  getPublicCodeFusions(limit?: number): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -656,6 +663,30 @@ export class DatabaseStorage implements IStorage {
       user: r.users,
       profile: r.user_profiles,
     }));
+  }
+}
+
+  // CodeFusion operations
+  async getUserCodeFusions(userId: string): Promise<any[]> {
+    return db.select().from(codeFusions).where(eq(codeFusions.userId, userId));
+  }
+
+  async createCodeFusion(fusion: any): Promise<any> {
+    const [created] = await db.insert(codeFusions).values(fusion).returning();
+    return created;
+  }
+
+  async updateCodeFusion(id: string, fusion: Partial<any>): Promise<any> {
+    const [updated] = await db.update(codeFusions).set(fusion).where(eq(codeFusions.id, id)).returning();
+    return updated;
+  }
+
+  async deleteCodeFusion(id: string): Promise<void> {
+    await db.delete(codeFusions).where(eq(codeFusions.id, id));
+  }
+
+  async getPublicCodeFusions(limit = 20): Promise<any[]> {
+    return db.select().from(codeFusions).where(eq(codeFusions.isPublic, true)).limit(limit);
   }
 }
 
