@@ -45,6 +45,19 @@ function MessageBubble({ message, isUser }: { message: ChatMessage; isUser: bool
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Detect response type for badge
+  const detectType = (text: string): string => {
+    const lower = text.toLowerCase();
+    if (lower.includes("debug")) return "debugging";
+    if (lower.includes("algorithm")) return "algorithm";
+    if (lower.includes("learn")) return "learning";
+    if (lower.includes("optimi")) return "optimization";
+    if (lower.includes("design") || lower.includes("system")) return "design";
+    return "response";
+  };
+
+  const responseType = !isUser ? detectType(message.content) : "";
+
   return (
     <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
@@ -54,28 +67,35 @@ function MessageBubble({ message, isUser }: { message: ChatMessage; isUser: bool
           </AvatarFallback>
         </Avatar>
       )}
-      <div
-        className={`group relative max-w-[80%] rounded-2xl px-4 py-3 ${
-          isUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted"
-        }`}
-      >
-        <div className="whitespace-pre-wrap text-sm">{message.content}</div>
-        {!isUser && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute -right-10 top-0 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-            onClick={copyToClipboard}
-          >
-            {copied ? (
-              <Check className="h-4 w-4 text-chart-5" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </Button>
+      <div className="flex flex-col gap-2">
+        {!isUser && responseType && (
+          <Badge variant="outline" className="w-fit text-xs">
+            {responseType.toUpperCase()}
+          </Badge>
         )}
+        <div
+          className={`group relative max-w-[80%] rounded-2xl px-4 py-3 ${
+            isUser
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted"
+          }`}
+        >
+          <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+          {!isUser && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute -right-10 top-0 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+              onClick={copyToClipboard}
+            >
+              {copied ? (
+                <Check className="h-4 w-4 text-chart-5" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -91,15 +111,25 @@ export default function CodeMentor() {
   const sendMessage = useMutation({
     mutationFn: async (content: string) => {
       try {
-        const response: any = await apiRequest("POST", "/api/ai/chat", {
-          message: content,
-          history: messages,
-        });
-        if (response?.error) {
-          throw new Error(response.error);
+        console.log("[CodeMentor] Sending message:", content.substring(0, 50));
+        
+        // Use the test endpoint - simpler, no auth needed
+        const encodedQuestion = encodeURIComponent(content);
+        const response = await fetch(`/api/test-ai/${encodedQuestion}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
         }
-        return response;
+        
+        const data = await response.json();
+        console.log("[CodeMentor] Got response:", data);
+        
+        if (data?.error) {
+          throw new Error(data.error);
+        }
+        return data;
       } catch (error: any) {
+        console.error("[CodeMentor] Error:", error);
         throw new Error(error.message || "Failed to get response from CodeMentor");
       }
     },
@@ -108,15 +138,16 @@ export default function CodeMentor() {
       setInput("");
     },
     onSuccess: (data: any) => {
-      console.log("[CodeMentor Frontend] Response received:", data);
-      const responseText = data.response || "I'm here to help! What else would you like to learn?";
-      console.log("[CodeMentor Frontend] Response text:", responseText.substring(0, 100));
+      console.log("[CodeMentor] Success - data:", data);
+      const responseText = data.response || data.message || "No response";
+      console.log("[CodeMentor] Displaying response:", responseText.substring(0, 100));
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: responseText },
       ]);
     },
     onError: (error: any) => {
+      console.error("[CodeMentor] Mutation error:", error);
       setMessages((prev) => prev.slice(0, -1));
       toast({
         title: "CodeMentor Error",
