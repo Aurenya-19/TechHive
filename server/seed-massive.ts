@@ -128,3 +128,46 @@ export async function seedMassiveContent() {
     return false;
   }
 }
+
+// Seed elite badges
+const badges = [
+  { id: "badge_1", name: "Master Coder", description: "Completed 100+ challenges", rarity: "epic", requirement: "100_challenges" },
+  { id: "badge_2", name: "Top Scorer", description: "Ranked in top 1% globally", rarity: "legendary", requirement: "topScorer" },
+  { id: "badge_3", name: "Knowledge Expert", description: "Mastered 5+ skill arenas", rarity: "epic", requirement: "5_arenas" },
+  { id: "badge_4", name: "Community Leader", description: "Created and lead a community", rarity: "rare", requirement: "community_creator" },
+  { id: "badge_5", name: "Research Pioneer", description: "Completed advanced research challenges", rarity: "legendary", requirement: "research_master" },
+];
+
+// Seed advanced challenges (for level 5+ users)
+const advancedChallenges = [];
+const EXTREME_TOPICS = [
+  "Advanced ML Architecture Design",
+  "Custom Transformer Models",
+  "Quantum Algorithm Implementation",
+  "Hardware-Software Codesign",
+  "Novel Cryptography Methods",
+  "Biotech Data Analysis",
+  "AR/VR Physics Engine",
+];
+
+let advCount = 0;
+for (let i = 0; i < 17; i++) {
+  const arenaId = `arena_${i + 1}`;
+  for (let j = 0; j < 5; j++) {
+    advCount++;
+    advancedChallenges.push({
+      id: `advanced_${advCount}`,
+      arenaId,
+      title: `${EXTREME_TOPICS[j % EXTREME_TOPICS.length]} - Level ${j + 1}`,
+      description: "Advanced research-level challenge for elite learners",
+      difficulty: j < 2 ? "advanced" : j < 4 ? "extreme" : "research",
+      minLevel: 5,
+      xpReward: 500 + j * 100,
+      type: "research",
+      instructions: "Implement a novel solution to this advanced problem",
+      resources: ["https://arxiv.org/", "https://paperswithcode.com/"],
+      hints: ["Think outside the box", "Reference cutting-edge research"],
+      testCases: [{ input: "advanced", expected: "solution" }],
+    });
+  }
+}

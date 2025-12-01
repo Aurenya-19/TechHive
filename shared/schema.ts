@@ -495,3 +495,91 @@ export const learningReports = pgTable("learning_reports", {
 export type LearningReport = typeof learningReports.$inferSelect;
 const insertReportSchema = createInsertSchema(learningReports).omit({ id: true, createdAt: true });
 export type InsertLearningReport = z.infer<typeof insertReportSchema>;
+
+// Private Communities & Groups
+export const privateGroups = pgTable("private_groups", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  creatorId: varchar("creator_id").notNull().references(() => users.id),
+  requiredBadge: varchar("required_badge"), // Badge needed to join
+  minLevel: integer("min_level").default(1),
+  minXp: integer("min_xp").default(0),
+  isPublic: boolean("is_public").default(false),
+  maxMembers: integer("max_members"),
+  category: varchar("category"), // "elite", "research", "professional", "niche"
+  tags: text("tags").array().default(sql`'{}'::text[]`),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const groupMembers = pgTable("group_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  groupId: varchar("group_id").notNull().references(() => privateGroups.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  role: varchar("role").default("member"), // "admin", "moderator", "member"
+  joinedAt: timestamp("joined_at").defaultNow(),
+  lastActive: timestamp("last_active").defaultNow(),
+});
+
+// Group Messages (private chat)
+export const groupMessages = pgTable("group_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  groupId: varchar("group_id").notNull().references(() => privateGroups.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  isPinned: boolean("is_pinned").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Advanced Challenges (for elite learners, level 5+)
+export const advancedChallenges = pgTable("advanced_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  arenaId: varchar("arena_id").references(() => arenas.id),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  difficulty: varchar("difficulty").default("extreme"), // "advanced", "extreme", "research"
+  minLevel: integer("min_level").default(5),
+  xpReward: integer("xp_reward").default(500),
+  type: varchar("type").default("research"),
+  instructions: text("instructions"),
+  resources: text("resources").array().default(sql`'{}'::text[]`), // Links to papers, docs
+  testCases: jsonb("test_cases"),
+  hints: text("hints").array().default(sql`'{}'::text[]`),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Community Badges (earned through achievements)
+export const communityBadges = pgTable("community_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  icon: varchar("icon"),
+  requirement: varchar("requirement"), // "level_5", "100_challenges", "topScorer", etc.
+  rarity: varchar("rarity").default("common"), // "common", "rare", "epic", "legendary"
+});
+
+export const userBadges = pgTable("user_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id").notNull().references(() => communityBadges.id),
+  earnedAt: timestamp("earned_at").defaultNow(),
+});
+
+// AI-Driven Community Suggestions
+export const aiCommunityRecommendations = pgTable("ai_community_recommendations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  groupId: varchar("group_id").notNull().references(() => privateGroups.id),
+  matchScore: integer("match_score"), // 0-100
+  reason: text("reason"), // Why this community is recommended
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type PrivateGroup = typeof privateGroups.$inferSelect;
+export type GroupMember = typeof groupMembers.$inferSelect;
+export type GroupMessage = typeof groupMessages.$inferSelect;
+export type AdvancedChallenge = typeof advancedChallenges.$inferSelect;
+export type CommunityBadge = typeof communityBadges.$inferSelect;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type AiRecommendation = typeof aiCommunityRecommendations.$inferSelect;

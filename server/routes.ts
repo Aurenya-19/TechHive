@@ -1473,33 +1473,6 @@ export async function registerRoutes(
     } catch (error: any) {
       res.status(400).json(formatErrorResponse(error));
     }
-  });
-
-  // Monthly Learning Report Route
-  app.get("/api/report/monthly", async (req, res) => {
-    if (!req.user) return res.status(401).json(formatErrorResponse({ message: "Not authenticated" }));
-    try {
-      const { generateMonthlyReport } = await import("./reportGenerator");
-      const month = new Date().toISOString().substring(0, 7);
-      const submissions = await storage.getSolutionSubmissions(req.user.id, 1000);
-      const profile = await storage.getUserProfile(req.user.id);
-      const report = generateMonthlyReport(submissions, profile);
-      await storage.createMonthlyReport({
-        userId: req.user.id,
-        month,
-        totalChallengesAttempted: report.totalChallenges,
-        totalChallengesCompleted: report.completedChallenges,
-        successRate: report.successRate,
-        knowledgeGaps: JSON.stringify(report.knowledgeGaps),
-        recommendations: report.recommendations.join(" | "),
-        strengthAreas: report.strengthAreas,
-        improvementAreas: report.improvementAreas,
-      });
-      res.json(report);
-    } catch (error: any) {
-      res.status(400).json(formatErrorResponse(error));
-    }
-  });
 
   return httpServer;
 }
