@@ -40,6 +40,9 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
 const RATE_LIMIT_MAX = 100; // Max 100 requests per minute per IP
 
+// Paths exempt from rate limiting (core app features)
+const RATE_LIMIT_EXEMPT = ['/api/dashboard', '/api/auth/', '/api/profile', '/api/arenas', '/api/challenges', '/api/courses', '/api/quests', '/api/leaderboards'];
+
 // Memory cleanup: Remove expired rate limit entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
@@ -51,6 +54,11 @@ setInterval(() => {
 }, 300000); // 5 minutes
 
 app.use((req, res, next) => {
+  // Skip rate limiting for exempt paths
+  if (RATE_LIMIT_EXEMPT.some(path => req.path.startsWith(path))) {
+    return next();
+  }
+
   const clientIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0] || req.socket.remoteAddress || "unknown";
   const now = Date.now();
   const limit = rateLimitMap.get(clientIp);
