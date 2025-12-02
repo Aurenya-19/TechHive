@@ -2,47 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PROFESSIONAL CINEMATIC GALAXY THEME */
+/* PROFESSIONAL DEEP SPACE GALAXY THEME - Realistic & Cinematic */
 :root {
-  --button-outline: rgba(70, 180, 255, .15);
-  --badge-outline: rgba(0, 200, 220, .08);
+  --button-outline: rgba(80, 140, 180, .12);
+  --badge-outline: rgba(60, 120, 160, .08);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(70, 180, 255, .05);
-  --elevate-2: rgba(70, 180, 255, .1);
-  --background: 248 35% 4%;
-  --foreground: 190 60% 92%;
-  --border: 248 50% 14%;
-  --card: 248 45% 8%;
-  --card-foreground: 190 60% 92%;
-  --card-border: 248 50% 12%;
-  --sidebar: 248 40% 6%;
-  --sidebar-foreground: 190 60% 92%;
-  --sidebar-border: 248 48% 11%;
-  --sidebar-primary: 200 90% 55%;
-  --sidebar-primary-foreground: 248 35% 4%;
-  --sidebar-accent: 180 100% 60%;
-  --sidebar-accent-foreground: 248 35% 4%;
-  --sidebar-ring: 200 90% 55%;
-  --popover: 248 42% 9%;
-  --popover-foreground: 190 60% 92%;
-  --popover-border: 248 50% 13%;
-  --primary: 200 90% 55%;
-  --primary-foreground: 248 35% 4%;
-  --secondary: 180 100% 60%;
-  --secondary-foreground: 248 35% 4%;
-  --muted: 248 30% 18%;
-  --muted-foreground: 190 50% 65%;
-  --accent: 180 100% 65%;
-  --accent-foreground: 248 35% 4%;
+  --elevate-1: rgba(80, 140, 180, .04);
+  --elevate-2: rgba(80, 140, 180, .08);
+  --background: 240 40% 3%;
+  --foreground: 200 50% 90%;
+  --border: 240 60% 12%;
+  --card: 240 45% 6%;
+  --card-foreground: 200 50% 90%;
+  --card-border: 240 60% 10%;
+  --sidebar: 240 42% 5%;
+  --sidebar-foreground: 200 50% 90%;
+  --sidebar-border: 240 58% 9%;
+  --sidebar-primary: 210 80% 50%;
+  --sidebar-primary-foreground: 240 40% 3%;
+  --sidebar-accent: 170 85% 55%;
+  --sidebar-accent-foreground: 240 40% 3%;
+  --sidebar-ring: 210 80% 50%;
+  --popover: 240 42% 7%;
+  --popover-foreground: 200 50% 90%;
+  --popover-border: 240 60% 11%;
+  --primary: 210 80% 50%;
+  --primary-foreground: 240 40% 3%;
+  --secondary: 170 85% 55%;
+  --secondary-foreground: 240 40% 3%;
+  --muted: 240 28% 16%;
+  --muted-foreground: 200 40% 62%;
+  --accent: 170 85% 60%;
+  --accent-foreground: 240 40% 3%;
   --destructive: 0 84% 45%;
   --destructive-foreground: 0 0% 98%;
-  --input: 248 35% 15%;
-  --ring: 200 90% 55%;
-  --chart-1: 200 90% 55%;
-  --chart-2: 180 100% 60%;
-  --chart-3: 210 80% 60%;
-  --chart-4: 190 85% 65%;
-  --chart-5: 160 100% 55%;
+  --input: 240 35% 12%;
+  --ring: 210 80% 50%;
+  --chart-1: 210 80% 50%;
+  --chart-2: 170 85% 55%;
+  --chart-3: 220 75% 55%;
+  --chart-4: 200 75% 60%;
+  --chart-5: 180 80% 50%;
   --font-sans: Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
@@ -89,45 +89,45 @@
 }
 
 .dark {
-  --button-outline: rgba(70, 180, 255, .15);
-  --badge-outline: rgba(0, 200, 220, .08);
+  --button-outline: rgba(80, 140, 180, .12);
+  --badge-outline: rgba(60, 120, 160, .08);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(70, 180, 255, .05);
-  --elevate-2: rgba(70, 180, 255, .1);
-  --background: 248 35% 4%;
-  --foreground: 190 60% 92%;
-  --border: 248 50% 14%;
-  --card: 248 45% 8%;
-  --card-foreground: 190 60% 92%;
-  --card-border: 248 50% 12%;
-  --sidebar: 248 40% 6%;
-  --sidebar-foreground: 190 60% 92%;
-  --sidebar-border: 248 48% 11%;
-  --sidebar-primary: 200 90% 55%;
-  --sidebar-primary-foreground: 248 35% 4%;
-  --sidebar-accent: 180 100% 60%;
-  --sidebar-accent-foreground: 248 35% 4%;
-  --sidebar-ring: 200 90% 55%;
-  --popover: 248 42% 9%;
-  --popover-foreground: 190 60% 92%;
-  --popover-border: 248 50% 13%;
-  --primary: 200 90% 55%;
-  --primary-foreground: 248 35% 4%;
-  --secondary: 180 100% 60%;
-  --secondary-foreground: 248 35% 4%;
-  --muted: 248 30% 18%;
-  --muted-foreground: 190 50% 65%;
-  --accent: 180 100% 65%;
-  --accent-foreground: 248 35% 4%;
+  --elevate-1: rgba(80, 140, 180, .04);
+  --elevate-2: rgba(80, 140, 180, .08);
+  --background: 240 40% 3%;
+  --foreground: 200 50% 90%;
+  --border: 240 60% 12%;
+  --card: 240 45% 6%;
+  --card-foreground: 200 50% 90%;
+  --card-border: 240 60% 10%;
+  --sidebar: 240 42% 5%;
+  --sidebar-foreground: 200 50% 90%;
+  --sidebar-border: 240 58% 9%;
+  --sidebar-primary: 210 80% 50%;
+  --sidebar-primary-foreground: 240 40% 3%;
+  --sidebar-accent: 170 85% 55%;
+  --sidebar-accent-foreground: 240 40% 3%;
+  --sidebar-ring: 210 80% 50%;
+  --popover: 240 42% 7%;
+  --popover-foreground: 200 50% 90%;
+  --popover-border: 240 60% 11%;
+  --primary: 210 80% 50%;
+  --primary-foreground: 240 40% 3%;
+  --secondary: 170 85% 55%;
+  --secondary-foreground: 240 40% 3%;
+  --muted: 240 28% 16%;
+  --muted-foreground: 200 40% 62%;
+  --accent: 170 85% 60%;
+  --accent-foreground: 240 40% 3%;
   --destructive: 0 84% 45%;
   --destructive-foreground: 0 0% 98%;
-  --input: 248 35% 15%;
-  --ring: 200 90% 55%;
-  --chart-1: 200 90% 55%;
-  --chart-2: 180 100% 60%;
-  --chart-3: 210 80% 60%;
-  --chart-4: 190 85% 65%;
-  --chart-5: 160 100% 55%;
+  --input: 240 35% 12%;
+  --ring: 210 80% 50%;
+  --chart-1: 210 80% 50%;
+  --chart-2: 170 85% 55%;
+  --chart-3: 220 75% 55%;
+  --chart-4: 200 75% 60%;
+  --chart-5: 180 80% 50%;
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 1px 2px -1px hsl(0 0% 0% / 0.00);
@@ -186,12 +186,12 @@
     @apply font-sans antialiased bg-background text-foreground;
     position: relative;
     overflow-x: hidden;
-    background: #050810 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><radialGradient id="g1" cx="20%" cy="50%"><stop offset="0%25" style="stop-color:rgba(60,100,180,0.1);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(10,20,50,0);stop-opacity:1" /></radialGradient><radialGradient id="g2" cx="80%" cy="80%"><stop offset="0%25" style="stop-color:rgba(30,60,140,0.08);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(10,20,50,0);stop-opacity:1" /></radialGradient><radialGradient id="g3" cx="60%" cy="20%"><stop offset="0%25" style="stop-color:rgba(80,40,150,0.05);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(10,20,50,0);stop-opacity:1" /></radialGradient></defs><rect width="100%25" height="100%25" fill="%23050810"/><circle cx="20%25" cy="50%25" r="40%25" fill="url(%23g1)"/><circle cx="80%25" cy="80%25" r="30%25" fill="url(%23g2)"/><circle cx="60%25" cy="20%25" r="25%25" fill="url(%23g3)"/></svg>') no-repeat;
+    background: #030508 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><radialGradient id="n1" cx="15%" cy="40%"><stop offset="0%25" style="stop-color:rgba(50,100,140,0.12);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(5,10,30,0);stop-opacity:1" /></radialGradient><radialGradient id="n2" cx="85%" cy="75%"><stop offset="0%25" style="stop-color:rgba(40,80,120,0.08);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(5,10,30,0);stop-opacity:1" /></radialGradient><radialGradient id="n3" cx="60%" cy="20%"><stop offset="0%25" style="stop-color:rgba(80,60,120,0.06);stop-opacity:1" /><stop offset="100%25" style="stop-color:rgba(5,10,30,0);stop-opacity:1" /></radialGradient></defs><rect width="100%25" height="100%25" fill="%23030508"/><circle cx="15%25" cy="40%25" r="35%25" fill="url(%23n1)"/><circle cx="85%25" cy="75%25" r="28%25" fill="url(%23n2)"/><circle cx="60%25" cy="20%25" r="22%25" fill="url(%23n3)"/></svg>') no-repeat;
     background-size: cover;
     background-attachment: fixed;
   }
 
-  /* Professional starfield - subtle and distant */
+  /* Deep space starfield - realistic distant stars */
   body::before {
     content: "";
     position: fixed;
@@ -200,24 +200,27 @@
     width: 100%;
     height: 100%;
     background-image: 
-      radial-gradient(1.5px 1.5px at 10% 15%, rgba(200, 220, 255, 0.6), transparent),
-      radial-gradient(1px 1px at 20% 25%, rgba(150, 200, 255, 0.5), transparent),
-      radial-gradient(1px 1px at 30% 10%, rgba(180, 210, 255, 0.4), transparent),
-      radial-gradient(0.5px 0.5px at 15% 40%, rgba(200, 220, 255, 0.3), transparent),
-      radial-gradient(1px 1px at 50% 30%, rgba(170, 200, 255, 0.45), transparent),
-      radial-gradient(0.5px 0.5px at 70% 50%, rgba(150, 180, 255, 0.35), transparent),
-      radial-gradient(1px 1px at 80% 20%, rgba(180, 210, 255, 0.5), transparent),
-      radial-gradient(0.5px 0.5px at 90% 70%, rgba(200, 220, 255, 0.25), transparent),
-      radial-gradient(1.5px 1.5px at 40% 60%, rgba(170, 200, 255, 0.55), transparent),
-      radial-gradient(1px 1px at 60% 80%, rgba(150, 190, 255, 0.4), transparent);
-    background-size: 300px 300px;
+      radial-gradient(1px 1px at 8% 12%, rgba(180, 200, 220, 0.5), transparent),
+      radial-gradient(0.5px 0.5px at 18% 22%, rgba(160, 190, 220, 0.35), transparent),
+      radial-gradient(1px 1px at 28% 8%, rgba(170, 200, 230, 0.45), transparent),
+      radial-gradient(0.5px 0.5px at 12% 38%, rgba(150, 180, 210, 0.25), transparent),
+      radial-gradient(1px 1px at 48% 28%, rgba(160, 190, 220, 0.4), transparent),
+      radial-gradient(0.5px 0.5px at 68% 48%, rgba(140, 170, 200, 0.3), transparent),
+      radial-gradient(1px 1px at 78% 18%, rgba(170, 200, 230, 0.45), transparent),
+      radial-gradient(0.5px 0.5px at 88% 68%, rgba(150, 180, 210, 0.22), transparent),
+      radial-gradient(1px 1px at 38% 58%, rgba(160, 190, 220, 0.48), transparent),
+      radial-gradient(0.5px 0.5px at 58% 78%, rgba(140, 170, 200, 0.35), transparent),
+      radial-gradient(1px 1px at 5% 65%, rgba(170, 200, 230, 0.42), transparent),
+      radial-gradient(0.5px 0.5px at 95% 35%, rgba(150, 180, 210, 0.28), transparent);
+    background-size: 400px 400px;
     background-repeat: repeat;
-    animation: distant-twinkle 5s ease-in-out infinite;
+    animation: distant-twinkle 6s ease-in-out infinite;
     pointer-events: none;
     z-index: -2;
-    opacity: 0.7;
+    opacity: 0.6;
   }
 
+  /* Cosmic atmosphere overlay - subtle depth */
   body::after {
     content: "";
     position: fixed;
@@ -226,9 +229,9 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(180deg, 
-      rgba(30, 50, 100, 0.1) 0%,
-      rgba(10, 20, 50, 0.05) 50%,
-      rgba(20, 40, 80, 0.08) 100%);
+      rgba(40, 60, 100, 0.08) 0%,
+      rgba(15, 25, 50, 0.03) 50%,
+      rgba(30, 50, 90, 0.06) 100%);
     pointer-events: none;
     z-index: -1;
   }
@@ -275,44 +278,44 @@
 
   .no-default-active-elevate {}
 
-  /* Professional cinema galaxy effects */
+  /* Deep space cinema effects - Interstellar aesthetic */
   @layer components {
     .galaxy-card {
       background: linear-gradient(135deg, 
-        rgba(70, 120, 180, 0.05) 0%,
-        rgba(40, 80, 140, 0.02) 100%);
-      border: 1px solid rgba(70, 180, 255, 0.15);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
-                  inset 0 1px 0 rgba(70, 180, 255, 0.1);
+        rgba(60, 100, 140, 0.04) 0%,
+        rgba(35, 65, 100, 0.02) 100%);
+      border: 1px solid rgba(80, 140, 180, 0.12);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5),
+                  inset 0 1px 0 rgba(80, 140, 180, 0.08);
       transition: all 0.3s ease;
     }
 
     .galaxy-card:hover {
-      border-color: rgba(70, 180, 255, 0.25);
-      box-shadow: 0 8px 32px rgba(70, 180, 255, 0.15),
-                  inset 0 1px 0 rgba(70, 180, 255, 0.15);
+      border-color: rgba(80, 140, 180, 0.18);
+      box-shadow: 0 8px 32px rgba(80, 140, 180, 0.1),
+                  inset 0 1px 0 rgba(80, 140, 180, 0.12);
       background: linear-gradient(135deg, 
-        rgba(70, 120, 180, 0.08) 0%,
-        rgba(40, 80, 140, 0.04) 100%);
+        rgba(60, 100, 140, 0.06) 0%,
+        rgba(35, 65, 100, 0.03) 100%);
     }
 
     .cosmic-text {
       background: linear-gradient(135deg,
-        #46B4FF 0%,
-        #B4E7FF 50%,
-        #46B4FF 100%);
+        #5DB4E8 0%,
+        #A8D8FF 50%,
+        #5DB4E8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .space-accent {
-      box-shadow: 0 0 15px rgba(70, 180, 255, 0.2);
+      box-shadow: 0 0 15px rgba(80, 140, 180, 0.15);
     }
 
     .nebula-glow {
       position: relative;
-      box-shadow: 0 0 30px rgba(70, 180, 255, 0.15);
+      box-shadow: 0 0 30px rgba(80, 140, 180, 0.1);
     }
   }
 
