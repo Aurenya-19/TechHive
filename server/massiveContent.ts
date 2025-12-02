@@ -31,17 +31,47 @@ export const massiveQuests = Array.from({ length: 100 }, (_, i) => ({
 export const massiveCourses = Array.from({ length: 85 }, (_, i) => ({
   id: `course_${i + 1}`,
   title: `Master ${["AI/ML", "Web Dev", "Mobile Apps", "Security", "Blockchain", "DevOps", "Game Dev", "IoT"][i % 8]} - Course ${i + 1}`,
-  description: `Comprehensive course covering fundamentals to advanced topics with ${Math.floor(Math.random() * 15 + 5)} modules and ${Math.floor(Math.random() * 20 + 10)} projects`,
+  description: `Comprehensive course covering fundamentals to advanced topics with hands-on projects and real-world applications`,
   difficulty: ["beginner", "intermediate", "advanced"][i % 3],
-  duration: `${Math.floor(Math.random() * 8 + 4)} weeks`,
-  modules: Array.from({ length: Math.floor(Math.random() * 8 + 5) }, (_, j) => ({
-    title: `Module ${j + 1}: ${["Fundamentals", "Practical Skills", "Advanced Topics", "Project Work", "Assessment"][j % 5]}`,
-    lessons: Math.floor(Math.random() * 5 + 3)
-  })),
-  projects: Math.floor(Math.random() * 5 + 2),
-  students: Math.floor(Math.random() * 10000 + 100),
+  duration: 120 + Math.floor(Math.random() * 480),
+  category: ["ai", "web", "mobile", "security", "blockchain", "devops", "gamedev", "iot"][i % 8],
+  xpReward: 500 + (i % 3) * 250,
+  enrollments: Math.floor(Math.random() * 10000 + 100),
   rating: Math.random() * 1 + 4,
-  instructor: `Instructor ${i % 20 + 1}`,
+  modules: Array.from({ length: 5 + (i % 4) }, (_, j) => ({
+    title: `Module ${j + 1}: ${["Fundamentals", "Practical Skills", "Advanced Topics", "Project Work", "Assessment"][j % 5]}`,
+    lessons: 3 + (j % 5)
+  })),
+  tags: ["course", "structured", "comprehensive"],
+  content: {
+    lectures: Array.from({ length: 12 }, (_, l) => ({
+      title: `Lecture ${l + 1}: ${["Introduction to Core Concepts", "Building Your First Project", "Advanced Techniques", "Best Practices", "Real-World Applications"][l % 5]}`,
+      duration: 30 + Math.floor(Math.random() * 60),
+      videoUrl: `https://example.com/lecture-${l + 1}`
+    })),
+    notes: Array.from({ length: 8 }, (_, n) => 
+      `# Topic ${n + 1}\n\nKey Points:\n• Concept explanation and theory\n• Practical examples\n• Common pitfalls and how to avoid them\n• Real-world applications\n\nPractice: Try implementing this concept in a small project.`
+    ),
+    flashcards: Array.from({ length: 15 }, (_, f) => ({
+      front: `${["Define", "Explain", "What is", "How do you implement", "When should you use"][f % 5]} ${["the core concept", "this pattern", "this technique", "this framework", "this best practice"][f % 5]}?`,
+      back: `Key insight: Understanding this concept is crucial for ${["building scalable systems", "writing clean code", "improving performance", "ensuring security", "collaborating effectively"][f % 5]}.`
+    })),
+    practice: Array.from({ length: 6 }, (_, p) => ({
+      problem: `Project ${p + 1}: ${["Build a simple implementation", "Extend existing code", "Optimize performance", "Add new features", "Debug and refactor", "Create from scratch"][p % 6]}`,
+      difficulty: ["beginner", "beginner", "intermediate", "intermediate", "advanced", "advanced"][p % 6],
+      estimatedTime: 30 + (p * 15)
+    })),
+    quizzes: Array.from({ length: 5 }, (_, q) => ({
+      question: `Question ${q + 1}: Which of the following best represents ${["the core concept", "best practice", "implementation pattern", "design principle", "optimization technique"][q % 5]}?`,
+      options: [
+        "Option A - Most common approach",
+        "Option B - Also valid but less efficient",
+        "Option C - Incorrect interpretation",
+        "Option D - Edge case consideration"
+      ],
+      correct: q % 4
+    }))
+  }
 }));
 
 // Smart Roadmaps - Personalized Learning Paths

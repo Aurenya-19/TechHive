@@ -386,22 +386,29 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/courses/:courseId", async (req, res) => {
+    try {
+      const { massiveCourses } = await import("./massiveContent");
+      const course = massiveCourses.find(c => c.id === req.params.courseId);
+      if (!course) return res.status(404).json({ error: "Course not found" });
+      res.set("Cache-Control", "public, max-age=3600");
+      res.json(course);
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
+
   app.get("/api/courses/:courseId/lessons", async (req, res) => {
-    if (!process.env.OPENAI_API_KEY) {
+    try {
+      const { massiveCourses } = await import("./massiveContent");
+      const course = massiveCourses.find(c => c.id === req.params.courseId);
+      if (!course) return res.status(404).json({ error: "Course not found" });
+      
       const defaultLessons = Array.from({ length: 12 }, (_, i) => ({
         title: `Lesson ${i + 1}`,
         description: "Learn key concepts and practical skills"
       }));
-      return res.json(defaultLessons);
-    }
-    try {
-      const courses = await storage.getCourses();
-      const course = courses.find(c => c.id === req.params.courseId);
-      if (!course) return res.status(404).json({ error: "Course not found" });
-      
-      const { generateCourseLessons } = await import("./openai");
-      const lessons = await generateCourseLessons(course.title, course.description || "", 12);
-      res.json(lessons);
+      res.json(course.content?.lectures || defaultLessons);
     } catch (error: any) {
       res.status(500).json(formatErrorResponse(error));
     }
