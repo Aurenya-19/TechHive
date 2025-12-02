@@ -21,8 +21,6 @@ import {
   Star,
 } from "lucide-react";
 import type { Arena, Challenge } from "@shared/schema";
-// Arena images now loaded from database (Unsplash free images)
-const arenaImages: Record<string, string> = {};
 
 const arenaColors: Record<string, string> = {
   ai: "from-purple-500 to-pink-500",
@@ -55,7 +53,7 @@ function ArenaHeroCard({ arena }: { arena: Arena }) {
   const Icon = arenaIcons[arena.slug] || Sparkles;
   const colorClass = arenaColors[arena.slug] || arenaColors.ai;
   const description = arenaDescriptions[arena.slug] || arena.description;
-  const backgroundImage = (arena as any).imageUrl || arenaImages[arena.slug];
+  const backgroundImage = (arena as any).imageUrl;
 
   return (
     <Link href={`/arenas/${arena.slug}`}>
