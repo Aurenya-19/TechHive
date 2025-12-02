@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ const SKILL_INTERESTS = [
 export default function ProfileSetup() {
   const [penName, setPenName] = useState("");
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
 
   const { mutate: setupProfile, isPending } = useMutation({
@@ -39,7 +39,7 @@ export default function ProfileSetup() {
         title: "Profile Complete! 🎮",
         description: "Welcome to CodeVerse, " + penName + "!",
       });
-      navigate("/dashboard");
+      setLocation("/dashboard");
     },
     onError: (error: any) => {
       toast({
