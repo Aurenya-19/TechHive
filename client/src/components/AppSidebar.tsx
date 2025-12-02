@@ -32,6 +32,7 @@ import {
   Flame,
   BarChart3,
   Radio,
+  Brain,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -53,6 +54,8 @@ export function AppSidebar() {
     { title: t("navigation.roadmaps"), url: "/roadmaps", icon: Map },
     { title: t("navigation.courses"), url: "/courses", icon: GraduationCap },
     { title: t("navigation.quests"), url: "/quests", icon: Target },
+    { title: "AI Mentor", url: "/ai-mentor", icon: Brain },
+    { title: "Skill Blending", url: "/skill-blending", icon: Sparkles },
     { title: "Competitions", url: "/competitions", icon: Flame },
     { title: "Analytics", url: "/analytics", icon: BarChart3 },
     { title: "Podcasts", url: "/podcasts", icon: Radio },

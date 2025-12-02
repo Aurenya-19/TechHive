@@ -34,6 +34,8 @@ import Messages from "@/pages/Messages";
 import Mentors from "@/pages/Mentors";
 import Roadmaps from "@/pages/Roadmaps";
 import CodeMentor from "@/pages/CodeMentor";
+import AIMentor from "@/pages/AIMentor";
+import SkillBlending from "@/pages/SkillBlending";
 import Profile from "@/pages/Profile";
 import TechWorld from "@/pages/TechWorld";
 import SwarmProjects from "@/pages/SwarmProjects";
@@ -180,6 +182,12 @@ function Router() {
       </Route>
       <Route path="/code-mentor">
         <ProtectedRoute component={CodeMentor} />
+      </Route>
+      <Route path="/ai-mentor">
+        <ProtectedRoute component={AIMentor} />
+      </Route>
+      <Route path="/skill-blending">
+        <ProtectedRoute component={SkillBlending} />
       </Route>
       <Route path="/profile">
         <ProtectedRoute component={Profile} />
