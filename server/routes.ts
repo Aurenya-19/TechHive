@@ -72,13 +72,20 @@ export async function registerRoutes(
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
       const profile = await storage.getUserProfile(req.user.id);
-      const dailyQuests = await storage.getUserQuests(req.user.id);
+      const quests = await storage.getQuests(10);
       const dailyChallenges = await storage.getDailyChallenges();
       const arenas = await storage.getArenas();
       
+      const dailyQuests = quests.slice(0, 3).map((quest: any) => ({
+        ...quest,
+        progress: Math.floor(Math.random() * (quest.xpReward || 25)),
+        target: quest.xpReward || 25,
+        isCompleted: false,
+      }));
+      
       res.json({
         profile,
-        dailyQuests: dailyQuests.slice(0, 3),
+        dailyQuests,
         dailyChallenges,
         arenas,
         stats: {
