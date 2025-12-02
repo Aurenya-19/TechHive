@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Star, Trophy, Users } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
 
 interface Avatar {
   id: string;
@@ -18,8 +14,6 @@ interface Avatar {
 }
 
 export default function Metaverse() {
-  const { user } = useAuth();
-  const { toast } = useToast();
   const containerRef = useRef<HTMLDivElement>(null);
   const [topPlayers] = useState<Avatar[]>([
     { id: "1", penName: "SkyWalker", level: 45, xp: 125000, rank: 1, avatarColor: "#00FFFF" },
@@ -62,9 +56,9 @@ export default function Metaverse() {
         sphere.material = skyboxMat;
 
         topPlayers.forEach((player, index) => {
-          const sphere = BABYLON.MeshBuilder.CreateSphere(`avatar${index}`, { diameter: 2, segments: 32 }, scene);
+          const avatarSphere = BABYLON.MeshBuilder.CreateSphere(`avatar${index}`, { diameter: 2, segments: 32 }, scene);
           const angle = (index / topPlayers.length) * Math.PI * 2;
-          sphere.position = new BABYLON.Vector3(
+          avatarSphere.position = new BABYLON.Vector3(
             Math.cos(angle) * 15,
             index * 3 - 6,
             Math.sin(angle) * 15
@@ -73,10 +67,10 @@ export default function Metaverse() {
           const mat = new BABYLON.StandardMaterial(`mat${index}`, scene);
           mat.emissiveColor = BABYLON.Color3.FromHexString(player.avatarColor);
           mat.specularColor = new BABYLON.Color3(0.5, 0.8, 1);
-          sphere.material = mat;
+          avatarSphere.material = mat;
 
           const glow = new BABYLON.GlowLayer("glow", scene);
-          glow.addIncludedOnlyMesh(sphere);
+          glow.addIncludedOnlyMesh(avatarSphere);
           glow.intensity = 0.8;
         });
 
@@ -111,256 +105,149 @@ export default function Metaverse() {
 
     initBabylon();
   }, [topPlayers]);
-        title: "Error",
-        description: "Failed to create avatar",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateAvatar = async () => {
-    if (!avatarData) return;
-    try {
-      const response = await apiRequest("PATCH", "/api/avatar", avatarData);
-      if (response && typeof response === "object") {
-        setAvatarData(response as unknown as UserAvatar);
-        refetchAvatar();
-        toast({
-          title: "Avatar Updated!",
-          description: "Your metaverse avatar has been customized.",
-        });
-        setCustomizing(false);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update avatar",
-        variant: "destructive",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (!canvasRef.current || !leaderboard) return;
-
-    // Simple 3D visualization using canvas
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = 400;
-
-    // Draw gradient background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, "#1a1a2e");
-    gradient.addColorStop(1, "#16213e");
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw title
-    ctx.fillStyle = "#7C3AED";
-    ctx.font = "bold 24px 'Space Grotesk'";
-    ctx.textAlign = "center";
-    ctx.fillText("METAVERSE LEADERBOARD HALL", canvas.width / 2, 40);
-
-    // Draw top 3 pedestals
-    const pedestalData = [
-      { rank: 2, x: 100, height: 200, color: "#C0C0C0" }, // Silver
-      { rank: 1, x: canvas.width / 2 - 60, height: 250, color: "#FFD700" }, // Gold
-      { rank: 3, x: canvas.width - 100, height: 150, color: "#CD7F32" }, // Bronze
-    ];
-
-    pedestalData.forEach((pedestal) => {
-      // Draw pedestal
-      ctx.fillStyle = pedestal.color;
-      ctx.fillRect(
-        pedestal.x - 40,
-        canvas.height - pedestal.height,
-        80,
-        pedestal.height
-      );
-
-      // Draw rank number
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 32px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText(
-        pedestal.rank.toString(),
-        pedestal.x,
-        canvas.height - pedestal.height / 2
-      );
-
-      // Draw medal emoji
-      const medal =
-        pedestal.rank === 1 ? "🥇" : pedestal.rank === 2 ? "🥈" : "🥉";
-      ctx.font = "32px Arial";
-      ctx.fillText(medal, pedestal.x, canvas.height - pedestal.height - 20);
-    });
-
-    // Draw level counters
-    ctx.fillStyle = "#7C3AED";
-    ctx.font = "14px 'Space Grotesk'";
-    ctx.textAlign = "center";
-    leaderboard?.slice(0, 3).forEach((entry: MetaverseUser, i: number) => {
-      const x =
-        pedestalData[i]?.x || canvas.width / 2;
-      ctx.fillText(
-        `Level ${entry.profile.level}`,
-        x,
-        canvas.height + 20
-      );
-    });
-  }, [leaderboard]);
-
-  if (isLoading) {
-    return (
-      <div className="space-y-6 p-6">
-        <Skeleton className="h-12 w-64" />
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 p-6">
-      <div>
-        <h1 className="font-display text-4xl font-bold flex items-center gap-3">
-          <Globe className="h-10 w-10 text-purple-500" />
-          Metaverse Hub
+      {/* Header */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <Sparkles className="h-8 w-8 text-primary" />
+          Galaxy Metaverse
         </h1>
-        <p className="mt-2 text-muted-foreground">
-          Enter the 3D virtual reality of CodeVerse where avatars compete on the global leaderboard
-        </p>
+        <p className="text-muted-foreground">Step into the 3D virtual world and meet top learners</p>
       </div>
 
-      {/* 3D Canvas Leaderboard */}
-      <Card className="border-purple-500/20 bg-gradient-to-br from-slate-900 to-slate-800">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-yellow-400" />
-            3D Leaderboard Hall
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <canvas
-            ref={canvasRef}
-            className="w-full rounded-lg border border-purple-500/20"
-            style={{ minHeight: "400px" }}
-          />
-        </CardContent>
-      </Card>
+      {/* Tabs */}
+      <Tabs defaultValue="3d" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="3d">3D World</TabsTrigger>
+          <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+          <TabsTrigger value="avatars">Avatars</TabsTrigger>
+        </TabsList>
 
-      {/* Top 10 Leaderboard */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Crown className="h-5 w-5 text-yellow-500" />
-            Top 10 Metaverse Avatars
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {leaderboard?.slice(0, 10).map((entry: MetaverseUser, index: number) => (
+        {/* 3D Visualization */}
+        <TabsContent value="3d" className="space-y-4">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Virtual Galaxy
+              </CardTitle>
+              <CardDescription>
+                Explore a 3D universe of top performers. Drag to rotate, scroll to zoom.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <div
-                key={entry.user.id}
-                className="flex items-center justify-between rounded-lg border border-border bg-card p-4 hover-elevate"
-                data-testid={`leaderboard-entry-${index}`}
-              >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20 font-bold">
-                    {index + 1 === 1 ? "🥇" : index + 1 === 2 ? "🥈" : index + 1 === 3 ? "🥉" : index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold">
-                      {entry.user.firstName} {entry.user.lastName}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Level {entry.profile.level} • {entry.profile.xp} XP
-                    </p>
-                  </div>
-                </div>
+                ref={containerRef}
+                className="w-full rounded-md border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10"
+                style={{ minHeight: "500px", height: "500px" }}
+              />
+            </CardContent>
+          </Card>
 
-                <div className="flex items-center gap-3">
-                  {entry.aura && (
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      {entry.aura}
-                    </Badge>
-                  )}
-                  <Badge className="bg-purple-500/20 text-purple-300 flex items-center gap-1">
-                    <Zap className="h-3 w-3" />
-                    {Math.floor(entry.profile.xp / 100)}K
-                  </Badge>
+          <Card className="bg-gradient-to-br from-secondary/10 to-accent/10 border-secondary/20">
+            <CardContent className="pt-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-muted-foreground">Total Galaxy Members</div>
+                  <div className="text-3xl font-bold text-primary">2,847</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-muted-foreground">Active This Month</div>
+                  <div className="text-3xl font-bold text-secondary">1,243</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Metaverse Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Total Avatars</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-purple-500">
-              {leaderboard?.length || 0}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Active in metaverse
-            </p>
-          </CardContent>
-        </Card>
+        {/* Leaderboard */}
+        <TabsContent value="leaderboard" className="space-y-4">
+          <Card className="border-primary/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-primary" />
+                Top Performers
+              </CardTitle>
+              <CardDescription>
+                The most skilled learners in the CodeVerse galaxy
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {topPlayers.map((player) => (
+                  <div
+                    key={player.id}
+                    className="flex items-center justify-between rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5 p-4 hover-elevate"
+                    data-testid={`leaderboard-player-${player.rank}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 font-bold">
+                        #{player.rank}
+                      </div>
+                      <div>
+                        <div className="font-semibold">{player.penName}</div>
+                        <div className="text-sm text-muted-foreground">Level {player.level}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge className="bg-primary/20">{player.xp.toLocaleString()} XP</Badge>
+                      <Star className="h-5 w-5 fill-primary text-primary" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Top Avatar XP</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-yellow-500">
-              {leaderboard?.[0]?.profile?.xp?.toLocaleString() || 0}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Current leader
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Max Level</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-blue-500">
-              {Math.max(...((leaderboard || []).map((e: MetaverseUser) => e.profile.level) || [0])) || 0}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Highest achievable
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Coming Soon */}
-      <Card className="border-blue-500/20 bg-blue-500/5">
-        <CardHeader>
-          <CardTitle className="text-sm flex items-center gap-2">
-            🚀 Coming Soon to Metaverse
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
-          <p>✨ Avatar Customization - Create your unique tech persona</p>
-          <p>🏢 Virtual Learning Arenas - 3D spaces for live coding sessions</p>
-          <p>🏆 Achievement Displays - Show off your skills in 3D</p>
-          <p>🤝 Avatar Social Spaces - Meet other developers in real-time</p>
-        </CardContent>
-      </Card>
+        {/* Avatars */}
+        <TabsContent value="avatars" className="space-y-4">
+          <Card className="border-accent/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-accent" />
+                Avatar Customization
+              </CardTitle>
+              <CardDescription>
+                Unlock avatar appearances by leveling up and completing achievements
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-3 rounded-lg border border-accent/20 bg-accent/5 p-4">
+                  <h3 className="font-semibold">Your Avatar</h3>
+                  <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary">
+                    <Sparkles className="h-12 w-12 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-3 rounded-lg border border-accent/20 bg-accent/5 p-4">
+                  <h3 className="font-semibold">Unlocked Customizations</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Hair Styles</span>
+                      <Badge>5/12</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Outfits</span>
+                      <Badge>8/15</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Auras</span>
+                      <Badge>3/8</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Accessories</span>
+                      <Badge>6/20</Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
