@@ -307,7 +307,7 @@ export async function registerRoutes(
 
   app.get("/api/user/courses", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
-    const courses = await storage.getUserCourses(req.user.id);
+    const courses = await storage.getCourses();
     res.json(courses);
   });
 
@@ -367,19 +367,41 @@ export async function registerRoutes(
 
   // Feed - Real Tech News with Images
   app.get("/api/feed", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
     try {
-      const { getTechNews } = await import("./techNewsFeed");
-      const liveNews = await getTechNews();
-      // Try to get stored items too
-      const storedFeed = await storage.getFeedItems().catch(() => []);
-      // Combine live news + stored items
-      const combined = [...liveNews, ...storedFeed.slice(0, 5)];
-      res.set("Cache-Control", "public, max-age=3600");
-      res.json(combined);
+      // Get user profile for interest-based filtering
+      const profile = await storage.getUserProfile(req.user.id);
+      const userInterests = profile?.interests || [];
+      
+      // Generate interest-based feed with images
+      const { massiveFeedItems } = await import("./massiveContent");
+      
+      let feedItems = massiveFeedItems || [];
+      
+      // Filter by user interests if available
+      if (userInterests.length > 0) {
+        feedItems = feedItems.filter((item: any) => 
+          userInterests.some(interest => 
+            item.category?.toLowerCase().includes(interest.toLowerCase()) ||
+            item.title?.toLowerCase().includes(interest.toLowerCase()) ||
+            item.tags?.some((tag: string) => interest.toLowerCase().includes(tag.toLowerCase()))
+          )
+        );
+        // If filtered results are empty, show all
+        if (feedItems.length === 0) {
+          feedItems = massiveFeedItems || [];
+        }
+      }
+      
+      // Paginate for performance
+      const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      // Cache aggressively for performance
+      res.set("Cache-Control", "public, max-age=1800"); // 30 min cache
+      res.json(feedItems.slice(offset, offset + limit));
     } catch (error: any) {
-      // Fallback to stored feed if anything fails
-      const feed = await storage.getFeedItems().catch(() => []);
-      res.json(feed);
+      res.status(400).json(formatErrorResponse(error));
     }
   });
 
