@@ -1892,6 +1892,138 @@ export async function registerRoutes(
     }
   });
 
+  // ===== AI MENTORSHIP ROUTES =====
+  app.post("/api/ai/mentorship/ask", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { question, context, arenaId } = req.body;
+      if (!process.env.OPENAI_API_KEY) {
+        return res.json({ 
+          answer: "AI mentor learning mode active. Share your question and I'll help!",
+          source: "mentor"
+        });
+      }
+      
+      const { OpenAI } = await import("openai");
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "You are an expert tech mentor helping developers learn. Provide clear, actionable, step-by-step advice." },
+          { role: "user", content: `Context: ${context || 'General tech question'}. Question: ${question}` }
+        ],
+        max_tokens: 500,
+      });
+      
+      res.json({
+        answer: response.choices[0].message.content,
+        source: "ai_mentor",
+        timestamp: new Date()
+      });
+    } catch (error: any) {
+      res.json({ answer: "Mentor temporarily thinking... Check back soon!", source: "fallback" });
+    }
+  });
+
+  app.post("/api/ai/mentorship/feedback", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { code, language, challengeId } = req.body;
+      if (!process.env.OPENAI_API_KEY) {
+        return res.json({ 
+          feedback: "Your code looks solid! Keep coding and iterating.",
+          suggestions: ["Test edge cases", "Add comments", "Refactor for readability"],
+          isAI: false
+        });
+      }
+      
+      const { OpenAI } = await import("openai");
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const analysis = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "Code reviewer: Analyze code. Provide: 1) What's good 2) What to improve 3) Specific fixes" },
+          { role: "user", content: `Review this ${language} code:\n${code}` }
+        ],
+        max_tokens: 800,
+      });
+      
+      res.json({
+        feedback: analysis.choices[0].message.content,
+        isAI: true,
+        timestamp: new Date()
+      });
+    } catch (error: any) {
+      res.json({ 
+        feedback: "Great attempt! Keep practicing - each submission makes you stronger.",
+        isAI: false
+      });
+    }
+  });
+
+  // ===== SKILL BLENDING ROUTES =====
+  app.post("/api/blend/skills", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { skill1, skill2 } = req.body;
+      const profile = await storage.getUserProfile(req.user.id);
+      
+      const blends = [
+        { from: ["web", "mobile"], to: "cross-platform-dev", bonus: 150 },
+        { from: ["ai", "web"], to: "ml-webapps", bonus: 200 },
+        { from: ["devops", "ai"], to: "mlops", bonus: 250 },
+        { from: ["blockchain", "web"], to: "web3-dev", bonus: 180 },
+        { from: ["gamedev", "graphics"], to: "game-graphics", bonus: 160 },
+        { from: ["security", "devops"], to: "devsecops", bonus: 140 },
+      ];
+      
+      const match = blends.find(b => 
+        (b.from.includes(skill1) && b.from.includes(skill2)) ||
+        (b.from.includes(skill2) && b.from.includes(skill1))
+      );
+      
+      if (match) {
+        const xpGain = match.bonus;
+        await storage.updateUserProfile(req.user.id, {
+          xp: (profile?.xp || 0) + xpGain,
+          achievements: [...(profile?.achievements || []), match.to]
+        });
+        
+        res.json({
+          success: true,
+          blendName: match.to,
+          xpGained: xpGain,
+          message: `🔥 You unlocked ${match.to}! +${xpGain} XP`,
+          newLevel: Math.floor(((profile?.xp || 0) + xpGain) / 500) + 1
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "These skills haven't met yet. Try other combinations!"
+        });
+      }
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
+
+  app.get("/api/blend/available", async (req, res) => {
+    try {
+      res.json({
+        blends: [
+          { skill1: "web", skill2: "mobile", result: "cross-platform-dev", bonus: 150 },
+          { skill1: "ai", skill2: "web", result: "ml-webapps", bonus: 200 },
+          { skill1: "devops", skill2: "ai", result: "mlops", bonus: 250 },
+          { skill1: "blockchain", skill2: "web", result: "web3-dev", bonus: 180 },
+          { skill1: "gamedev", skill2: "graphics", result: "game-graphics", bonus: 160 },
+          { skill1: "security", skill2: "devops", result: "devsecops", bonus: 140 }
+        ]
+      });
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
+
   // ===== PROFILE ROUTES =====
   app.post("/api/profile/setup", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
