@@ -64,12 +64,54 @@ export default function SkillBlending() {
       </div>
 
       {lastBlend?.success && (
-        <Alert className="bg-green-500/10 border-green-500/30">
-          <Zap className="h-4 w-4 text-green-500" />
-          <AlertDescription className="text-green-700 dark:text-green-400">
-            {lastBlend.message} Level {lastBlend.newLevel}
-          </AlertDescription>
-        </Alert>
+        <div className="space-y-4">
+          <Alert className="bg-green-500/10 border-green-500/30">
+            <Zap className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-700 dark:text-green-400">
+              {lastBlend.message} • Level {lastBlend.newLevel}
+            </AlertDescription>
+          </Alert>
+          
+          {lastBlend.detailedInfo && (
+            <Card className="hover-elevate bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Your Blend: {lastBlend.blendName.replace(/-/g, " ").toUpperCase()}
+                </CardTitle>
+                <CardDescription>
+                  Combining {lastBlend.skills.map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(" + ")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                  {lastBlend.detailedInfo.split("\n").map((line: string, idx: number) => {
+                    if (line.startsWith("**") && line.endsWith(":**")) {
+                      return (
+                        <h4 key={idx} className="font-bold text-primary mt-4 mb-2 text-base">
+                          {line.replace(/\*\*/g, "")}
+                        </h4>
+                      );
+                    } else if (line.startsWith("• ") || line.startsWith("- ") || line.match(/^\d+\./)) {
+                      return (
+                        <div key={idx} className="ml-4 text-muted-foreground">
+                          {line}
+                        </div>
+                      );
+                    } else if (line.trim()) {
+                      return (
+                        <p key={idx} className="text-muted-foreground">
+                          {line}
+                        </p>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
 
       <Card className="hover-elevate">

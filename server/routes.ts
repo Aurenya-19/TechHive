@@ -2166,12 +2166,12 @@ Make it DETAILED, ACTIONABLE, and MOTIVATING.` },
       const profile = await storage.getUserProfile(req.user.id);
       
       const blends = [
-        { from: ["web", "mobile"], to: "cross-platform-dev", bonus: 150 },
-        { from: ["ai", "web"], to: "ml-webapps", bonus: 200 },
-        { from: ["devops", "ai"], to: "mlops", bonus: 250 },
-        { from: ["blockchain", "web"], to: "web3-dev", bonus: 180 },
-        { from: ["gamedev", "graphics"], to: "game-graphics", bonus: 160 },
-        { from: ["security", "devops"], to: "devsecops", bonus: 140 },
+        { from: ["web", "mobile"], to: "cross-platform-dev", bonus: 150, description: "Web + Mobile" },
+        { from: ["ai", "web"], to: "ml-webapps", bonus: 200, description: "AI + Web Development" },
+        { from: ["devops", "ai"], to: "mlops", bonus: 250, description: "DevOps + Machine Learning" },
+        { from: ["blockchain", "web"], to: "web3-dev", bonus: 180, description: "Blockchain + Web" },
+        { from: ["gamedev", "graphics"], to: "game-graphics", bonus: 160, description: "Game Dev + Graphics" },
+        { from: ["security", "devops"], to: "devsecops", bonus: 140, description: "Security + DevOps" },
       ];
       
       const match = blends.find(b => 
@@ -2186,12 +2186,97 @@ Make it DETAILED, ACTIONABLE, and MOTIVATING.` },
           achievements: [...(profile?.achievements || []), match.to]
         });
         
+        // Generate detailed blend information using AI
+        let detailedInfo = null;
+        try {
+          const { OpenAI } = await import("openai");
+          const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+          const response = await openai.chat.completions.create({
+            model: "gpt-4-turbo",
+            messages: [
+              { role: "system", content: `You are a tech career expert. Provide detailed information about skill blends in structured format.
+
+PROVIDE IN THIS EXACT FORMAT:
+**What This Blend Unlocks:**
+[3-4 sentences about what becomes possible]
+
+**Key Use Cases:**
+• Use case 1
+• Use case 2
+• Use case 3
+• Use case 4
+
+**Career Opportunities:**
+- Job role 1 (salary range/demand)
+- Job role 2 (salary range/demand)
+- Job role 3 (salary range/demand)
+
+**Next Learning Steps:**
+1. Master [specific topic]
+2. Build [type of project]
+3. Learn [advanced concept]
+4. Practice [real-world scenario]
+
+**Recommended Projects to Build:**
+- Project idea 1
+- Project idea 2
+- Project idea 3
+
+**Related Skills to Learn:**
+• Skill 1 (why it matters)
+• Skill 2 (why it matters)
+• Skill 3 (why it matters)` },
+              { role: "user", content: `I just blended ${skill1} and ${skill2} skills to become a ${match.to}. Provide comprehensive guidance on what this specialization means and how to leverage it.` }
+            ],
+            max_tokens: 1500,
+            temperature: 0.8,
+          });
+          detailedInfo = response.choices[0]?.message?.content;
+        } catch (aiError: any) {
+          console.error("AI Error generating blend info:", aiError.message);
+          detailedInfo = null;
+        }
+        
+        // Fallback detailed information
+        const fallbackInfo = `**What This Blend Unlocks:**
+By combining ${skill1} and ${skill2}, you've created a powerful specialization in ${match.to}. This opens doors to roles that require expertise in both domains, making you a valuable specialist in emerging tech sectors.
+
+**Key Use Cases:**
+• Building integrated systems that leverage both skill sets
+• Solving complex problems requiring multi-disciplinary approaches
+• Leading projects that combine both expertise areas
+• Creating innovative solutions at the intersection of technologies
+
+**Career Opportunities:**
+- ${match.to} Specialist (High Demand - $120K-180K)
+- Full-Stack Specialist (Growing demand)
+- Tech Lead in this domain (Leadership roles)
+
+**Next Learning Steps:**
+1. Master the integration patterns between both skills
+2. Build a significant project combining both technologies
+3. Learn about industry best practices for this specialization
+4. Contribute to open-source projects in this domain
+
+**Recommended Projects to Build:**
+- Build an integrated system showcasing both skills
+- Create an educational tutorial for this blend
+- Contribute to relevant open-source projects
+
+**Related Skills to Learn:**
+• Architecture & System Design (to design larger systems)
+• Performance Optimization (for production readiness)
+• Cloud Deployment (to deploy your creations)`;
+        
         res.json({
           success: true,
           blendName: match.to,
           xpGained: xpGain,
           message: `🔥 You unlocked ${match.to}! +${xpGain} XP`,
-          newLevel: Math.floor(((profile?.xp || 0) + xpGain) / 500) + 1
+          newLevel: Math.floor(((profile?.xp || 0) + xpGain) / 500) + 1,
+          detailedInfo: detailedInfo || fallbackInfo,
+          skills: [skill1, skill2],
+          timestamp: new Date().toISOString()
         });
       } else {
         res.json({
