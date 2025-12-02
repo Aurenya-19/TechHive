@@ -1945,20 +1945,36 @@ export async function registerRoutes(
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
         
         const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
+          model: "gpt-4-turbo",
           messages: [
-            { role: "system", content: "You are an expert tech mentor helping developers learn. Provide clear, actionable, step-by-step advice. Be concise but thorough." },
-            { role: "user", content: `Context: ${context || 'General tech question'}.\n\nQuestion: ${question}` }
+            { role: "system", content: `You are an expert senior tech mentor with 20+ years of experience. Your role is to provide comprehensive, detailed, and actionable guidance to developers at all levels.
+
+CRITICAL INSTRUCTIONS:
+1. Always provide DETAILED explanations with concrete examples
+2. Include step-by-step implementation guidance when relevant
+3. Explain WHY concepts matter, not just WHAT they are
+4. Provide code examples in appropriate languages
+5. Address common pitfalls and mistakes
+6. Suggest best practices and industry standards
+7. Keep responses educational and encouraging
+8. Use markdown formatting with headers, bullet points, and code blocks
+
+Format your response with:
+- Clear explanation of the concept
+- Practical examples with code
+- Common mistakes to avoid
+- Next steps to master this skill` },
+            { role: "user", content: `${context ? `Context: ${context}\n\n` : ''}Question: ${question}` }
           ],
-          max_tokens: 1000,
-          temperature: 0.7,
+          max_tokens: 2000,
+          temperature: 0.8,
         });
         
         const answer = response.choices[0]?.message?.content;
         
         if (!answer) {
           return res.json({ 
-            answer: "I'm thinking about your question. Could you rephrase it?",
+            answer: "I'm thinking about your question. Could you rephrase it with more details?",
             source: "fallback"
           });
         }
@@ -1971,7 +1987,7 @@ export async function registerRoutes(
       } catch (apiError: any) {
         console.error("OpenAI API Error:", apiError.message);
         return res.json({ 
-          answer: `Your question: "${question}"\n\nTip: Break down complex problems into smaller, manageable parts. Start with understanding the fundamentals, then apply them to your specific use case.`,
+          answer: `Question: "${question}"\n\nDETAILED GUIDANCE:\n\nKey Concepts:\n• Break problems into smaller, manageable modules\n• Understand fundamentals before advanced patterns\n• Practice with real-world projects\n\nImplementation Steps:\n1. Start with basic examples\n2. Study official documentation\n3. Build small projects\n4. Review production code\n5. Get feedback from experienced developers\n\nCommon Mistakes:\n• Skipping fundamentals\n• Not practicing enough\n• Ignoring edge cases\n• Not reading error messages carefully\n\nRecommended Resources:\n• Official documentation\n• GitHub repositories\n• Tutorial websites\n• Open source projects`,
           source: "fallback"
         });
       }
@@ -1995,13 +2011,27 @@ export async function registerRoutes(
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
         
         const analysis = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
+          model: "gpt-4-turbo",
           messages: [
-            { role: "system", content: "You are an expert code reviewer. Analyze the code and provide: 1) What's working well 2) Areas for improvement 3) Specific code changes. Be constructive and educational." },
-            { role: "user", content: `Please review this ${language || 'JavaScript'} code:\n\n${code}` }
+            { role: "system", content: `You are a senior code reviewer from a top tech company. Provide COMPREHENSIVE code reviews.
+
+REVIEW STRUCTURE:
+1. **Overall Assessment** - Code quality rating and summary
+2. **Strengths** - What the developer did well (3-4 points)
+3. **Critical Issues** - Problems that affect functionality/performance
+4. **Code Quality Issues** - Style, readability, maintainability improvements
+5. **Security Considerations** - Any potential security issues
+6. **Performance Optimization Opportunities** - How to make it faster
+7. **Best Practices** - Industry standards and patterns to follow
+8. **Specific Code Improvements** - Line-by-line suggestions with examples
+9. **Testing Recommendations** - What edge cases to test
+10. **Learning Resources** - Links to help improve
+
+Be DETAILED, SPECIFIC, and CONSTRUCTIVE. Include code examples for improvements.` },
+            { role: "user", content: `Please provide a comprehensive review of this ${language || 'JavaScript'} code:\n\n\`\`\`${language || 'javascript'}\n${code}\n\`\`\`` }
           ],
-          max_tokens: 1500,
-          temperature: 0.7,
+          max_tokens: 2500,
+          temperature: 0.8,
         });
         
         const feedback = analysis.choices[0]?.message?.content;
@@ -2021,7 +2051,7 @@ export async function registerRoutes(
       } catch (apiError: any) {
         console.error("OpenAI API Error:", apiError.message);
         return res.json({ 
-          feedback: `Code Review:\n\nGood structure overall! Here are suggestions:\n• Add more descriptive comments\n• Consider edge cases\n• Test with various inputs\n• Follow consistent naming conventions\n\nKeep coding and iterating!`,
+          feedback: `# Comprehensive Code Review\n\n## Overall Assessment\nGood foundation! Your code shows solid understanding of basics.\n\n## ✅ Strengths\n- Clear variable naming\n- Logical code structure\n- Handles basic cases\n\n## ⚠️ Areas for Improvement\n\n### Critical Issues\n1. **Error Handling** - Add try-catch blocks for robust error management\n2. **Input Validation** - Validate all user inputs before processing\n3. **Edge Cases** - Handle null, undefined, empty arrays\n\n### Code Quality\n- **Comments**: Add comments explaining complex logic\n- **Functions**: Break into smaller, single-responsibility functions\n- **Naming**: Use descriptive names for variables and functions\n\n### Performance\n- Consider caching results if computing repeatedly\n- Use appropriate data structures (arrays vs objects)\n- Avoid nested loops where possible\n\n## 🔒 Security\n- Sanitize external inputs\n- Avoid hardcoding sensitive data\n- Use parameterized queries for database\n\n## 📚 Next Steps\n1. Add comprehensive error handling\n2. Write unit tests for edge cases\n3. Refactor large functions into smaller pieces\n4. Follow your language's style guide\n\n## Learning Resources\n- Clean Code by Robert Martin\n- Your language's official documentation\n- Popular open-source projects on GitHub`,
           isAI: false
         });
       }
@@ -2039,17 +2069,28 @@ export async function registerRoutes(
       const { OpenAI } = await import("openai");
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-turbo",
         messages: [
-          { role: "system", content: "You are a skilled tech interviewer. Provide a comprehensive skill assessment: current level, strengths, gaps, and 3 concrete next steps." },
-          { role: "user", content: `Assess my ${skill} skill level and provide a development plan.` }
+          { role: "system", content: `You are a senior technical assessment expert and career coach. Provide comprehensive skill assessments.
+
+ASSESSMENT FORMAT:
+1. **Current Proficiency Level** - Beginner/Intermediate/Advanced/Expert with reasoning
+2. **Core Strengths** - 3-4 specific areas of demonstrated competence
+3. **Skill Gaps** - 3-4 areas needing development
+4. **Technical Depth Assessment** - How well fundamentals are understood
+5. **Real-world Application Readiness** - Can this skill be used in production?
+6. **Personalized Development Plan** - 3 specific next steps with timeframes
+7. **Industry Relevance** - Job market demand and career opportunities
+
+Be DETAILED and SPECIFIC. Include concrete examples.` },
+          { role: "user", content: `Provide a comprehensive assessment of my ${skill} skill level and create a personalized development plan.` }
         ],
-        max_tokens: 800,
-        temperature: 0.7,
+        max_tokens: 1500,
+        temperature: 0.8,
       });
       return res.json({ assessment: response.choices[0]?.message?.content || "Assessment in progress..." });
     } catch {
-      return res.json({ assessment: `${skill} Skill Assessment:\n\n• Current Level: Intermediate\n• Strengths: Core concepts understood\n• Gaps: Advanced patterns & optimization\n• Next Steps:\n  1. Practice advanced design patterns\n  2. Study real-world codebases\n  3. Build production projects` });
+      return res.json({ assessment: `## ${skill} Skill Assessment\n\n### Current Proficiency Level\nIntermediate - You understand core concepts and can build basic projects\n\n### Core Strengths\n✅ Solid understanding of fundamentals\n✅ Can follow best practices when guided\n✅ Capable of independent problem-solving\n\n### Skill Gaps\n⚠️ Advanced architectural patterns need work\n⚠️ Performance optimization experience limited\n⚠️ Real-world scaling experience needed\n\n### Development Plan\n\n**Phase 1 (2-3 weeks): Deep Fundamentals**\n- Study official documentation thoroughly\n- Practice core patterns with small projects\n- Review 5+ popular open-source projects\n\n**Phase 2 (4-6 weeks): Advanced Topics**\n- Master design patterns\n- Learn performance optimization techniques\n- Study architecture at scale\n\n**Phase 3 (7-12 weeks): Real-world Application**\n- Build a significant project\n- Contribute to open source\n- Mentor others in the skill\n\n### Industry Relevance\n🎯 High demand skill in tech industry\n💼 Strong job market prospects\n📈 Salary increase potential with mastery` });
     }
   });
 
@@ -2060,17 +2101,28 @@ export async function registerRoutes(
       const { OpenAI } = await import("openai");
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-turbo",
         messages: [
-          { role: "system", content: "You are a senior tech interviewer. Generate 5 realistic interview questions with explanations of what makes good answers." },
-          { role: "user", content: `Generate ${difficulty} level interview questions for ${skill}` }
+          { role: "system", content: `You are a senior tech interviewer from FAANG companies. Generate realistic interview questions.
+
+QUESTION FORMAT:
+For each question:
+1. **The Question** - Clear and specific
+2. **Why Interviewers Ask This** - Context and intent
+3. **What Good Answers Include** - Key points to cover
+4. **Example Answer** - Detailed, well-structured response
+5. **Follow-up Topics** - Related areas they might ask about
+6. **Common Mistakes** - What candidates often get wrong
+
+Generate 5 ${difficulty} level questions that are realistic and insightful.` },
+          { role: "user", content: `Generate comprehensive ${difficulty} level interview questions for ${skill} with detailed answer guidance.` }
         ],
-        max_tokens: 1200,
-        temperature: 0.7,
+        max_tokens: 2000,
+        temperature: 0.8,
       });
       return res.json({ questions: response.choices[0]?.message?.content || "Questions loading..." });
     } catch {
-      return res.json({ questions: `Interview Questions for ${skill}:\n\n1. Explain the core concepts and key terminology\n2. How would you design a system using ${skill}?\n3. Describe a challenging project and your approach\n4. What are common mistakes and how to avoid them?\n5. How do you stay updated with latest trends?` });
+      return res.json({ questions: `# Interview Prep Questions for ${skill}\n\n## Question 1: Fundamentals\n**Q:** Explain the core concepts and key terminology of ${skill}.\n\n**Why:** Tests foundational knowledge\n\n**Good Answer Should Include:**\n- Clear definitions of key terms\n- How components work together\n- Real-world analogies\n\n## Question 2: System Design\n**Q:** How would you design a system using ${skill}?\n\n**Why:** Assesses architectural thinking\n\n**Good Answer Should Include:**\n- Clear problem breakdown\n- Architecture decisions with rationale\n- Scalability considerations\n\n## Question 3: Problem Solving\n**Q:** Describe a challenging problem and your approach to solving it.\n\n**Why:** Evaluates problem-solving skills\n\n**Good Answer Should Include:**\n- Specific problem example\n- Step-by-step approach\n- Lessons learned\n\n## Question 4: Best Practices\n**Q:** What are common mistakes when using ${skill}?\n\n**Why:** Tests depth of knowledge\n\n**Good Answer Should Include:**\n- 3-4 specific mistakes\n- Why they happen\n- How to avoid them\n\n## Question 5: Growth Mindset\n**Q:** How do you stay updated with latest trends in ${skill}?\n\n**Why:** Assesses commitment to learning\n\n**Good Answer Should Include:**\n- Concrete resources you follow\n- Learning strategy\n- Recent advances you're aware of` });
     }
   });
 
@@ -2081,17 +2133,28 @@ export async function registerRoutes(
       const { OpenAI } = await import("openai");
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-turbo",
         messages: [
-          { role: "system", content: "You are a learning expert. Create a personalized 12-week learning roadmap with specific milestones, resources, and projects." },
-          { role: "user", content: `Create a personalized learning path to master ${currentSkill} in 12 weeks` }
+          { role: "system", content: `You are a learning architect and career coach. Design personalized 12-week mastery paths.
+
+ROADMAP STRUCTURE:
+- **Week-by-week breakdown** with specific milestones
+- **Core Concepts to Master** - Prioritized learning objectives
+- **Practical Projects** - Real-world applications for each phase
+- **Resources** - Curated links to courses, docs, tutorials
+- **Time Commitment** - Realistic weekly hours needed
+- **Success Metrics** - How to measure progress
+- **Specialization Options** - Career paths after mastery
+
+Make it DETAILED, ACTIONABLE, and MOTIVATING.` },
+          { role: "user", content: `Create a personalized 12-week learning path to master ${currentSkill}. Include projects, resources, milestones, and success metrics.` }
         ],
-        max_tokens: 1500,
-        temperature: 0.7,
+        max_tokens: 2500,
+        temperature: 0.8,
       });
       return res.json({ path: response.choices[0]?.message?.content || "Roadmap generating..." });
     } catch {
-      return res.json({ path: `12-Week Learning Path: ${currentSkill}\n\nWeek 1-2: Fundamentals & Setup\nWeek 3-4: Core Concepts & Practice\nWeek 5-7: Advanced Topics & Projects\nWeek 8-9: Real-world Applications\nWeek 10-11: Specialization Path\nWeek 12: Mastery Project & Review\n\nKey: Consistency, hands-on practice, and building real projects` });
+      return res.json({ path: `# 12-Week Mastery Path: ${currentSkill}\n\n## Phase 1: Foundations (Weeks 1-3)\n**Goal:** Build solid fundamentals\n\n### Week 1-2: Core Concepts\n- Study fundamental theories and concepts\n- Complete official documentation tutorials\n- Build 3 small practice projects\n\n### Week 3: First Real Project\n- Build a meaningful project using learned concepts\n- Focus on correctness, not optimization\n- Review and refactor based on feedback\n\n## Phase 2: Intermediate Skills (Weeks 4-7)\n**Goal:** Develop professional-level capabilities\n\n### Week 4-5: Advanced Concepts\n- Master design patterns and best practices\n- Study real-world codebases\n- Learn performance optimization\n\n### Week 6-7: Intermediate Projects\n- Build projects with complexity and scale\n- Implement testing and CI/CD\n- Document your code professionally\n\n## Phase 3: Mastery (Weeks 8-12)\n**Goal:** Achieve expert-level proficiency\n\n### Week 8-9: Advanced Topics\n- Deep dive into specialized areas\n- Study architecture and system design\n- Learn deployment and operations\n\n### Week 10-11: Capstone Project\n- Build a production-ready application\n- Implement best practices throughout\n- Create comprehensive documentation\n\n### Week 12: Teaching & Consolidation\n- Teach others what you've learned\n- Contribute to open source\n- Plan your career next steps\n\n## Key Success Metrics\n✅ Can build production projects confidently\n✅ Understand architectural trade-offs\n✅ Can mentor others in the skill\n✅ Contributing to open source or professional work` });
     }
   });
 
