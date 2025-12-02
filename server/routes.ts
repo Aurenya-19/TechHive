@@ -1310,9 +1310,11 @@ export async function registerRoutes(
     }
   });
 
+  // GitHub Trending - Use local tech spotlight data instead of external API
   app.get("/api/trending/github", async (_req, res) => {
     try {
       const { getGithubTrending } = await import("./techSpotlight");
+      res.set("Cache-Control", "public, max-age=3600");
       res.json(await getGithubTrending());
     } catch (error: any) {
       res.status(400).json(formatErrorResponse(error));

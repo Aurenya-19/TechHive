@@ -586,3 +586,53 @@ export type CommunityBadge = typeof communityBadges.$inferSelect;
 export type UserBadge = typeof userBadges.$inferSelect;
 export type AiRecommendation = typeof aiCommunityRecommendations.$inferSelect;
 
+// User Activity Tracking (all activities stored in database)
+export const userActivities = pgTable("user_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: varchar("type").notNull(), // "challenge_completed", "quest_started", "arena_explored", etc
+  arenaId: varchar("arena_id"),
+  challengeId: varchar("challenge_id"),
+  description: text("description"),
+  xpGained: integer("xp_gained").default(0),
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+export type UserActivity = typeof userActivities.$inferSelect;
+
+// User Performance Metrics
+export const userPerformance = pgTable("user_performance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  totalActivities: integer("total_activities").default(0),
+  totalChallengesAttempted: integer("total_challenges_attempted").default(0),
+  totalChallengesCompleted: integer("total_challenges_completed").default(0),
+  successRate: integer("success_rate").default(0),
+  averageScore: integer("average_score").default(0),
+  totalTimeSpent: integer("total_time_spent").default(0), // in minutes
+  streakDays: integer("streak_days").default(0),
+  lastActivityDate: timestamp("last_activity_date"),
+  favoriteArena: varchar("favorite_arena"),
+  totalXpEarned: integer("total_xp_earned").default(0),
+  competitionsParticipated: integer("competitions_participated").default(0),
+  competitionsWon: integer("competitions_won").default(0),
+  projectsCreated: integer("projects_created").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type UserPerformance = typeof userPerformance.$inferSelect;
+
+// User Stats Snapshot (for quick dashboards)
+export const userStats = pgTable("user_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  rank: integer("rank").default(0),
+  monthlyXp: integer("monthly_xp").default(0),
+  weeklyXp: integer("weekly_xp").default(0),
+  todayXp: integer("today_xp").default(0),
+  skillsProgress: jsonb("skills_progress").default(sql`'{}'::jsonb`), // {areaId: progress%}
+  badges: integer("badges").default(0),
+  reputation: integer("reputation").default(0),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
