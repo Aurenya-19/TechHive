@@ -2,47 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE - GALAXY THEME */
+/* GALAXY THEME - Deep Space Aesthetic */
 :root {
-  --button-outline: rgba(100,180,255, .15);
-  --badge-outline: rgba(0,255,255, .08);
+  --button-outline: rgba(100,200,255, .2);
+  --badge-outline: rgba(0,255,200, .12);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(100,180,255, .05);
-  --elevate-2: rgba(100,180,255, .12);
-  --background: 270 30% 98%;
-  --foreground: 270 20% 8%;
-  --border: 270 40% 85%;
-  --card: 270 35% 96%;
-  --card-foreground: 270 20% 8%;
-  --card-border: 270 40% 88%;
-  --sidebar: 270 32% 94%;
-  --sidebar-foreground: 270 20% 8%;
-  --sidebar-border: 270 38% 86%;
-  --sidebar-primary: 270 85% 55%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 190 100% 60%;
-  --sidebar-accent-foreground: 0 0% 15%;
-  --sidebar-ring: 270 85% 55%;
-  --popover: 270 33% 95%;
-  --popover-foreground: 270 20% 8%;
-  --popover-border: 270 38% 87%;
-  --primary: 270 85% 55%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 190 100% 60%;
-  --secondary-foreground: 0 0% 15%;
-  --muted: 270 25% 88%;
-  --muted-foreground: 270 20% 45%;
-  --accent: 190 100% 65%;
-  --accent-foreground: 0 0% 8%;
+  --elevate-1: rgba(100,200,255, .08);
+  --elevate-2: rgba(100,200,255, .15);
+  --background: 260 40% 8%;
+  --foreground: 200 100% 95%;
+  --border: 260 50% 20%;
+  --card: 260 45% 12%;
+  --card-foreground: 200 100% 95%;
+  --card-border: 260 50% 18%;
+  --sidebar: 260 42% 10%;
+  --sidebar-foreground: 200 100% 95%;
+  --sidebar-border: 260 48% 16%;
+  --sidebar-primary: 280 85% 60%;
+  --sidebar-primary-foreground: 260 40% 8%;
+  --sidebar-accent: 190 100% 65%;
+  --sidebar-accent-foreground: 260 40% 8%;
+  --sidebar-ring: 280 85% 60%;
+  --popover: 260 44% 14%;
+  --popover-foreground: 200 100% 95%;
+  --popover-border: 260 50% 19%;
+  --primary: 280 85% 60%;
+  --primary-foreground: 260 40% 8%;
+  --secondary: 190 100% 65%;
+  --secondary-foreground: 260 40% 8%;
+  --muted: 260 35% 25%;
+  --muted-foreground: 200 80% 70%;
+  --accent: 190 100% 70%;
+  --accent-foreground: 260 40% 8%;
   --destructive: 0 84% 45%;
   --destructive-foreground: 0 0% 98%;
-  --input: 270 30% 75%;
-  --ring: 270 85% 55%;
-  --chart-1: 270 85% 55%;
-  --chart-2: 190 100% 60%;
-  --chart-3: 280 75% 60%;
-  --chart-4: 200 90% 65%;
-  --chart-5: 150 100% 50%;
+  --input: 260 40% 22%;
+  --ring: 280 85% 60%;
+  --chart-1: 280 85% 60%;
+  --chart-2: 190 100% 65%;
+  --chart-3: 280 75% 70%;
+  --chart-4: 200 90% 75%;
+  --chart-5: 150 100% 60%;
   --font-sans: Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
@@ -89,41 +89,41 @@
 }
 
 .dark {
-  --button-outline: rgba(100,180,255, .15);
-  --badge-outline: rgba(0,255,255, .1);
+  --button-outline: rgba(100,200,255, .2);
+  --badge-outline: rgba(0,255,200, .12);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(100,180,255, .06);
-  --elevate-2: rgba(100,180,255, .14);
-  --background: 270 40% 8%;
-  --foreground: 190 100% 92%;
-  --border: 270 50% 18%;
-  --card: 270 45% 11%;
-  --card-foreground: 190 100% 92%;
-  --card-border: 270 50% 15%;
-  --sidebar: 270 42% 9%;
-  --sidebar-foreground: 190 100% 92%;
-  --sidebar-border: 270 48% 16%;
-  --sidebar-primary: 270 85% 65%;
-  --sidebar-primary-foreground: 270 40% 8%;
+  --elevate-1: rgba(100,200,255, .08);
+  --elevate-2: rgba(100,200,255, .15);
+  --background: 260 40% 8%;
+  --foreground: 200 100% 95%;
+  --border: 260 50% 20%;
+  --card: 260 45% 12%;
+  --card-foreground: 200 100% 95%;
+  --card-border: 260 50% 18%;
+  --sidebar: 260 42% 10%;
+  --sidebar-foreground: 200 100% 95%;
+  --sidebar-border: 260 48% 16%;
+  --sidebar-primary: 280 85% 60%;
+  --sidebar-primary-foreground: 260 40% 8%;
   --sidebar-accent: 190 100% 65%;
-  --sidebar-accent-foreground: 270 40% 8%;
-  --sidebar-ring: 270 85% 65%;
-  --popover: 270 44% 12%;
-  --popover-foreground: 190 100% 92%;
-  --popover-border: 270 50% 17%;
-  --primary: 270 85% 65%;
-  --primary-foreground: 270 40% 8%;
+  --sidebar-accent-foreground: 260 40% 8%;
+  --sidebar-ring: 280 85% 60%;
+  --popover: 260 44% 14%;
+  --popover-foreground: 200 100% 95%;
+  --popover-border: 260 50% 19%;
+  --primary: 280 85% 60%;
+  --primary-foreground: 260 40% 8%;
   --secondary: 190 100% 65%;
-  --secondary-foreground: 270 40% 8%;
-  --muted: 270 35% 20%;
-  --muted-foreground: 190 80% 65%;
+  --secondary-foreground: 260 40% 8%;
+  --muted: 260 35% 25%;
+  --muted-foreground: 200 80% 70%;
   --accent: 190 100% 70%;
-  --accent-foreground: 270 40% 8%;
+  --accent-foreground: 260 40% 8%;
   --destructive: 0 84% 45%;
   --destructive-foreground: 0 0% 98%;
-  --input: 270 40% 25%;
-  --ring: 270 85% 65%;
-  --chart-1: 270 85% 65%;
+  --input: 260 40% 22%;
+  --ring: 280 85% 60%;
+  --chart-1: 280 85% 60%;
   --chart-2: 190 100% 65%;
   --chart-3: 280 75% 70%;
   --chart-4: 200 90% 75%;
@@ -171,8 +171,52 @@
     @apply border-border;
   }
 
+  /* Galaxy Starfield Background */
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(100, 200, 255, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(100, 200, 255, 0.6); }
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    position: relative;
+    overflow-x: hidden;
+    background: radial-gradient(ellipse at 20% 50%, rgba(100, 50, 200, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(50, 100, 200, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 20%, rgba(150, 80, 255, 0.08) 0%, transparent 50%);
+  }
+
+  /* Starfield effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, rgba(200, 220, 255, 0.8), transparent),
+      radial-gradient(2px 2px at 60px 70px, rgba(150, 200, 255, 0.6), transparent),
+      radial-gradient(1px 1px at 50px 50px, rgba(100, 180, 255, 0.7), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(180, 200, 255, 0.5), transparent),
+      radial-gradient(2px 2px at 90px 10px, rgba(120, 180, 255, 0.9), transparent),
+      radial-gradient(1px 1px at 130px 130px, rgba(100, 180, 255, 0.6), transparent),
+      radial-gradient(2px 2px at 10px 90px, rgba(150, 200, 255, 0.7), transparent);
+    background-size: 200px 200px;
+    background-position: 0 0;
+    animation: twinkle 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
   }
 }
 
@@ -216,6 +260,53 @@
   .no-default-hover-elevate {}
 
   .no-default-active-elevate {}
+
+  /* Galaxy card glow effect */
+  @layer components {
+    .galaxy-glow {
+      @apply relative;
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+
+    .galaxy-glow::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: radial-gradient(circle at 50% 50%, rgba(100, 200, 255, 0.1), transparent);
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    .cosmic-border {
+      position: relative;
+      border: 1px solid;
+      border-image: linear-gradient(135deg, 
+        rgba(100, 200, 255, 0.8) 0%,
+        rgba(150, 100, 255, 0.5) 50%,
+        rgba(100, 200, 255, 0.3) 100%) 1;
+    }
+
+    .nebula-bg {
+      background: radial-gradient(ellipse at center, 
+        rgba(100, 100, 255, 0.1) 0%, 
+        transparent 70%);
+    }
+
+    .aurora-text {
+      background: linear-gradient(135deg,
+        #00FFFF 0%,
+        #7C3AED 50%,
+        #FF6B9D 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .space-glow {
+      box-shadow: 0 0 20px rgba(100, 200, 255, 0.3),
+                  inset 0 0 20px rgba(100, 200, 255, 0.1);
+    }
+  }
 
 
   /**
