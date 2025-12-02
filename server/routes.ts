@@ -1798,7 +1798,6 @@ export async function registerRoutes(
     }
   });
 
-
   // ===== PROFILE ROUTES =====
   app.post("/api/profile/setup", async (req, res) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });
@@ -1819,3 +1818,4 @@ export async function registerRoutes(
   });
 
   return httpServer;
+}
