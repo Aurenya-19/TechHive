@@ -48,6 +48,8 @@ import CodeFusion from "@/pages/CodeFusion";
 import Competitions from "@/pages/Competitions";
 import CompetitionDetail from "@/pages/CompetitionDetail";
 import CompetitionLeaderboard from "@/pages/CompetitionLeaderboard";
+import CourseAnalytics from "@/pages/CourseAnalytics";
+import Podcasts from "@/pages/Podcasts";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const style = {
@@ -213,6 +215,12 @@ function Router() {
       </Route>
       <Route path="/competitions/:id/leaderboard">
         <ProtectedRoute component={CompetitionLeaderboard} />
+      </Route>
+      <Route path="/analytics">
+        <ProtectedRoute component={CourseAnalytics} />
+      </Route>
+      <Route path="/podcasts">
+        <ProtectedRoute component={Podcasts} />
       </Route>
       <Route component={NotFound} />
     </Switch>

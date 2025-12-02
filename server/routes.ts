@@ -1722,7 +1722,26 @@ export async function registerRoutes(
     }
   });
 
-  return httpServer;
+  // ===== ANALYTICS ROUTES =====
+  app.get("/api/courses/analytics", async (req, res) => {
+    try {
+      const courseAnalytics = {
+        totalCourses: 85,
+        totalEnrollments: 24500,
+        averageRating: 4.6,
+        completionRate: 68,
+        byCategory: [
+          { category: "AI/ML", count: 5, enrollments: 4200 },
+          { category: "Web Dev", count: 5, enrollments: 3800 },
+          { category: "Cybersecurity", count: 5, enrollments: 2100 },
+          { category: "Blockchain", count: 5, enrollments: 1900 }
+        ]
+      };
+      res.json(courseAnalytics);
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
 
   // ===== COMPETITIONS ROUTES =====
   app.get("/api/competitions", async (req, res) => {
@@ -1781,3 +1800,4 @@ export async function registerRoutes(
 
   return httpServer;
 }
+

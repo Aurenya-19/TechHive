@@ -30,6 +30,8 @@ import {
   MessageSquare,
   User,
   Flame,
+  BarChart3,
+  Microphone,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -52,6 +54,8 @@ export function AppSidebar() {
     { title: t("navigation.courses"), url: "/courses", icon: GraduationCap },
     { title: t("navigation.quests"), url: "/quests", icon: Target },
     { title: "Competitions", url: "/competitions", icon: Flame },
+    { title: "Analytics", url: "/analytics", icon: BarChart3 },
+    { title: "Podcasts", url: "/podcasts", icon: Microphone },
     { title: t("navigation.leaderboard"), url: "/leaderboards", icon: Trophy },
     { title: t("navigation.mentors"), url: "/mentors", icon: Users },
     { title: t("navigation.messages"), url: "/messages", icon: MessageSquare },
