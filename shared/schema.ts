@@ -71,6 +71,7 @@ export const arenas = pgTable("arenas", {
   description: text("description"),
   icon: varchar("icon"),
   color: varchar("color"),
+  imageUrl: varchar("image_url"), // Free Unsplash images
   category: varchar("category").notNull(),
   difficulty: varchar("difficulty").default("all"),
   activeUsers: integer("active_users").default(0),
