@@ -92,6 +92,10 @@ export interface IStorage {
   joinCompetition(competitionId: string, userId: string): Promise<any>;
   submitCompetitionSolution(data: any): Promise<any>;
   getCompetitionLeaderboard(competitionId: string): Promise<any[]>;
+  getClans(limit?: number): Promise<Clan[]>;
+  getUserClans(userId: string): Promise<Clan[]>;
+  createClan(data: any): Promise<Clan>;
+  joinClan(clanId: string, userId: string): Promise<ClanMember>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -240,10 +244,28 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
-  async createClan(name: string, leaderId: string): Promise<Clan> {
+  async getClans(limit = 100): Promise<Clan[]> {
+    return db.select().from(clans).limit(limit).orderBy(desc(clans.createdAt));
+  }
+
+  async getUserClans(userId: string): Promise<Clan[]> {
+    const userClanIds = await db.select({ clanId: clanMembers.clanId }).from(clanMembers).where(eq(clanMembers.userId, userId));
+    if (userClanIds.length === 0) return [];
+    return db.select().from(clans).where(inArray(clans.id, userClanIds.map(uc => uc.clanId)));
+  }
+
+  async createClan(data: any): Promise<Clan> {
     const [created] = await db
       .insert(clans)
-      .values({ name, leaderId, memberCount: 1 })
+      .values({ 
+        name: data.name, 
+        description: data.description,
+        leaderId: data.leaderId, 
+        memberCount: 1,
+        badge: data.badge,
+        icon: data.icon,
+        isPublic: data.isPublic !== false
+      })
       .returning();
     return created;
   }
