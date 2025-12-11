@@ -15,6 +15,12 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
+  
+  // Handle session store errors gracefully
+  sessionStore.on("error", (err) => {
+    console.error("[Session] Store error:", err.message);
+  });
+  
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
@@ -36,27 +42,43 @@ async function upsertUser(profile: any) {
   const lastName = profile.name?.familyName || '';
   const profileImageUrl = profile.photos?.[0]?.value;
 
-  // Check if user already exists by email to prevent duplicate key violations
-  let existingUser = null;
-  if (email) {
-    try {
-      const result = await storage.getUserByEmail(email);
-      existingUser = result;
-    } catch (err) {
-      // User doesn't exist, continue
+  try {
+    // Check if user already exists by email to prevent duplicate key violations
+    let existingUser = null;
+    if (email) {
+      try {
+        const result = await storage.getUserByEmail(email);
+        existingUser = result;
+      } catch (err: any) {
+        // User doesn't exist or database error
+        if (!err.message?.includes("endpoint") && !err.message?.includes("disabled")) {
+          console.log("[Auth] User lookup failed (likely doesn't exist):", err.message);
+        }
+      }
     }
+
+    // Use existing user ID if found, otherwise use Google ID
+    const userId = existingUser?.id || googleId;
+
+    await storage.upsertUser({
+      id: userId,
+      email,
+      firstName,
+      lastName,
+      profileImageUrl,
+    });
+    
+    console.log(`[Auth] User upserted successfully: ${email}`);
+  } catch (err: any) {
+    console.error("[Auth] Error upserting user:", err.message);
+    
+    // Check for database endpoint disabled error
+    if (err.message?.includes("endpoint") && err.message?.includes("disabled")) {
+      throw new Error("Database is currently unavailable. Please try again later or contact support.");
+    }
+    
+    throw err;
   }
-
-  // Use existing user ID if found, otherwise use Google ID
-  const userId = existingUser?.id || googleId;
-
-  await storage.upsertUser({
-    id: userId,
-    email,
-    firstName,
-    lastName,
-    profileImageUrl,
-  });
 }
 
 // Helper function to get callback URL from request
@@ -87,7 +109,31 @@ function getCallbackURL(req?: any): string {
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  app.use(getSession());
+  
+  try {
+    app.use(getSession());
+  } catch (err: any) {
+    console.error("[Auth] Session setup error:", err.message);
+    console.error("[Auth] Continuing with in-memory sessions (not recommended for production)");
+    
+    // Fallback to memory store if database session fails
+    const MemoryStore = require("memorystore")(session);
+    app.use(session({
+      secret: process.env.SESSION_SECRET!,
+      store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
+      }),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
+    }));
+  }
+  
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -118,8 +164,23 @@ export async function setupAuth(app: Express) {
       },
       async (req: any, accessToken: string, refreshToken: string, profile: any, done: any) => {
         try {
-          console.log(`[Auth] Google user logged in: ${profile.email}`);
-          await upsertUser(profile);
+          console.log(`[Auth] Google OAuth callback received for: ${profile.emails?.[0]?.value}`);
+          
+          // Try to upsert user with error handling
+          try {
+            await upsertUser(profile);
+          } catch (dbErr: any) {
+            console.error(`[Auth] Database error during user upsert:`, dbErr.message);
+            
+            // Return error with user-friendly message
+            if (dbErr.message?.includes("Database is currently unavailable")) {
+              return done(new Error("Our database is temporarily unavailable. Please try again in a few minutes."));
+            }
+            
+            // For other errors, still allow login but log the issue
+            console.error(`[Auth] Continuing with login despite database error`);
+          }
+          
           return done(null, {
             id: profile.id,
             email: profile.emails?.[0]?.value,
@@ -153,9 +214,23 @@ export async function setupAuth(app: Express) {
       }
       next();
     },
-    passport.authenticate("google", {
-      failureRedirect: "/?auth=failed",
-    }),
+    (req, res, next) => {
+      passport.authenticate("google", {
+        failureRedirect: "/?auth=failed",
+      })(req, res, (err) => {
+        if (err) {
+          console.error(`[Auth] Authentication error:`, err.message);
+          
+          // Handle database errors gracefully
+          if (err.message?.includes("database") || err.message?.includes("Database")) {
+            return res.redirect("/?auth=db_error");
+          }
+          
+          return res.redirect("/?auth=failed");
+        }
+        next();
+      });
+    },
     (req, res) => {
       console.log(`[Auth] Successful Google login for user: ${(req.user as any)?.email}`);
       res.redirect("/");
@@ -165,7 +240,8 @@ export async function setupAuth(app: Express) {
   app.get("/api/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
-        return res.status(500).json({ error: err.message });
+        console.error("[Auth] Logout error:", err.message);
+        return res.status(500).json({ error: "Logout failed" });
       }
       res.redirect("/");
     });
