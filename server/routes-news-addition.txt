@@ -1,0 +1,37 @@
+// ADD THIS CODE AFTER THE /api/tech/releases ENDPOINT (around line 1430)
+// INSERT BEFORE THE "// SWARM PROJECTS" COMMENT
+
+  // ===== DYNAMIC CONTENT - NEWS & UPDATES =====
+  
+  // Tech News Feed - Dynamic Content
+  app.get("/api/news", async (_req, res) => {
+    try {
+      const { fetchLatestNews } = await import("./dynamicContentUpdater");
+      res.set("Cache-Control", "public, max-age=1800"); // 30 min cache
+      res.json(await fetchLatestNews());
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
+
+  // Content Update Status
+  app.get("/api/content/status", async (_req, res) => {
+    try {
+      const { getUpdateStatus } = await import("./dynamicContentUpdater");
+      res.json(getUpdateStatus());
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });
+
+  // Manual Content Update (Admin only)
+  app.post("/api/content/update", async (req, res) => {
+    if (!req.user) return res.status(401).json({ error: "Not authenticated" });
+    try {
+      const { updateAllContent } = await import("./dynamicContentUpdater");
+      await updateAllContent();
+      res.json({ success: true, message: "Content updated successfully" });
+    } catch (error: any) {
+      res.status(400).json(formatErrorResponse(error));
+    }
+  });

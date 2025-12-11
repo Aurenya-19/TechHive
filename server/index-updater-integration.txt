@@ -1,0 +1,9 @@
+// ADD THIS CODE IN server/index.ts
+// INSERT AFTER THE DATABASE SEEDING (around line 160)
+// BEFORE setupAuth() call
+
+  // Initialize dynamic content updater
+  console.log("[Server] Initializing dynamic content updater...");
+  const { scheduleContentUpdates } = await import("./dynamicContentUpdater");
+  scheduleContentUpdates();
+  console.log("[Server] Dynamic content updater initialized");
