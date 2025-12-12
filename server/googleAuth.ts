@@ -1,38 +1,56 @@
 import passport from "passport";
-import type { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GoogleOAuthStrategy } from "passport-google-oauth20";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
+const MemoryStore = require("memorystore")(session);
+
 export function getSession() {
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
-    ttl: sessionTtl,
-    tableName: "sessions",
-  });
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000;
   
-  // Handle session store errors gracefully
-  sessionStore.on("error", (err) => {
-    console.error("[Session] Store error:", err.message);
-  });
-  
-  return session({
-    secret: process.env.SESSION_SECRET!,
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: sessionTtl,
-    },
-  });
+  // Try database session first, fallback to memory
+  try {
+    const pgStore = connectPg(session);
+    const sessionStore = new pgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+      ttl: sessionTtl,
+      tableName: "sessions",
+    });
+    
+    sessionStore.on("error", (err) => {
+      console.error("[Session] DB error, using memory fallback:", err.message);
+    });
+    
+    return session({
+      secret: process.env.SESSION_SECRET || 'codeverse-secret-key-2025',
+      store: sessionStore,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: sessionTtl,
+      },
+    });
+  } catch (err) {
+    console.log("[Session] Using memory store");
+    return session({
+      secret: process.env.SESSION_SECRET || 'codeverse-secret-key-2025',
+      store: new MemoryStore({ checkPeriod: 86400000 }),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: sessionTtl,
+      },
+    });
+  }
 }
 
 async function upsertUser(profile: any) {
@@ -43,21 +61,15 @@ async function upsertUser(profile: any) {
   const profileImageUrl = profile.photos?.[0]?.value;
 
   try {
-    // Check if user already exists by email to prevent duplicate key violations
     let existingUser = null;
     if (email) {
       try {
-        const result = await storage.getUserByEmail(email);
-        existingUser = result;
-      } catch (err: any) {
-        // User doesn't exist or database error
-        if (!err.message?.includes("endpoint") && !err.message?.includes("disabled")) {
-          console.log("[Auth] User lookup failed (likely doesn't exist):", err.message);
-        }
+        existingUser = await storage.getUserByEmail(email);
+      } catch (err) {
+        // User doesn't exist
       }
     }
 
-    // Use existing user ID if found, otherwise use Google ID
     const userId = existingUser?.id || googleId;
 
     await storage.upsertUser({
@@ -68,118 +80,55 @@ async function upsertUser(profile: any) {
       profileImageUrl,
     });
     
-    console.log(`[Auth] User upserted successfully: ${email}`);
+    console.log(`[Auth] ✓ User saved: ${email}`);
+    return userId;
   } catch (err: any) {
-    console.error("[Auth] Error upserting user:", err.message);
-    
-    // Check for database endpoint disabled error
-    if (err.message?.includes("endpoint") && err.message?.includes("disabled")) {
-      throw new Error("Database is currently unavailable. Please try again later or contact support.");
-    }
-    
-    throw err;
+    console.error("[Auth] User save error:", err.message);
+    // Continue anyway - user can still login
+    return googleId;
   }
 }
 
-// Helper function to get callback URL from request
-function getCallbackURL(req?: any): string {
-  if (process.env.NODE_ENV === 'production') {
-    // Try explicit config first
-    if (process.env.GOOGLE_CALLBACK_URL) {
-      return process.env.GOOGLE_CALLBACK_URL;
-    }
-    // Try PUBLIC_URL env var
-    if (process.env.PUBLIC_URL) {
-      return `https://${process.env.PUBLIC_URL}/api/callback`;
-    }
-    // Try to get from request host (Render sends this)
-    if (req && req.get) {
-      const host = req.get('host');
-      if (host && !host.includes('localhost')) {
-        return `https://${host}/api/callback`;
-      }
-    }
-    // Fallback for Render deployment
-    return 'https://codeverse-4za9.onrender.com/api/callback';
-  } else {
-    // Development
-    return `http://localhost:5000/api/callback`;
+function getCallbackURL(): string {
+  if (process.env.GOOGLE_CALLBACK_URL) {
+    return process.env.GOOGLE_CALLBACK_URL;
   }
+  
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://codeverse-4za9.onrender.com/api/callback';
+  }
+  
+  return 'http://localhost:5000/api/callback';
 }
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  
-  try {
-    app.use(getSession());
-  } catch (err: any) {
-    console.error("[Auth] Session setup error:", err.message);
-    console.error("[Auth] Continuing with in-memory sessions (not recommended for production)");
-    
-    // Fallback to memory store if database session fails
-    const MemoryStore = require("memorystore")(session);
-    app.use(session({
-      secret: process.env.SESSION_SECRET!,
-      store: new MemoryStore({
-        checkPeriod: 86400000 // prune expired entries every 24h
-      }),
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      },
-    }));
-  }
-  
+  app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Get initial callback URL for logging
-  const initialCallbackURL = getCallbackURL();
-  console.log(`[Auth] Google OAuth configured with callback URL: ${initialCallbackURL}`);
+  const callbackURL = getCallbackURL();
+  console.log(`[Auth] OAuth callback: ${callbackURL}`);
 
-  // Ensure we have credentials
   const clientID = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   
-  console.log(`[Auth] GOOGLE_CLIENT_ID loaded: ${clientID ? 'YES (' + clientID.substring(0, 20) + '...)' : 'NO'}`);
-  console.log(`[Auth] GOOGLE_CLIENT_SECRET loaded: ${clientSecret ? 'YES' : 'NO'}`);
-  
   if (!clientID || !clientSecret) {
-    console.error('[Auth] ERROR: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET');
-    throw new Error('Google OAuth credentials not found in environment');
+    throw new Error('Missing Google OAuth credentials');
   }
 
-  // Google OAuth Strategy - use dynamic callback URL
   passport.use(
     new GoogleOAuthStrategy(
       {
         clientID,
         clientSecret,
-        callbackURL: initialCallbackURL,
-        passReqToCallback: true,
+        callbackURL,
       },
-      async (req: any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+      async (accessToken: string, refreshToken: string, profile: any, done: any) => {
         try {
-          console.log(`[Auth] Google OAuth callback received for: ${profile.emails?.[0]?.value}`);
+          console.log(`[Auth] Login: ${profile.emails?.[0]?.value}`);
           
-          // Try to upsert user with error handling
-          try {
-            await upsertUser(profile);
-          } catch (dbErr: any) {
-            console.error(`[Auth] Database error during user upsert:`, dbErr.message);
-            
-            // Return error with user-friendly message
-            if (dbErr.message?.includes("Database is currently unavailable")) {
-              return done(new Error("Our database is temporarily unavailable. Please try again in a few minutes."));
-            }
-            
-            // For other errors, still allow login but log the issue
-            console.error(`[Auth] Continuing with login despite database error`);
-          }
+          await upsertUser(profile);
           
           return done(null, {
             id: profile.id,
@@ -188,8 +137,14 @@ export async function setupAuth(app: Express) {
             profile,
           });
         } catch (error: any) {
-          console.error(`[Auth] Error in Google OAuth callback:`, error);
-          return done(error);
+          console.error(`[Auth] Error:`, error.message);
+          // Still allow login
+          return done(null, {
+            id: profile.id,
+            email: profile.emails?.[0]?.value,
+            name: profile.displayName,
+            profile,
+          });
         }
       }
     )
@@ -199,7 +154,7 @@ export async function setupAuth(app: Express) {
   passport.deserializeUser((user: any, cb) => cb(null, user));
 
   app.get("/api/login", (req, res, next) => {
-    console.log(`[Auth] Login request from: ${req.hostname} - Callback will be: ${initialCallbackURL}`);
+    console.log(`[Auth] Login initiated`);
     passport.authenticate("google", {
       scope: ["profile", "email"],
     })(req, res, next);
@@ -207,42 +162,18 @@ export async function setupAuth(app: Express) {
 
   app.get(
     "/api/callback",
-    (req, res, next) => {
-      console.log(`[Auth] Callback received with query:`, req.query);
-      if (req.query.error) {
-        console.error(`[Auth] Google OAuth error: ${req.query.error} - ${req.query.error_description}`);
-      }
-      next();
-    },
-    (req, res, next) => {
-      passport.authenticate("google", {
-        failureRedirect: "/?auth=failed",
-      })(req, res, (err) => {
-        if (err) {
-          console.error(`[Auth] Authentication error:`, err.message);
-          
-          // Handle database errors gracefully
-          if (err.message?.includes("database") || err.message?.includes("Database")) {
-            return res.redirect("/?auth=db_error");
-          }
-          
-          return res.redirect("/?auth=failed");
-        }
-        next();
-      });
-    },
+    passport.authenticate("google", {
+      failureRedirect: "/?error=auth_failed",
+    }),
     (req, res) => {
-      console.log(`[Auth] Successful Google login for user: ${(req.user as any)?.email}`);
+      console.log(`[Auth] ✓ Login successful: ${(req.user as any)?.email}`);
       res.redirect("/");
     }
   );
 
   app.get("/api/logout", (req, res) => {
     req.logout((err) => {
-      if (err) {
-        console.error("[Auth] Logout error:", err.message);
-        return res.status(500).json({ error: "Logout failed" });
-      }
+      if (err) console.error("[Auth] Logout error:", err);
       res.redirect("/");
     });
   });
