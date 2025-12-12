@@ -1,0 +1,9 @@
+Deployment triggered at: 2025-12-11T04:30:00Z
+
+Changes applied:
+- Aggressive database auto-recovery
+- Simplified OAuth flow
+- Force session persistence
+- Auto-retry on all failures
+
+This file triggers Render auto-deployment.
